@@ -53,4 +53,13 @@
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>jar</id>
+			<properties>
+				<packaging.type>jar</packaging.type>
+			</properties>
+		</profile>
+	</profiles>
+
 </project>
