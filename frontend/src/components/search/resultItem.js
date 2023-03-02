@@ -21,8 +21,12 @@ const ResultItem = () => {
                     Result Title
                 </Text>
 
-                <Text mt="xs" color="dimmed" size="sm">
-                    Text with keywords bolded
+                <Text fz="xs" color="dimmed" fs="italic">
+                    https://www.cse.ust.hk/~kwtleung/COMP4321/Movie/278.html
+                </Text>
+
+                <Text mt="xs" color="dimmed" size="md">
+                    Text with keywords <b>bolded</b>
                 </Text>
             </Card>
 
