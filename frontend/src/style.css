@@ -1,0 +1,27 @@
+body {
+    text-align: center;
+}
+
+.center {
+    margin-left: 15%;
+    margin-right: 15%;
+}
+
+th,
+td {
+    text-align: left;
+}
+
+.reportTable th {
+    text-align: right;
+    padding-right: 10px;
+}
+
+.reportTable tr {
+    padding: 5px;
+}
+
+.navBtn {
+    text-align: left;
+    padding-left: 0;
+}
