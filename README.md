@@ -3,11 +3,17 @@ Project of CSIT5930 - Search Engines and Applications
 
 
 ## URL
-Frontend: https://search.johnnyip.com
+``Frontend``
 
-Backend-java: https://search-back1.johnnyip.com
+https://search.johnnyip.com
 
-Backend-python: https://search-back2.johnnyip.com
+``Backend-java (API-Endpoint)``
+
+https://search-back1.johnnyip.com
+
+``Backend-python (API-Endpoint)``
+
+https://search-back2.johnnyip.com
 
 
 ## Docker image built (Using CI/CD)
