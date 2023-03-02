@@ -22,6 +22,14 @@ const IndexingInfo = () => {
                             <th>Total Keywords Indexed</th>
                             <th>2</th>
                         </tr>
+                        <tr>
+                            <th>Time Used For Crawling</th>
+                            <th>50 Seconds</th>
+                        </tr>
+                        <tr>
+                            <th>Time Used For Indexing</th>
+                            <th>50 Seconds</th>
+                        </tr>
                     </tbody>
                 </Table>
 

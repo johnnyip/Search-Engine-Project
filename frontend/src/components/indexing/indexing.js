@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { TextInput, Button } from '@mantine/core';
-import { IconSend } from '@tabler/icons';
+import { TextInput, Button, Group } from '@mantine/core';
+import { IconSend, IconTrash } from '@tabler/icons';
 
 import IndexingInfo from './indexingInfo';
 
@@ -23,10 +23,21 @@ const Indexing = () => {
                 style={{ marginLeft: "20%", marginRight: "20%" }}
             /><br />
 
-            <Button leftIcon={<IconSend size="1rem" />}>
-                Start Crawling
-            </Button>
+            <Group position="center">
+                <Button
+                    color="red"
+                    leftIcon={<IconTrash size="1rem" />}>
+                    Remove All Indexing
+                </Button>
 
+                <Button leftIcon={<IconSend size="1rem" />}>
+                    Start Crawling (Java)
+                </Button>
+
+                <Button leftIcon={<IconSend size="1rem" />}>
+                    Start Crawling (JavaScript)
+                </Button>
+            </Group>
             <IndexingInfo />
         </div >
     )

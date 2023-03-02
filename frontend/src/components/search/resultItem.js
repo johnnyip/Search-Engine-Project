@@ -5,10 +5,11 @@ const ResultItem = () => {
     return (
         <>
             <Card
+                withBorder
                 radius="md"
                 style={{
                     textAlign: "left",
-                    // padding: 20
+                    marginBottom:"5px"
                 }}
                 shadow="lg"
                 padding="xl"
@@ -17,7 +18,7 @@ const ResultItem = () => {
                 target="_blank"
             >
 
-                <Text weight={500} size="lg" mt="md">
+                <Text weight={500} size="lg" >
                     Result Title
                 </Text>
 
@@ -30,7 +31,6 @@ const ResultItem = () => {
                 </Text>
             </Card>
 
-            <br />
 
         </>
     )
