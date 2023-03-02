@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Tabs } from '@mantine/core';
+import { Tabs, Text } from '@mantine/core';
 import { IconHierarchy2, IconSearch } from '@tabler/icons';
 
 import Indexing from './indexing/indexing';
@@ -10,9 +10,9 @@ const TopBar = () => {
 
     return (
         <>
-            <Tabs variant="outline" value={activeTab} onTabChange={setActiveTab}>
-                <Tabs.List grow style={{ fontSize: '30' }}>
-                    <Tabs.Tab value="index" icon={<IconHierarchy2 size={14} />}>Indexing</Tabs.Tab>
+            <Tabs value={activeTab} onTabChange={setActiveTab}>
+                <Tabs.List grow style={{ fontSize: '30', marginLeft: '20%', marginRight: '20%' }}>
+                    <Tabs.Tab value="index" icon={<IconHierarchy2 size={14} />}><Text>Indexing</Text></Tabs.Tab>
                     <Tabs.Tab value="search" icon={<IconSearch size={14} />}>Search</Tabs.Tab>
                 </Tabs.List>
 
