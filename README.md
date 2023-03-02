@@ -1,5 +1,8 @@
 # Search-Engine-Project
 
+## Teammates
+[@Alexlam0258](https://github.com/Alexlam0258)
+[@cpawongaa](https://github.com/cpawongaa)
 
 ## URL
 ``Frontend``
