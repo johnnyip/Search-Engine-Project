@@ -3,8 +3,16 @@ body {
 }
 
 .center {
-    margin-left: 15%;
-    margin-right: 15%;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.moreSpace{
+    margin-top: 20px;
+}
+
+a:hover{
+    background-color: rgb(243, 243, 243);
 }
 
 th,
