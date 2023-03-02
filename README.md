@@ -1,5 +1,4 @@
 # Search-Engine-Project
-Project of CSIT5930 - Search Engines and Applications
 
 
 ## URL
