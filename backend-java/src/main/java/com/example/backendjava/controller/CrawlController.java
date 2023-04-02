@@ -18,6 +18,7 @@ public class CrawlController {
     @Autowired
     public CrawlController(CrawlService crawlService) {
         this.crawlService = crawlService;
+        this.crawledContent = null;
     }
 
     @GetMapping("/childLinks")
@@ -48,6 +49,14 @@ public class CrawlController {
 
     @GetMapping("/")
     public List<PageContent> getCrawledContent() {
+        if (crawledContent == null) {
+            crawledContent = new ArrayList<>();
+            List<String> fullUrlList = crawlService.getFullUrlList("https://www.cse.ust.hk/~kwtleung/COMP4321/testpage.htm");
+
+            for (String childUrl : fullUrlList) {
+                crawledContent.add(crawlService.getPageContent(childUrl));
+            }
+        }
         return crawledContent;
     }
 }
