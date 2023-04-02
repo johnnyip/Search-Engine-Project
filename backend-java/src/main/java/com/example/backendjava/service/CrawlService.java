@@ -11,6 +11,16 @@ import java.util.List;
 @Service
 public class CrawlService {
 
+    private List<PageContent> crawledContent = null;
+
+    public List<PageContent> getCrawledContent() {
+        return crawledContent;
+    }
+
+    public void setCrawledContent(List<PageContent> crawledContent) {
+        this.crawledContent = crawledContent;
+    }
+
     public List<String> getFullUrlList(String baseUrl) {
         ArrayList<String> fullURLList = new ArrayList<>();
         ArrayList<String> crawQueue = new ArrayList<>();
@@ -27,7 +37,7 @@ public class CrawlService {
             for (String url : crawQueue_tmp) {
                 List<String> allLinks_ = le.getAllLinks(url);
 
-                for (String url_:allLinks_) {
+                for (String url_ : allLinks_) {
                     if (!fullURLList.contains(url_)) {
                         crawQueue.add(url_);
                         fullURLList.add(url_);
@@ -42,8 +52,18 @@ public class CrawlService {
         return fullURLList;
     }
 
-    public PageContent getPageContent(String url){
+    public PageContent getPageContent(String url) {
         StringExtractor stringExtractor = new StringExtractor();
         return stringExtractor.getPageContent(url);
+    }
+
+    public void startCrawling(String url) {
+        crawledContent = new ArrayList<>();
+        List<String> fullUrlList = getFullUrlList(url);
+
+        System.out.println("URLs found: "+fullUrlList.size());
+        for (String childUrl : fullUrlList) {
+            crawledContent.add(getPageContent(childUrl));
+        }
     }
 }
