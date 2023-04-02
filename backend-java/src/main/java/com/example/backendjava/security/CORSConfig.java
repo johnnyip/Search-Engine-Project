@@ -13,7 +13,7 @@ public class CORSConfig implements WebMvcConfigurer {
                 .allowedOrigins("*") // Change this to the specific origin you want to allow, or use "*" to allow all
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
-                .allowCredentials(true)
+                .allowCredentials(false)
                 .maxAge(3600);
     }
 }
