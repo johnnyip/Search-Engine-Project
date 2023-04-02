@@ -11,6 +11,22 @@ const Indexing = () => {
     const [loaded, setLoaded] = useState(false)
     const [loading, setLoading] = useState(false)
     const [pageCount, setPageCount] = useState(0)
+    const [timeElapsed, setTimeElapsed] = useState(0)
+
+    const startTimer = (stopCallback) => {
+        const duration = setInterval(() => {
+            setTimeElapsed(timeElapsed => timeElapsed + 1);
+        }, 1000);
+
+        // Call stopCallback to stop the timer
+        const stopTimer = () => {
+            clearInterval(duration);
+            stopCallback();
+        };
+
+        // Return stopTimer function
+        return stopTimer;
+    };
 
     useEffect(() => {
         const loadData = async () => {
@@ -20,11 +36,9 @@ const Indexing = () => {
                 setLoaded(true)
             }
         }
-
         if (!loaded) {
             loadData()
         }
-
     })
 
 
@@ -63,18 +77,33 @@ const Indexing = () => {
                     loading={loading}
                     onClick={async () => {
                         setLoading(true)
-                        await startCrawl(url)
-                        setLoading(false)
+                        let timerStopped = false;
+                        const stopTimerCallback = () => {
+                            timerStopped = true;
+                            setLoading(false);
+                        };
+                        const stopTimer = startTimer(stopTimerCallback);
+                        await startCrawl(url);
+                        setPageCount(await checkCrawlPageCount())
+            
+
+                        // Stop the timer only if it's still running
+                        if (!timerStopped) {
+                            stopTimer();
+                        }
                     }}
                     leftIcon={<IconSend size="1rem" />}>
-                    Start Crawling
+                    {(loading) ? `Indexing...(${timeElapsed}s)` : "Start Indexing"}
                 </Button>
 
             </Group>
             <IndexingInfo pageCount={pageCount} />
         </div >
     )
+
+
 }
+
 
 
 export default Indexing;
