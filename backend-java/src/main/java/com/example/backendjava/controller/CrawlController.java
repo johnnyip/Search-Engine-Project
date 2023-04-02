@@ -24,7 +24,7 @@ public class CrawlController {
     }
 
     @GetMapping("/remove")
-    public String removeCrawled(){
+    public String removeCrawled() {
         crawlService.removeCrawledContent();
         return "ok";
     }
@@ -39,7 +39,10 @@ public class CrawlController {
 
     @GetMapping("/count")
     public int getCrawledPageCount() {
-        return crawlService.getCrawledContent().size();
+        if (crawlService.getCrawledContent() != null) {
+            return crawlService.getCrawledContent().size();
+        }
+        return 0;
     }
 
     @GetMapping("/")
