@@ -5,7 +5,7 @@ import { IconSend, IconTrash } from '@tabler/icons';
 import IndexingInfo from './indexingInfo';
 
 const Indexing = () => {
-    const [url, setUrl] = useState('')
+    const [url, setUrl] = useState('https://www.cse.ust.hk/~kwtleung/COMP4321/testpage.htm')
 
     return (
         <div className='moreSpace'>
@@ -31,12 +31,9 @@ const Indexing = () => {
                 </Button>
 
                 <Button leftIcon={<IconSend size="1rem" />}>
-                    Start Crawling (Java)
+                    Start Crawling
                 </Button>
 
-                <Button leftIcon={<IconSend size="1rem" />}>
-                    Start Crawling (JavaScript)
-                </Button>
             </Group>
             <IndexingInfo />
         </div >
