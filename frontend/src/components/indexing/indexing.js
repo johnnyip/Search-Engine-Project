@@ -4,11 +4,12 @@ import { IconSend, IconTrash } from '@tabler/icons';
 
 import IndexingInfo from './indexingInfo';
 
-import { checkCrawlPageCount } from '../../functions/crawl'
+import { checkCrawlPageCount, startCrawl, removeCrawlContent } from '../../functions/crawl'
 
 const Indexing = () => {
     const [url, setUrl] = useState('https://www.cse.ust.hk/~kwtleung/COMP4321/testpage.htm')
     const [loaded, setLoaded] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [pageCount, setPageCount] = useState(0)
 
     useEffect(() => {
@@ -46,11 +47,26 @@ const Indexing = () => {
             <Group position="center">
                 <Button
                     color="red"
+                    disabled={pageCount === 0}
+                    onClick={async () => {
+                        setLoading(true)
+                        await removeCrawlContent()
+                        const countResult = await checkCrawlPageCount()
+                        setPageCount(countResult)
+                        setLoading(false)
+                    }}
                     leftIcon={<IconTrash size="1rem" />}>
                     Remove All Indexing
                 </Button>
 
-                <Button leftIcon={<IconSend size="1rem" />}>
+                <Button
+                    loading={loading}
+                    onClick={async () => {
+                        setLoading(true)
+                        await startCrawl(url)
+                        setLoading(false)
+                    }}
+                    leftIcon={<IconSend size="1rem" />}>
                     Start Crawling
                 </Button>
 

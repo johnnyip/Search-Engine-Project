@@ -21,6 +21,10 @@ public class CrawlService {
         this.crawledContent = crawledContent;
     }
 
+    public void removeCrawledContent() {
+        crawledContent = new ArrayList<>();
+    }
+
     public List<String> getFullUrlList(String baseUrl) {
         ArrayList<String> fullURLList = new ArrayList<>();
         ArrayList<String> crawQueue = new ArrayList<>();
@@ -61,7 +65,7 @@ public class CrawlService {
         crawledContent = new ArrayList<>();
         List<String> fullUrlList = getFullUrlList(url);
 
-        System.out.println("URLs found: "+fullUrlList.size());
+        System.out.println("URLs found: " + fullUrlList.size());
         for (String childUrl : fullUrlList) {
             crawledContent.add(getPageContent(childUrl));
         }

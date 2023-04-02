@@ -23,6 +23,12 @@ public class CrawlController {
 //        this.crawlService.startCrawling("https://www.cse.ust.hk/~kwtleung/COMP4321/testpage.htm");
     }
 
+    @GetMapping("/remove")
+    public String removeCrawled(){
+        crawlService.removeCrawledContent();
+        return "ok";
+    }
+
     @GetMapping("/start")
     public String startCrawling(@RequestParam String url) {
         System.out.println("Start crawling");
