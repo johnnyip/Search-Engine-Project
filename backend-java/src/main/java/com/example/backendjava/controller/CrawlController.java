@@ -20,7 +20,7 @@ public class CrawlController {
     @Autowired
     public CrawlController(CrawlService crawlService) {
         this.crawlService = crawlService;
-        this.crawlService.startCrawling("https://www.cse.ust.hk/~kwtleung/COMP4321/testpage.htm");
+//        this.crawlService.startCrawling("https://www.cse.ust.hk/~kwtleung/COMP4321/testpage.htm");
     }
 
     @GetMapping("/start")

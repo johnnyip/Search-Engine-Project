@@ -4,8 +4,28 @@ import { IconSend, IconTrash } from '@tabler/icons';
 
 import IndexingInfo from './indexingInfo';
 
+import { checkCrawlPageCount } from '../../functions/crawl'
+
 const Indexing = () => {
     const [url, setUrl] = useState('https://www.cse.ust.hk/~kwtleung/COMP4321/testpage.htm')
+    const [loaded, setLoaded] = useState(false)
+    const [pageCount, setPageCount] = useState(0)
+
+    useEffect(() => {
+        const loadData = async () => {
+            const countResult = await checkCrawlPageCount()
+            setPageCount(countResult)
+            if (countResult) {
+                setLoaded(true)
+            }
+        }
+
+        if (!loaded) {
+            loadData()
+        }
+
+    })
+
 
     return (
         <div className='moreSpace'>
@@ -35,7 +55,7 @@ const Indexing = () => {
                 </Button>
 
             </Group>
-            <IndexingInfo />
+            <IndexingInfo pageCount={pageCount} />
         </div >
     )
 }

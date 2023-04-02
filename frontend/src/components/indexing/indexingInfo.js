@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { Badge, Table } from '@mantine/core';
 import { IconSend } from '@tabler/icons';
 
-const IndexingInfo = () => {
+const IndexingInfo = (props) => {
+    const pageCount = props.pageCount
 
     return (
         <>
@@ -16,7 +17,7 @@ const IndexingInfo = () => {
                     <tbody>
                         <tr>
                             <th>Total Document Indexed</th>
-                            <th>2</th>
+                            <th>{pageCount}</th>
                         </tr>
                         <tr>
                             <th>Total Keywords Indexed</th>
