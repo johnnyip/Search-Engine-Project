@@ -28,7 +28,7 @@ public class LinkExtractor {
             for (int i = 0; i < list.size(); i++) {
                 LinkTag link = (LinkTag) list.elementAt(i);
                 String link_ = link.getLink();
-                if (link_.substring(0, 4).equals("http")) {
+                if (link_.length() > 4 && link_.substring(0, 4).equals("http")) {
                     returnList.add(link_);
                 }
             }
