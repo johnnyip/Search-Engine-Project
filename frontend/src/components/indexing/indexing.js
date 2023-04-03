@@ -8,7 +8,6 @@ import { checkCrawlPageCount, startCrawl, removeCrawlContent } from '../../funct
 
 const Indexing = () => {
     const [url, setUrl] = useState('https://www.cse.ust.hk/~kwtleung/COMP4321/testpage.htm')
-    const [loaded, setLoaded] = useState(false)
     const [loading, setLoading] = useState(false)
     const [pageCount, setPageCount] = useState(0)
     const [timeElapsed, setTimeElapsed] = useState(0)
@@ -28,18 +27,15 @@ const Indexing = () => {
         return stopTimer;
     };
 
+    const loadData = async () => {
+        const countResult = await checkCrawlPageCount()
+        setPageCount(countResult)
+    }
+
     useEffect(() => {
-        const loadData = async () => {
-            const countResult = await checkCrawlPageCount()
-            setPageCount(countResult)
-            if (countResult) {
-                setLoaded(true)
-            }
-        }
-        if (!loaded) {
-            loadData()
-        }
-    })
+        console.log("Indexing page loaded")
+        loadData()
+    }, [])
 
 
     return (
@@ -85,7 +81,7 @@ const Indexing = () => {
                         const stopTimer = startTimer(stopTimerCallback);
                         await startCrawl(url);
                         setPageCount(await checkCrawlPageCount())
-            
+
 
                         // Stop the timer only if it's still running
                         if (!timerStopped) {
