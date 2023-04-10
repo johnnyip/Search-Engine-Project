@@ -1,7 +1,6 @@
 package com.example.backendjava.service.function;
 
 import com.example.backendjava.entity.PageContent;
-import com.example.backendjava.entity.PageContentChildLink;
 import org.htmlparser.Parser;
 import org.htmlparser.beans.StringBean;
 import org.htmlparser.filters.NodeClassFilter;
@@ -30,8 +29,8 @@ public class StringExtractor {
         try {
             URL url = new URL(baseUrl);
             URLConnection connection = url.openConnection();
-            long lastModified = connection.getLastModified();
-            pageContent.setModifiedDate(new Date(lastModified));
+            pageContent.setModifiedDate(new Date(connection.getLastModified()));
+            pageContent.setDocumentLength(connection.getContentLength());
 
             //
             StringBean stringBean = new StringBean();
@@ -45,18 +44,17 @@ public class StringExtractor {
             for (int i = 0; i < list.size(); i++) {
                 TitleTag title = (TitleTag) list.elementAt(i);
                 pageContent.setTitle(title.getTitle());
-
             }
 
             //Child links
             parser = new Parser(baseUrl);
             list = parser.extractAllNodesThatMatch(new NodeClassFilter(LinkTag.class));
-            List<PageContentChildLink> childLinks = new ArrayList<>();
+            List<PageContent> childLinks = new ArrayList<>();
             for (int i = 0; i < list.size(); i++) {
                 LinkTag link = (LinkTag) list.elementAt(i);
                 String link_ = link.getLink();
                 if (link_.substring(0, 4).equals("http")) {
-                    PageContentChildLink pageContentChildLink = new PageContentChildLink();
+                    PageContent pageContentChildLink = new PageContent();
                     pageContentChildLink.setUrl(link_);
                     String linkText = link.getLinkText();
                     pageContentChildLink.setTitle(linkText);

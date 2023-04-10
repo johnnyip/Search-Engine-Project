@@ -8,7 +8,15 @@ public class PageContent {
     private String title;
     private String[] words;
     private Date modifiedDate;
-    private List<PageContentChildLink> childList;
+    private int documentLength;
+    private List<PageContent> childList;
+
+    public PageContent() {
+    }
+
+    public PageContent(String title) {
+        this.title = title;
+    }
 
     public String getUrl() {
         return url;
@@ -42,11 +50,19 @@ public class PageContent {
         this.modifiedDate = modifiedDate;
     }
 
-    public List<PageContentChildLink> getChildList() {
+    public int getDocumentLength() {
+        return documentLength;
+    }
+
+    public void setDocumentLength(int documentLength) {
+        this.documentLength = documentLength;
+    }
+
+    public List<PageContent> getChildList() {
         return childList;
     }
 
-    public void setChildList(List<PageContentChildLink> childList) {
+    public void setChildList(List<PageContent> childList) {
         this.childList = childList;
     }
 

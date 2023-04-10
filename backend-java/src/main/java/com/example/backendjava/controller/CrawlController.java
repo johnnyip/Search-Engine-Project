@@ -34,6 +34,7 @@ public class CrawlController {
         System.out.println("Start crawling");
         crawlService.startCrawling(url);
         System.out.println("Finish crawling");
+
         return "done";
     }
 

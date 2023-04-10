@@ -13,12 +13,13 @@ public class CrawlService {
 
     private List<PageContent> crawledContent = null;
 
+    private List<String> urlWithLastModifiedDate = null;
     public List<PageContent> getCrawledContent() {
         return crawledContent;
     }
 
-    public void setCrawledContent(List<PageContent> crawledContent) {
-        this.crawledContent = crawledContent;
+    public List<String> getUrlWithLastModifiedDate() {
+        return urlWithLastModifiedDate;
     }
 
     public void removeCrawledContent() {
@@ -36,6 +37,10 @@ public class CrawlService {
         crawQueue.addAll(allLinks);
         crawQueue_tmp.addAll(allLinks);
         fullURLList.addAll(allLinks);
+
+//        crawQueue.add("https://www.cse.ust.hk/~kwtleung/COMP4321/testpage.htm, Thu Jun 16 16:47:33 HKT 2022");
+//        crawQueue_tmp.add("https://www.cse.ust.hk/~kwtleung/COMP4321/testpage.htm, Thu Jun 16 16:47:33 HKT 2022");
+//        fullURLList.add("https://www.cse.ust.hk/~kwtleung/COMP4321/testpage.htm, Thu Jun 16 16:47:33 HKT 2022");
 
         while (!crawQueue.isEmpty()) {
             for (String url : crawQueue_tmp) {
@@ -63,11 +68,14 @@ public class CrawlService {
 
     public void startCrawling(String url) {
         crawledContent = new ArrayList<>();
+        urlWithLastModifiedDate = new ArrayList<>();
         List<String> fullUrlList = getFullUrlList(url);
 
         System.out.println("URLs found: " + fullUrlList.size());
         for (String childUrl : fullUrlList) {
-            crawledContent.add(getPageContent(childUrl));
+            PageContent pageContent = getPageContent(childUrl);
+            crawledContent.add(pageContent);
+            urlWithLastModifiedDate.add(childUrl+", "+pageContent.getModifiedDate());
         }
     }
 }

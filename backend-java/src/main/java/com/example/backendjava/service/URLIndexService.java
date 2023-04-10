@@ -1,7 +1,6 @@
 package com.example.backendjava.service;
 
 import com.example.backendjava.entity.PageContent;
-import com.example.backendjava.entity.PageContentChildLink;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ public class URLIndexService {
 
         for (PageContent pageContent : pageContents) {
             List<String> childURL = new ArrayList<>();
-            for (PageContentChildLink child : pageContent.getChildList()) {
+            for (PageContent child : pageContent.getChildList()) {
                 childURL.add(child.getUrl());
             }
             indexMap.put(pageContent.getUrl(), childURL);
@@ -30,7 +29,7 @@ public class URLIndexService {
         Map<String, List<String>> indexMap = new HashMap<>();
 
         for (PageContent pageContent : pageContents) {
-            for (PageContentChildLink child : pageContent.getChildList()) {
+            for (PageContent child : pageContent.getChildList()) {
                 List<String> indexOfChild = indexMap.get(child.getUrl());
 
                 //init if not indexed yet
