@@ -41,17 +41,19 @@ class semantics_search():
 
         # Encode all sentences
         running_time = datetime.now()
-
+        print("====1")
         query_embeddings = model.encode(query)
 
+        print("====2")
         similarity_list = []
         for key, value in self.sentences.items():
             embeddings = model.encode(value)
             similarity = self.cosine_similarity(embeddings, query_embeddings)
             similarity_list.append([key, similarity])
 
+        print("====3")
         similarity_list = sorted(similarity_list, key=lambda x: x[1], reverse=True)
-
+        print("====4")
         running_time = datetime.now() - running_time
         running_min = running_time.total_seconds() // 60
         running_sec = (running_time.total_seconds() % 60) // 1
