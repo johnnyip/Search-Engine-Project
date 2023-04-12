@@ -8,9 +8,9 @@ from semantics_search import semantics_search
 app = Flask(__name__)
 CORS(app)
 
-crawl = None
-query = None
-semantics = None
+crawl = webpage_crawling()
+query = query_retrieval()
+semantics = semantics_search()
 
 
 @app.route('/crawl', methods=['GET'])
@@ -30,6 +30,7 @@ def retrieval_pagerank():
     result = query.query_page_rank("")
     return jsonify({'status': 'ok', 'data': result})
 
+
 @app.route('/query_semantics', methods=['GET'])
 def retrieval_semantics():
     result = semantics.query_semantics("")
@@ -37,8 +38,5 @@ def retrieval_semantics():
 
 
 if __name__ == '__main__':
-    crawl = webpage_crawling()
-    query = query_retrieval()
-    semantics = semantics_search()
 
     app.run(debug=True)
