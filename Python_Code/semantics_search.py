@@ -1,7 +1,7 @@
 from datetime import datetime
 from sentence_transformers import SentenceTransformer
 
-model = SentenceTransformer('all-MiniLM-L6-v2')
+model = SentenceTransformer('paraphrase-albert-small-v2')
 import pickle
 import numpy as np
 from numpy import linalg as LA
@@ -12,8 +12,10 @@ class semantics_search():
     def __init__(self):
 
         # os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
+        print("semantics init start")
         f = open('data/body_content.dat', 'rb')
         self.sentences = pickle.load(f)
+        print("semantics init done")
 
     '''
     sentences = ['A man is eating food.',
@@ -52,8 +54,8 @@ class semantics_search():
 
         running_time = datetime.now() - running_time
         running_min = running_time.total_seconds() // 60
-        running_sec = running_time.total_seconds() // 60 * 60
-        running_msec = (running_time.total_seconds() - running_time.total_seconds() // 60 * 60) * 1000
+        running_sec = (running_time.total_seconds() % 60) // 1
+        running_msec = (running_time.total_seconds() % 1) * 1000
         print('Running_time:\t %d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec))
         time = '%d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec)
 
