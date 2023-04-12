@@ -223,7 +223,7 @@ class query_retrieval():
         running_time = datetime.now()
 
         print('/*********\tOnly_Vector_Space_Model_Algorithm_Apply\t*********/')
-        query = 'MOvie "dinosaur" imDB hkust admission ug'
+        # query = 'MOvie "dinosaur" imDB hkust admission ug'
         phrasal_query = str(re.findall('<.*?<', query.replace('"', '<'))[0]).replace('<', '')
         result = self.overall_retreival_function(query)
         running_time = datetime.now()
@@ -240,12 +240,12 @@ class query_retrieval():
         print('Running_time:\t %d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec))
         time = '%d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec)
 
-        return {"result": result, "time": time}
+        return {"keyword": query, "result": result, "time": time}
 
     def query_page_rank(self, query):
         print('/*********\tPage_Rank_Algorithm_Apply\t*********/')
         self.page_rank_selection = True
-        query = 'MOvie "dinosaur" imDB hkust admission ug'
+        # query = 'MOvie "dinosaur" imDB hkust admission ug'
         phrasal_query = str(re.findall('<.*?<', query.replace('"', '<'))[0]).replace('<', '')
         result = self.overall_retreival_function(query)
         running_time = datetime.now()
@@ -263,4 +263,4 @@ class query_retrieval():
         print('Running_time:\t %d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec))
         time = '%d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec)
 
-        return {"result": result, "time": time}
+        return {"keyword": query, "result": result, "time": time}

@@ -21,19 +21,22 @@ def start_crawl():
 
 @app.route('/query_vector', methods=['GET'])
 def retrieval_vector():
-    result = query.query_vector("")
+    keyword = request.args.get("keyword")
+    result = query.query_vector(keyword)
     return jsonify({'status': 'ok', 'data': result})
 
 
 @app.route('/query_pagerank', methods=['GET'])
 def retrieval_pagerank():
-    result = query.query_page_rank("")
+    keyword = request.args.get("keyword")
+    result = query.query_page_rank(keyword)
     return jsonify({'status': 'ok', 'data': result})
 
 
 @app.route('/query_semantics', methods=['GET'])
 def retrieval_semantics():
-    result = semantics.query_semantics("")
+    keyword = request.args.get("keyword")
+    result = semantics.query_semantics(keyword)
     return jsonify({'status': 'ok', 'data': result})
 
 
