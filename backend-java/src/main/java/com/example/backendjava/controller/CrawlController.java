@@ -2,14 +2,10 @@ package com.example.backendjava.controller;
 
 import com.example.backendjava.entity.PageContent;
 import com.example.backendjava.service.CrawlService;
-import org.htmlparser.lexer.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/crawl")
@@ -22,6 +18,8 @@ public class CrawlController {
         this.crawlService = crawlService;
 //        this.crawlService.startCrawling("https://www.cse.ust.hk/~kwtleung/COMP4321/testpage.htm");
     }
+
+
 
     @GetMapping("/remove")
     public String removeCrawled() {
