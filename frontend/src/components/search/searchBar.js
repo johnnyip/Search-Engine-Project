@@ -3,10 +3,10 @@ import { TextInput, Button, Grid, SegmentedControl, Group } from '@mantine/core'
 
 import SearchResult from './searchResult';
 
-import { queryVector } from '../../functions/query';
+import { queryVector, queryPageRank, querySemantics } from '../../functions/query';
 
 const SearchBar = () => {
-    const [keyword, setKeyword] = useState('')
+    const [keyword, setKeyword] = useState('MOvie "dinosaur" imDB hkust admission ug')
     const [loading, setLoading] = useState(false)
     const [chosenAlgo, setChosenAlgo] = useState("vector")
     const [queryResult, setQueryResult] = useState({})
@@ -48,7 +48,11 @@ const SearchBar = () => {
                         onClick={async () => {
                             setLoading(true)
 
-                            let result = await queryVector(keyword)
+                            let result = (chosenAlgo === "vector") ?
+                                await queryVector(keyword) :
+                                (chosenAlgo === "pagerank") ?
+                                    await queryPageRank(keyword) :
+                                    await querySemantics(keyword)
                             setQueryResult(result)
                             console.log(result)
 

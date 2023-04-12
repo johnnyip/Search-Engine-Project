@@ -8,43 +8,39 @@ const SearchResult = (props) => {
 
     const [activePage, setPage] = useState(1);
 
+    if (Object.keys(result).length !== 0) {
+        return (
+            <>
+                <b>{result.data.result.length} results ({result.data.time})</b><br />
 
-    return (
-        <>
-            {/* <b>{result.data.result} results (0.51 seconds)</b><br /> */}
+                <div
+                    style={{
+                        marginLeft: "15%",
+                        marginRight: "15%",
+                        marginTop: "10px"
+                    }}>
 
-            <div
-                style={{
-                    marginLeft: "15%",
-                    marginRight: "15%",
-                    marginTop: "10px"
-                }}>
-
-
-                <ResultItem />
-                <ResultItem />
-                <ResultItem />
-                <ResultItem />
-                <ResultItem />
-                <ResultItem />
-                <ResultItem />
-                <ResultItem />
-                <ResultItem />
-                <ResultItem />
-
-                <br />
-                <Pagination
-                    position="center"
-                    value={activePage}
-                    onChange={setPage}
-                    total={10} />
-
-                <br />
-            </div>
+                    {[...result.data.result].map((item, index) => {
+                        return (
+                            <ResultItem item={item} key={index} />
+                        )
+                    })}
 
 
-        </>
-    )
+                    <br />
+                    <Pagination
+                        position="center"
+                        value={activePage}
+                        onChange={setPage}
+                        total={10} />
+
+                    <br />
+                </div>
+
+
+            </>
+        )
+    }
 }
 
 export default SearchResult;

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { Card, Image, Text } from '@mantine/core';
+import { Card, Image, Text, Group } from '@mantine/core';
 
-const ResultItem = () => {
+const ResultItem = (props) => {
+    let result = props.item
     return (
         <>
             <Card
@@ -9,7 +10,7 @@ const ResultItem = () => {
                 radius="md"
                 style={{
                     textAlign: "left",
-                    marginBottom:"5px"
+                    marginBottom: "5px"
                 }}
                 shadow="lg"
                 padding="xl"
@@ -18,13 +19,21 @@ const ResultItem = () => {
                 target="_blank"
             >
 
-                <Text weight={500} size="lg" >
-                    Fake Result Title
-                </Text>
+
+                <Group position="apart">
+                    <Text weight={500} size="lg" >
+                        Fake Result Title
+                    </Text>
+
+                    <Text fz="xs" color="dimmed" fs="italic">
+                        Score: {result.score}
+                    </Text>
+                </Group>
 
                 <Text fz="xs" color="dimmed" fs="italic">
-                    https://www.cse.ust.hk/~kwtleung/COMP4321/Movie/278.html
+                    {result.url}
                 </Text>
+
 
                 <Text mt="xs" color="dimmed" size="md">
                     Text with keywords <b>bolded</b>

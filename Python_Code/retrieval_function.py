@@ -218,6 +218,7 @@ class query_retrieval():
         return return_url_list
 
     def query_vector(self, query):
+        self.page_rank_selection = False
 
         # search = query_retrieval()
         running_time = datetime.now()
