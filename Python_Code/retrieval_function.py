@@ -224,7 +224,8 @@ class query_retrieval():
 
         print('/*********\tOnly_Vector_Space_Model_Algorithm_Apply\t*********/')
         # query = 'MOvie "dinosaur" imDB hkust admission ug'
-        phrasal_query = str(re.findall('<.*?<', query.replace('"', '<'))[0]).replace('<', '')
+        matches = re.findall('<.*?<', query.replace('"', '<'))
+        phrasal_query = matches[0].replace('<', '') if matches else ""
         result = self.overall_retreival_function(query)
         running_time = datetime.now()
         print('Query:\t\t\t', query, '\n'
@@ -246,7 +247,8 @@ class query_retrieval():
         print('/*********\tPage_Rank_Algorithm_Apply\t*********/')
         self.page_rank_selection = True
         # query = 'MOvie "dinosaur" imDB hkust admission ug'
-        phrasal_query = str(re.findall('<.*?<', query.replace('"', '<'))[0]).replace('<', '')
+        matches = re.findall('<.*?<', query.replace('"', '<'))
+        phrasal_query = matches[0].replace('<', '') if matches else ""
         result = self.overall_retreival_function(query)
         running_time = datetime.now()
 

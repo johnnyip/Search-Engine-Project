@@ -3,12 +3,15 @@ import { Pagination } from '@mantine/core';
 
 import ResultItem from './resultItem'
 
-const SearchResult = () => {
+const SearchResult = (props) => {
+    let result = props.result
+
     const [activePage, setPage] = useState(1);
+
 
     return (
         <>
-            <b>100 results (0.51 seconds)</b><br />
+            {/* <b>{result.data.result} results (0.51 seconds)</b><br /> */}
 
             <div
                 style={{
@@ -16,6 +19,8 @@ const SearchResult = () => {
                     marginRight: "15%",
                     marginTop: "10px"
                 }}>
+
+
                 <ResultItem />
                 <ResultItem />
                 <ResultItem />

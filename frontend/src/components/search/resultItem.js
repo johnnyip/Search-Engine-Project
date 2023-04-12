@@ -19,7 +19,7 @@ const ResultItem = () => {
             >
 
                 <Text weight={500} size="lg" >
-                    Result Title
+                    Fake Result Title
                 </Text>
 
                 <Text fz="xs" color="dimmed" fs="italic">

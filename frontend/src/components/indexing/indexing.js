@@ -88,7 +88,7 @@ const Indexing = () => {
                             stopTimer();
                         }
                     }}
-                    leftIcon={<IconSend size="1rem"/>}>
+                    leftIcon={<IconSend size={20}/>}>
                     {(loading) ? `Crawling and Indexing...(${timeElapsed}s)` : "Start Crawl and Indexing"}
                 </Button>
 

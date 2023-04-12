@@ -22,6 +22,7 @@ def start_crawl():
 @app.route('/query_vector', methods=['GET'])
 def retrieval_vector():
     keyword = request.args.get("keyword")
+    print(keyword)
     result = query.query_vector(keyword)
     return jsonify({'status': 'ok', 'data': result})
 
