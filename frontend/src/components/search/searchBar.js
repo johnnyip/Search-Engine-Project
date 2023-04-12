@@ -17,6 +17,21 @@ const SearchBar = () => {
         { label: 'Semantics Search', value: 'semantics' },
     ]
 
+    const onSubmit = async () => {
+
+        setLoading(true)
+
+        let result = (chosenAlgo === "vector") ?
+            await queryVector(keyword) :
+            (chosenAlgo === "pagerank") ?
+                await queryPageRank(keyword) :
+                await querySemantics(keyword)
+        setQueryResult(result)
+        console.log(result)
+
+        setLoading(false)
+
+    }
 
     return (
         <>
@@ -36,6 +51,11 @@ const SearchBar = () => {
                 <Grid.Col span={11}>
                     <TextInput
                         value={keyword}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                onSubmit();
+                            }
+                        }}
                         onChange={(event) => setKeyword(event.currentTarget.value)}
                     />
                 </Grid.Col>
@@ -45,18 +65,9 @@ const SearchBar = () => {
                         disabled={keyword.length === 0}
                         style={{ textAlign: "left" }}
                         loading={loading}
-                        onClick={async () => {
-                            setLoading(true)
-
-                            let result = (chosenAlgo === "vector") ?
-                                await queryVector(keyword) :
-                                (chosenAlgo === "pagerank") ?
-                                    await queryPageRank(keyword) :
-                                    await querySemantics(keyword)
-                            setQueryResult(result)
-                            console.log(result)
-
-                            setLoading(false)
+                        onClick={async (e) => {
+                            e.preventDefault();
+                            await onSubmit()
                         }}>
                         Search
                     </Button>
