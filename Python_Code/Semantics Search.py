@@ -16,7 +16,7 @@ class semantics_search():
         f = open('data/body_content.dat', 'rb')
         self.sentences = pickle.load(f)
         print("semantics init done")
-        f = open('model.dat', 'rb')
+        f = open('data/model.dat', 'rb')
         self.model = pickle.load(f)
         f.close()
     '''
