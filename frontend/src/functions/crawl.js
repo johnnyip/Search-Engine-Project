@@ -1,5 +1,22 @@
 const axios = require('axios');
 
+export const javaStatus = async () => {
+    let status = false
+    let url = (process.env.REACT_APP_BACKEND1_URL !== undefined) ? process.env.REACT_APP_BACKEND1_URL : 'http://localhost:8080'
+
+    await axios.get(url)
+        .then((response) => {
+            if (response.status === 200) {
+                status = true
+            }
+        })
+        .catch((err) => {
+            console.error(err)
+        })
+
+    return status
+}
+
 export const checkCrawlPageCount = async () => {
     let result = 0
     let url = (process.env.REACT_APP_BACKEND1_URL !== undefined) ? process.env.REACT_APP_BACKEND1_URL : 'http://localhost:8080'

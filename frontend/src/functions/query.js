@@ -1,5 +1,22 @@
 const axios = require('axios');
 
+export const pythonStatus = async () => {
+    let status = false
+    let url = (process.env.REACT_APP_BACKEND2_URL !== undefined) ? process.env.REACT_APP_BACKEND2_URL : 'http://localhost:5000'
+
+    await axios.get(url)
+        .then((response) => {
+            if (response.status === 200) {
+                status = true
+            }
+        })
+        .catch((err) => {
+            console.error(err)
+        })
+
+    return status
+}
+
 export const queryVector = async (keyword) => {
     let result = 0
     console.log("vector")
