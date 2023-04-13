@@ -15,7 +15,7 @@ const ResultItem = (props) => {
                 shadow="lg"
                 padding="xl"
                 component="a"
-                href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                href={result.url}
                 target="_blank"
             >
 
