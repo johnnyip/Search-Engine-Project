@@ -12,6 +12,9 @@ crawl = webpage_crawling()
 query = query_retrieval()
 semantics = semantics_search()
 
+@app.route('/', methods=['GET'])
+def status():
+    return "ok"
 
 @app.route('/crawl', methods=['GET'])
 def start_crawl():

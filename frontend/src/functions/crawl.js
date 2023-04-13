@@ -2,7 +2,8 @@ const axios = require('axios');
 
 export const checkCrawlPageCount = async () => {
     let result = 0
-    let url = (process.env.REACT_APP_SERVER_URL !== undefined) ? process.env.REACT_APP_SERVER_URL : 'https://search-back1.johnnyip.com'
+    let url = (process.env.REACT_APP_BACKEND1_URL !== undefined) ? process.env.REACT_APP_BACKEND1_URL : 'http://localhost:8080'
+    // let url = (process.env.REACT_APP_SERVER_URL !== undefined) ? process.env.REACT_APP_SERVER_URL : 'https://search-back1.johnnyip.com'
     url += '/crawl/count'
 
     await axios.get(url)
@@ -23,7 +24,7 @@ export const checkCrawlPageCount = async () => {
 
 export const startCrawl = async (crawl_url) => {
     let result = 0
-    let url = (process.env.REACT_APP_SERVER_URL !== undefined) ? process.env.REACT_APP_SERVER_URL : 'https://search-back1.johnnyip.com'
+    let url = (process.env.REACT_APP_BACKEND1_URL !== undefined) ? process.env.REACT_APP_BACKEND1_URL : 'http://localhost:8080'
     url += '/crawl/start?url=' + crawl_url
 
     await axios.get(url)
@@ -45,7 +46,7 @@ export const startCrawl = async (crawl_url) => {
 
 export const removeCrawlContent = async (crawl_url) => {
     let result = 0
-    let url = (process.env.REACT_APP_SERVER_URL !== undefined) ? process.env.REACT_APP_SERVER_URL : 'https://search-back1.johnnyip.com'
+    let url = (process.env.REACT_APP_BACKEND1_URL !== undefined) ? process.env.REACT_APP_BACKEND1_URL : 'http://localhost:8080'
     url += '/crawl/remove'
 
     await axios.get(url)

@@ -3,7 +3,7 @@ const axios = require('axios');
 export const queryVector = async (keyword) => {
     let result = 0
     console.log("vector")
-    let url = (process.env.REACT_APP_SERVER_URL !== undefined) ? process.env.REACT_APP_SERVER_URL : 'https://search-back2.johnnyip.com'
+    let url = (process.env.REACT_APP_BACKEND2_URL !== undefined) ? process.env.REACT_APP_BACKEND2_URL : 'http://localhost:5000'
     // let url = (process.env.REACT_APP_SERVER_URL !== undefined) ? process.env.REACT_APP_SERVER_URL : 'http://127.0.0.1:5000'
     url += '/query_vector?keyword=' + encodeURIComponent(keyword)
 
@@ -35,7 +35,7 @@ export const queryVector = async (keyword) => {
 export const queryPageRank = async (keyword) => {
     let result = 0
     console.log("pagerank")
-    let url = (process.env.REACT_APP_SERVER_URL !== undefined) ? process.env.REACT_APP_SERVER_URL : 'https://search-back2.johnnyip.com'
+    let url = (process.env.REACT_APP_BACKEND2_URL !== undefined) ? process.env.REACT_APP_BACKEND2_URL : 'http://localhost:5000'
     // let url = (process.env.REACT_APP_SERVER_URL !== undefined) ? process.env.REACT_APP_SERVER_URL : 'http://127.0.0.1:5000'
     url += '/query_pagerank?keyword=' + encodeURIComponent(keyword)
 
@@ -66,7 +66,7 @@ export const queryPageRank = async (keyword) => {
 export const querySemantics = async (keyword) => {
     let result = 0
     console.log("semantics")
-    let url = (process.env.REACT_APP_SERVER_URL !== undefined) ? process.env.REACT_APP_SERVER_URL : 'https://search-back2.johnnyip.com'
+    let url = (process.env.REACT_APP_BACKEND2_URL !== undefined) ? process.env.REACT_APP_BACKEND2_URL : 'http://localhost:5000'
     // let url = (process.env.REACT_APP_SERVER_URL !== undefined) ? process.env.REACT_APP_SERVER_URL : 'http://127.0.0.1:5000'
     url += '/query_semantics?keyword=' + encodeURIComponent(keyword)
 
