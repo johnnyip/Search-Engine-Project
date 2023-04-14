@@ -9,6 +9,8 @@ import { formatDate } from '../../functions/date'
 import { queryVector, queryPageRank, querySemantics } from '../../functions/query';
 import { saveHistory, getHistory } from '../../functions/cookie'
 
+import { redisSave, redisUpdate, redisRetrieve } from '../../functions/redis/redisOperations'
+
 const SearchBar = () => {
     const [keyword, setKeyword] = useState('')
     const [loading, setLoading] = useState(false)
@@ -47,6 +49,31 @@ const SearchBar = () => {
         saveHistory(historyString)
         setCookie(history)
         console.log(history)
+
+
+        redisSave('key', 'value', (err, result) => {
+            if (err) {
+                console.error('Error saving data:', err);
+                return;
+            }
+            console.log('Data saved:', result);
+
+            redisUpdate('key', 'new_value', (err, result) => {
+                if (err) {
+                    console.error('Error updating data:', err);
+                    return;
+                }
+                console.log('Data updated:', result);
+
+                redisRetrieve('key', (err, result) => {
+                    if (err) {
+                        console.error('Error retrieving data:', err);
+                        return;
+                    }
+                    console.log('Data retrieved:', result);
+                });
+            });
+        });
 
     }
 
