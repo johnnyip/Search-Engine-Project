@@ -3,20 +3,27 @@ import { Button, Group, TextInput, Grid } from '@mantine/core';
 import { IconX } from '@tabler/icons';
 
 import HistoryItem from './historyItem'
-import { saveHistory, getHistory, removeHistory } from '../../functions/cookie'
+import { saveHistoryToken, getHistoryToken } from '../../functions/cookie'
+import { saveRedis, getRedis } from '../../functions/redis'
 
 const History = (props) => {
+    let opened = props.opened
     let close = props.close
     let keyword = props.keyword
     let setKeyword = props.setKeyword
     let onSubmit = props.onSubmit
 
-    const [cookie, setCookie] = useState("")
+    const [history, setHistory] = useState([])
 
     useEffect(() => {
-        let history = getHistory()
-        setCookie(history)
-    }, [])
+        const getSearchHistory = async () => {
+            let historyToken = getHistoryToken()
+            let history = await getRedis(historyToken)
+            setHistory(history)
+        }
+
+        getSearchHistory()
+    }, [opened])
     return (
         <>
             <div>Current Search</div>
@@ -59,14 +66,16 @@ const History = (props) => {
             </Grid>
             <Button
                 color='red'
-                onClick={() => {
-                    removeHistory()
+                onClick={async () => {
+                    let historyToken = getHistoryToken()
+                    await saveRedis(historyToken, [])
+                    setHistory([])
                 }}>
                 Remove History
             </Button>
             <hr />
 
-            {[...cookie].map((item, index) => {
+            {(history != []) ? [...history].map((item, index) => {
                 return (
                     <HistoryItem
                         keyword={keyword}
@@ -74,7 +83,7 @@ const History = (props) => {
                         key={index}
                         item={item} />
                 )
-            })}
+            }) : <>No History</>}
         </>
     )
 }

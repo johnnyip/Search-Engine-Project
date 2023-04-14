@@ -7,9 +7,8 @@ import History from './history';
 import { formatDate } from '../../functions/date'
 
 import { queryVector, queryPageRank, querySemantics } from '../../functions/query';
-import { saveHistory, getHistory } from '../../functions/cookie'
-
-import { redisSave, redisUpdate, redisRetrieve } from '../../functions/redis/redisOperations'
+import { saveHistoryToken, getHistoryToken } from '../../functions/cookie'
+import { saveRedis, getRedis } from '../../functions/redis'
 
 const SearchBar = () => {
     const [keyword, setKeyword] = useState('')
@@ -17,7 +16,7 @@ const SearchBar = () => {
     const [opened, { open, close }] = useDisclosure(false);
     const [chosenAlgo, setChosenAlgo] = useState("vector")
     const [queryResult, setQueryResult] = useState({})
-    const [cookie, setCookie] = useState("")
+    const [history, setHistory] = useState("")
 
     let algoOptions = [
         { label: 'Vector Space', value: 'vector' },
@@ -43,37 +42,16 @@ const SearchBar = () => {
 
         //Save cookie
 
-        let history = getHistory()
-        history.unshift(result)
-        let historyString = JSON.stringify(history)
-        saveHistory(historyString)
-        setCookie(history)
+        let historyToken = getHistoryToken()
+        let history = await getRedis(historyToken)
+        console.log("history")
         console.log(history)
 
+        history.unshift(result)
+        setHistory(history)
 
-        redisSave('key', 'value', (err, result) => {
-            if (err) {
-                console.error('Error saving data:', err);
-                return;
-            }
-            console.log('Data saved:', result);
-
-            redisUpdate('key', 'new_value', (err, result) => {
-                if (err) {
-                    console.error('Error updating data:', err);
-                    return;
-                }
-                console.log('Data updated:', result);
-
-                redisRetrieve('key', (err, result) => {
-                    if (err) {
-                        console.error('Error retrieving data:', err);
-                        return;
-                    }
-                    console.log('Data retrieved:', result);
-                });
-            });
-        });
+        await saveRedis(historyToken, history)
+        console.log(history)
 
     }
 
@@ -145,6 +123,7 @@ const SearchBar = () => {
                 onClose={close} title="Search History">
 
                 <History
+                    opened={opened}
                     keyword={keyword}
                     setKeyword={setKeyword}
                     onSubmit={onSubmit}

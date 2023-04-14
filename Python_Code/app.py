@@ -6,7 +6,7 @@ from retrieval_function import query_retrieval
 from semantics_search import semantics_search
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins="*")
 
 crawl = webpage_crawling()
 query = query_retrieval()
@@ -46,4 +46,4 @@ def retrieval_semantics():
 
 if __name__ == '__main__':
 
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5100, debug=True)

@@ -17,6 +17,10 @@ function App() {
       setPython(await pythonStatus())
       setJava(await javaStatus())
 
+      console.log("process.env.REACT_APP_BACKEND1_URL: " + process.env.REACT_APP_BACKEND1_URL)
+      console.log("process.env.REACT_APP_BACKEND2_URL: " + process.env.REACT_APP_BACKEND2_URL)
+
+
     }
 
     getStatus()

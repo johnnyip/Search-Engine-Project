@@ -11,16 +11,17 @@ public class RedisController {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-    @GetMapping("/save")
+    @PostMapping("/save")
     public String save(@RequestParam String id, @RequestBody String data) {
+        System.out.println(data);
         redisTemplate.opsForValue().set(id, data);
-        return "Hello World";
+        return "saved";
     }
 
     @GetMapping("/get")
     public String get(@RequestParam String id) {
         String value = redisTemplate.opsForValue().get(id);
-        return (value != null) ? value:"empty";
+        return (value != null) ? value:"[]";
     }
 
 }
