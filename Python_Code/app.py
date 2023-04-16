@@ -1,20 +1,22 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-from webpage_crawling import webpage_crawling
-from retrieval_function import query_retrieval
-from semantics_search import semantics_search
+from api_webpage_crawling import api_webpage_crawling
+from api_query_retrieval import api_query_retrieval
+from api_semantics_search import api_semantics_search
 
 app = Flask(__name__)
 CORS(app, origins="*")
 
-crawl = webpage_crawling()
-query = query_retrieval()
-semantics = semantics_search()
+crawl = api_webpage_crawling()
+query = api_query_retrieval()
+semantics = api_semantics_search()
+
 
 @app.route('/', methods=['GET'])
 def status():
     return "ok"
+
 
 @app.route('/crawl', methods=['GET'])
 def start_crawl():
@@ -45,5 +47,4 @@ def retrieval_semantics():
 
 
 if __name__ == '__main__':
-
     app.run(host='0.0.0.0', port=5100, debug=True)

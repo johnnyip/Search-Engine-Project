@@ -1,10 +1,10 @@
-from bs4 import BeautifulSoup
-import requests
+# from bs4 import BeautifulSoup
+# import requests
 import os
 import re
-from nltk.stem import PorterStemmer
+# from nltk.stem import PorterStemmer
 import pickle
-import json
+# import json
 from datetime import datetime, timedelta
 from nltk.stem import PorterStemmer
 import math

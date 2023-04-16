@@ -10,7 +10,7 @@ import copy
 import math
 
 
-class webpage_crawling():
+class api_webpage_crawling():
     def __init__(self, body_inverted_index={}, body_forward_index={}, body_df_index={},
                  header_inverted_index={}, header_forward_index={}, header_df_index={}):
         self.html2text = html2text.HTML2Text()
