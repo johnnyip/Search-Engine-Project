@@ -1,36 +1,27 @@
-from datetime import datetime
 from sentence_transformers import SentenceTransformer
 
 # model = SentenceTransformer('all-MiniLM-L6-v2')
 import pickle
 import numpy as np
 from numpy import linalg as LA
-
+from datetime import datetime, timedelta
+import os
 
 class semantics_search():
 
     def __init__(self):
 
-        #os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
+
         print("semantics init start")
-        f = open('data/body_content.dat', 'rb')
+        f = open('body_content.dat', 'rb')
         self.sentences = pickle.load(f)
         print("semantics init done")
-        f = open('data/model.dat', 'rb')
+        f = open('model.dat', 'rb')
         self.model = pickle.load(f)
         f.close()
-    '''
-    sentences = ['A man is eating food.',
-              'A man is eating a piece of bread.',
-              'The girl is carrying a baby.',
-              'A man is riding a horse.',
-              'A woman is playing violin.',
-              'Two men pushed carts through the woods.',
-              'A man is riding a white horse on an enclosed ground.',
-              'A monkey is playing drums.',
-              'Someone in a gorilla costume is playing a set of drums.'
-              ]
-    '''
+        self.doc_embedding = dict()
+        for key, value in self.sentences.items():
+            self.doc_embedding[key] = self.model.encode(value)
 
     def cosine_similarity(self, x, y):
         numerator = abs(np.dot(x, y))
@@ -38,7 +29,6 @@ class semantics_search():
         return float(numerator / denominator)
 
     def query_semantics(self, query):
-        query = 'University Enrollment Method'
         # query = 'Rubbish and useless film'
 
         # Encode all sentences
@@ -47,9 +37,8 @@ class semantics_search():
         query_embeddings = self.model.encode(query)
 
         similarity_list = []
-        for key, value in self.sentences.items():
-            embeddings = self.model.encode(value)
-            similarity = self.cosine_similarity(embeddings, query_embeddings)
+        for key, value in self.doc_embedding.items():
+            similarity = self.cosine_similarity(self.doc_embedding[key], query_embeddings)
             similarity_list.append([key, similarity])
 
         similarity_list = sorted(similarity_list, key=lambda x: x[1], reverse=True)
@@ -69,21 +58,13 @@ class semantics_search():
 
         return {"keyword": query, "result": similarity_list[0:5], "time": time}
 
-        '''
-        #Compute cosine similarity between all pairs
-        cos_sim = util.cos_sim(query, embeddings)
+if __name__ == '__main__':
+    os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
+    running_time = datetime.now()
+    Semantic_Search = semantics_search()
+    running_time = datetime.now() - running_time
+    print('Initialization Time:\t',running_time)
 
-        print(cos_sim)
-        #Add all pairs to a list with their cosine similarity score
-        all_sentence_combinations = []
-        for i in range(len(cos_sim)-1):
-            for j in range(i+1, len(cos_sim)):
-                all_sentence_combinations.append([cos_sim[i][j], i, j])
-
-        #Sort list by the highest cosine similarity score
-        all_sentence_combinations = sorted(all_sentence_combinations, key=lambda x: x[0], reverse=True)
-
-        print("Top-5 most similar pairs:")
-        for score, i, j in all_sentence_combinations[0:5]:
-            print("{} \t {} \t {:.4f}".format(sentences[i], sentences[j], cos_sim[i][j]))
-        '''
+    for i in range(10):
+        query= 'Enrollment Method'
+        Semantic_Search.query_semantics(query)
