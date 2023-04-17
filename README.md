@@ -23,9 +23,9 @@ https://search-back2.johnnyip.com
 
 ``unclechuen/search-frontend:latest``
 
-https://hub.docker.com/r/unclechuen/search-frontend
+https://hub.docker.com/r/johnnyip/search-frontend
 
 ``unclechuen/search-backend-java:latest``
 
-https://hub.docker.com/r/unclechuen/search-backend-java
+https://hub.docker.com/r/johnnyip/search-backend-java
 
