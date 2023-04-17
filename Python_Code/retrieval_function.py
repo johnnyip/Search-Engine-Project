@@ -292,10 +292,7 @@ class query_retrieval():
         temp_list = list(body_forward_index.values())
         temp_list = temp_list[0]
         body_word_index = sorted(temp_list.items(), key=lambda  x:x[1], reverse=True)
-        print(body_word_index)
         body_word_index = dict(body_word_index[:5]).keys()
-
-
         temp_list = list(header_forward_index.values())
         temp_list = temp_list[0]
         header_word_list = list(sorted(temp_list.items(), key=lambda  x:x[1], reverse=True))
@@ -307,16 +304,15 @@ class query_retrieval():
         revised_query = original_query + ' ' + revised_query
         revised_query = revised_query.replace('"','')
         return_result, _ = self.overall_retreival_function(revised_query)
+        if return_result.get(url) is not None:
+            del return_result[url]
         return_result = sorted(return_result.items(), key=lambda x: x[1], reverse=True)
-        print(return_result)
-        return_result = dict(return_result[:6])
+        return_result = dict(return_result[:5])
         return_url_items = dict()
         for key in return_result.keys():
             return_url_items[key] = self.return_most_frequent_items(self.url_forward_index[key])
 
-        if return_result.get(url) is not None:
-            del return_result[url]
-            del return_url_items[url]
+
         return revised_query, return_result, return_url_items
 
 
@@ -367,8 +363,8 @@ if __name__ == '__main__':
     # search_result, search_frequent_items = search.overall_retreival_function(query)
     revised_query, return_result, return_url_list = search.page_similarity_search(url=page_search, original_query=query)
 
-    print('Query:\t\t\t', query, '\nPhrasal query:\t', phrasal_query, '\nRevised Query:\t',revised_query,
-                                                                      '\nSearch Result:\t', return_result)
+    print('Query:\t\t\t', query, '\nPhrasal query:\t', phrasal_query, '\nInput URL:\t', page_search,
+                                  '\nRevised Query:\t',revised_query, '\nSearch Result:\t', return_result)
     running_time = datetime.now() - running_time
     running_min = running_time.total_seconds() // 60
     running_sec = running_time.total_seconds() // 60 * 60
