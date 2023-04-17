@@ -1,6 +1,4 @@
 import os
-import mysql.connector as connector
-from mysql.connector import errorcode
 from pymongo import MongoClient
 from datetime import datetime, timedelta
 import math
@@ -10,11 +8,9 @@ import sqlite3
 import pickle
 
 os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
-def upload_data_to_mongodb(user='root', password='admin',
-                           host='localhost', database='abc',
-                           mongo_host='localhost', mongo_port=27017):
-    connection = connector.connect(user=user, password=password, host=host, database=database)
-    #connection = sqlite3.connect('test.db')
+def upload_data_to_mongodb(sqlitedb='csit5930.db',mongo_host='localhost', mongo_port=27017):
+
+    connection = sqlite3.connect(sqlitedb)
     mongoclient = MongoClient()
 
     # Update Body Inverted File
@@ -23,9 +19,9 @@ def upload_data_to_mongodb(user='root', password='admin',
     collection.drop()
 
     temp_dict = dict()
-    SQL_stmt = 'select StemID, PageID, Position from Alex_StemPos where Type = 2 ' + \
-               ' order by stemid, PageID, Position'
-    fetch = MDBU.retrieve_from_MySQL(connection, SQL_stmt)
+    SQL_stmt = 'select Stem_ID, Page_ID, Position from stem_token where Type = 2 ' + \
+               ' order by Stem_ID, Page_ID, Position'
+    fetch = MDBU.retrieve_from_SQLite(connection, SQL_stmt)
     for f in fetch:
         temp_list = list(map(str, f))
         if len(temp_dict) == 0:
@@ -45,9 +41,9 @@ def upload_data_to_mongodb(user='root', password='admin',
     collection.drop()
 
     temp_dict = dict()
-    SQL_stmt = 'select PageID, StemID, count(Position) from Alex_StemPos where Type=2'\
-               ' group by PageID, StemID order by PageID, StemID'
-    fetch = MDBU.retrieve_from_MySQL(connection, SQL_stmt)
+    SQL_stmt = 'select Page_ID, Stem_ID, count(Position) from stem_token where Type=2'\
+               ' group by Page_ID, Stem_ID order by Page_ID, Stem_ID'
+    fetch = MDBU.retrieve_from_SQLite(connection, SQL_stmt)
     for f in fetch:
         temp_list = list(map(str, f))
         if len(temp_dict) == 0 or temp_dict.get(temp_list[0], 'Null') == 'Null':
@@ -62,10 +58,10 @@ def upload_data_to_mongodb(user='root', password='admin',
     db = mongoclient['Search_Engine_Data']
     collection = db['Body_TFMax_File']
     collection.drop()
-    SQL_stmt = 'select PageID, max(counter) as TF_Max from ' \
-               '(select PageID, StemID, count(*) as counter from Alex_StemPos where type = 2 group by PageID, StemID) as a group by PageID'
+    SQL_stmt = 'select Page_ID, max(counter) as TF_Max from ' \
+               '(select Page_ID, Stem_ID, count(*) as counter from stem_token where type = 2 group by Page_ID, Stem_ID) as a group by Page_ID'
     temp_dict = dict()
-    for f in MDBU.retrieve_from_MySQL(connection, SQL_stmt):
+    for f in MDBU.retrieve_from_SQLite(connection, SQL_stmt):
         temp_list = list(map(str, f))
         temp_dict[temp_list[0]] = f[1]
     MDBU.Update_Database_from_dict(mongoclient, temp_dict, DBName='Search_Engine_Data',
@@ -75,10 +71,10 @@ def upload_data_to_mongodb(user='root', password='admin',
     db = mongoclient['Search_Engine_Data']
     collection = db['Body_DF_Index']
     collection.drop()
-    SQL_stmt = 'select StemID, count(*) from ' \
-               '(select StemID, PageID from Alex_StemPos where type = 2 group by StemID, PageID) as a group by StemID'
+    SQL_stmt = 'select Stem_ID, count(*) from ' \
+               '(select Stem_ID, Page_ID from stem_token where type = 2 group by Stem_ID, Page_ID) as a group by Stem_ID'
     temp_dict = dict()
-    for f in MDBU.retrieve_from_MySQL(connection, SQL_stmt):
+    for f in MDBU.retrieve_from_SQLite(connection, SQL_stmt):
         temp_list = list(map(str, f))
         temp_dict[temp_list[0]] = f[1]
     MDBU.Update_Database_from_dict(mongoclient, temp_dict, DBName='Search_Engine_Data',
@@ -90,25 +86,28 @@ def upload_data_to_mongodb(user='root', password='admin',
     collection = db['Body_Doc_Length']
     collection.drop()
     cursor = connection.cursor()
-    SQL_stmt = 'Drop table if exists tfmax, word_counter'
+    SQL_stmt = 'Drop table if exists tfmax;'
     cursor.execute(SQL_stmt)
+    SQL_stmt = 'Drop table if exists word_counter;'
+    cursor.execute(SQL_stmt)
+
 
     no_of_pages = len(MDBU.retrieve_key_from_db(client=mongoclient, DBName='Search_Engine_Data',
                                                 CollectionName='Body_Forward_Index'))
 
-    SQL_stmt = 'create temporary table tfmax as select PageID, max(counter) as tfmax from ' \
-               '(select PageID, StemID, count(*) as counter from Alex_StemPos where type = 2 group by StemID, PageID) as a ' \
-               'group by PageID'
+    SQL_stmt = 'create temporary table tfmax as select Page_ID, max(counter) as tfmax from ' \
+               '(select Page_ID, Stem_ID, count(*) as counter from stem_token where type = 2 group by Stem_ID, Page_ID) as a ' \
+               'group by Page_ID'
     cursor.execute(SQL_stmt)
 
-    SQL_stmt = 'create temporary table word_counter as select PageID, StemID, count(*) as word_count from ' \
-               'Alex_StemPos where type = 2 group by PageID, StemID'
+    SQL_stmt = 'create temporary table word_counter as select Page_ID, Stem_ID, count(*) as word_count from ' \
+               'stem_token where type = 2 group by Page_ID, Stem_ID'
 
     cursor.execute(SQL_stmt)
-    SQL_stmt = 'select a.PageID, a.StemID, a.word_count/b.tfmax from word_counter a left join tfmax b on ' \
-               'a.PageID = b.PageID'
+    SQL_stmt = 'select a.Page_ID, a.Stem_ID, a.word_count/b.tfmax from word_counter a left join tfmax b on ' \
+               'a.Page_ID = b.Page_ID'
     temp_dict = dict()
-    for f in MDBU.retrieve_from_MySQL(connection, SQL_stmt):
+    for f in MDBU.retrieve_from_SQLite(connection, SQL_stmt):
         temp_list = list(map(str, f))
         if temp_dict.get(temp_list[0], 'Null') == 'Null':
 
@@ -124,9 +123,9 @@ def upload_data_to_mongodb(user='root', password='admin',
     collection.drop()
 
     temp_dict = dict()
-    SQL_stmt = 'select StemID, PageID, Position from Alex_StemPos where Type = 1 ' + \
-               ' order by stemid, PageID, Position'
-    fetch = MDBU.retrieve_from_MySQL(connection, SQL_stmt)
+    SQL_stmt = 'select Stem_ID, Page_ID, Position from stem_token where Type = 1 ' + \
+               ' order by Stem_ID, Page_ID, Position'
+    fetch = MDBU.retrieve_from_SQLite(connection, SQL_stmt)
     for f in fetch:
         temp_list = list(map(str, f))
         if len(temp_dict) == 0:
@@ -146,9 +145,9 @@ def upload_data_to_mongodb(user='root', password='admin',
     collection.drop()
 
     temp_dict = dict()
-    SQL_stmt = 'select PageID, StemID, count(Position) from Alex_StemPos where Type = 1' \
-               ' group by PageID, StemID order by PageID, StemID'
-    fetch = MDBU.retrieve_from_MySQL(connection, SQL_stmt)
+    SQL_stmt = 'select Page_ID, Stem_ID, count(Position) from stem_token where Type = 1' \
+               ' group by Page_ID, Stem_ID order by Page_ID, Stem_ID'
+    fetch = MDBU.retrieve_from_SQLite(connection, SQL_stmt)
     for f in fetch:
         temp_list = list(map(str, f))
         if len(temp_dict) == 0 or temp_dict.get(temp_list[0], 'Null') == 'Null':
@@ -163,10 +162,10 @@ def upload_data_to_mongodb(user='root', password='admin',
     db = mongoclient['Search_Engine_Data']
     collection = db['Header_TFMax_File']
     collection.drop()
-    SQL_stmt = 'select PageID, max(counter) as TF_Max from ' \
-               '(select PageID, StemID, count(*) as counter from Alex_StemPos where type = 1 group by PageID, StemID) as a group by PageID'
+    SQL_stmt = 'select Page_ID, max(counter) as TF_Max from ' \
+               '(select Page_ID, Stem_ID, count(*) as counter from stem_token where type = 1 group by Page_ID, Stem_ID) as a group by Page_ID'
     temp_dict = dict()
-    for f in MDBU.retrieve_from_MySQL(connection, SQL_stmt):
+    for f in MDBU.retrieve_from_SQLite(connection, SQL_stmt):
         temp_list = list(map(str, f))
         temp_dict[temp_list[0]] = f[1]
     MDBU.Update_Database_from_dict(mongoclient, temp_dict, DBName='Search_Engine_Data',
@@ -176,10 +175,10 @@ def upload_data_to_mongodb(user='root', password='admin',
     db = mongoclient['Search_Engine_Data']
     collection = db['Header_DF_Index']
     collection.drop()
-    SQL_stmt = 'select StemID, count(*) from ' \
-               '(select StemID, PageID from Alex_StemPos where type = 1 group by StemID, PageID) as a group by StemID'
+    SQL_stmt = 'select Stem_ID, count(*) from ' \
+               '(select Stem_ID, Page_ID from stem_token where type = 1 group by Stem_ID, Page_ID) as a group by Stem_ID'
     temp_dict = dict()
-    for f in MDBU.retrieve_from_MySQL(connection, SQL_stmt):
+    for f in MDBU.retrieve_from_SQLite(connection, SQL_stmt):
         temp_list = list(map(str, f))
         temp_dict[temp_list[0]] = f[1]
     MDBU.Update_Database_from_dict(mongoclient, temp_dict, DBName='Search_Engine_Data',
@@ -190,25 +189,27 @@ def upload_data_to_mongodb(user='root', password='admin',
     collection = db['Header_Doc_Length']
     collection.drop()
     cursor = connection.cursor()
-    SQL_stmt = 'Drop table if exists tfmax, word_counter'
+    SQL_stmt = 'Drop table if exists tfmax;'
+    cursor.execute(SQL_stmt)
+    SQL_stmt = 'Drop table if exists word_counter;'
     cursor.execute(SQL_stmt)
 
     no_of_pages = len(MDBU.retrieve_key_from_db(client=mongoclient, DBName='Search_Engine_Data',
                                                 CollectionName='Header_Forward_Index'))
 
-    SQL_stmt = 'create temporary table tfmax as select PageID, max(counter) as tfmax from ' \
-               '(select PageID, StemID, count(*) as counter from Alex_StemPos where type = 1 group by StemID, PageID) as a ' \
-               'group by PageID'
+    SQL_stmt = 'create temporary table tfmax as select Page_ID, max(counter) as tfmax from ' \
+               '(select Page_ID, Stem_ID, count(*) as counter from stem_token where type = 1 group by Stem_ID, Page_ID) as a ' \
+               'group by Page_ID'
     cursor.execute(SQL_stmt)
 
-    SQL_stmt = 'create temporary table word_counter as select PageID, StemID, count(*) as word_count from ' \
-               'Alex_StemPos where type = 1 group by PageID, StemID'
+    SQL_stmt = 'create temporary table word_counter as select Page_ID, Stem_ID, count(*) as word_count from ' \
+               'stem_token where type = 1 group by Page_ID, Stem_ID'
 
     cursor.execute(SQL_stmt)
-    SQL_stmt = 'select a.PageID, a.StemID, a.word_count/b.tfmax from word_counter a left join tfmax b on ' \
-               'a.PageID = b.PageID'
+    SQL_stmt = 'select a.Page_ID, a.Stem_ID, a.word_count/b.tfmax from word_counter a left join tfmax b on ' \
+               'a.Page_ID = b.Page_ID'
     temp_dict = dict()
-    for f in MDBU.retrieve_from_MySQL(connection, SQL_stmt):
+    for f in MDBU.retrieve_from_SQLite(connection, SQL_stmt):
         temp_list = list(map(str, f))
         if temp_dict.get(temp_list[0], 'Null') == 'Null':
             temp_dict[temp_list[0]] = float(f[2]) * math.log2(no_of_pages / temp_df[temp_list[1]])
@@ -217,18 +218,57 @@ def upload_data_to_mongodb(user='root', password='admin',
     MDBU.Update_Database_from_dict(mongoclient, temp_dict, DBName='Search_Engine_Data',
                                    CollectionName='Header_Doc_Length')
 
+    # Update the word_inverted_index and word_forward_index
+    SQL_stmt = 'select Stem_ID, stem from stem;'
+    temp_dict = dict()
+    temp_dict_1 = dict()
+    for f in MDBU.retrieve_from_SQLite(connection, SQL_stmt):
+        temp_list = list(map(str, f))
+        if temp_dict.get(temp_list[0]) is None:
+            temp_dict[temp_list[0]] = temp_list[1]
+            temp_dict_1[temp_list[1]] = temp_list[0]
+    MDBU.Update_Database_from_dict(mongoclient, temp_dict, DBName='Search_Engine_Data',
+                                   CollectionName='Word_Inverted_Index')
+    MDBU.Update_Database_from_dict(mongoclient, temp_dict_1, DBName='Search_Engine_Data',
+                                   CollectionName='Word_Forward_Index')
+
+    # Retrieving the raw content for each webpage
+    SQL_stmt = 'select url, raw_content from url;'
+    cursor.execute(SQL_stmt)
+    temp_dict = dict()
+    for f in MDBU.retrieve_from_SQLite(connection, SQL_stmt):
+        temp_list = list(map(str, f))
+        if temp_dict.get(temp_list[0]) is None:
+            temp_dict[temp_list[0]] = temp_list[1]
+    MDBU.Update_Database_from_dict(mongoclient, temp_dict, DBName='Search_Engine_Data',
+                                   CollectionName='Raw_Page_Content')
 
 # Perform Page Ranking on the document
-def page_rank_index(user='root', password='admin',
-                           host='localhost', database='abc',
-                           mongo_host='localhost', mongo_port=27017,
+def page_rank_index(sqlite_db='csit5930.db', mongo_host='localhost', mongo_port=27017,
                     iternation_no=50, damping_factor=0.8):
-    connection = connector.connect(user=user, password=password, host=host, database=database)
+    connection = sqlite3.connect(sqlite_db)
     mongoclient = MongoClient(host=mongo_host, port=mongo_port)
     cursor = connection.cursor()
-    SQL_stmt = 'select ParentPageId, ChildPageId from Alex_UrlInverted;'
+
+    # Update the url_inverted_index and url_forward_index
+    SQL_stmt = 'select page_id, url from url;'
+    cursor.execute(SQL_stmt)
+    temp_dict = dict()
+    temp_dict_1 = dict()
+    for f in MDBU.retrieve_from_SQLite(connection, SQL_stmt):
+        temp_list = list(map(str, f))
+        if temp_dict.get(temp_list[0]) is None:
+            temp_dict[temp_list[0]] = temp_list[1]
+            temp_dict_1[temp_list[1]] = temp_list[0]
+    MDBU.Update_Database_from_dict(mongoclient, temp_dict, DBName='Search_Engine_Data',
+                                   CollectionName='ID_To_URL_Index')
+    MDBU.Update_Database_from_dict(mongoclient, temp_dict_1, DBName='Search_Engine_Data',
+                                   CollectionName='URL_To_ID_Index')
+
+
+    SQL_stmt = 'select Parent_Page_Id, Child_Page_Id from url_inverted;'
     url_inverted_index = dict()
-    for f in MDBU.retrieve_from_MySQL(connection, SQL_stmt):
+    for f in MDBU.retrieve_from_SQLite(connection, SQL_stmt):
         templist = list(map(str, f))
         if url_inverted_index.get(templist[0], 'Null')=='Null':
             url_inverted_index[templist[0]] = [templist[1]]
@@ -237,9 +277,9 @@ def page_rank_index(user='root', password='admin',
     MDBU.Update_Database_from_dict(mongoclient, url_inverted_index, DBName='Search_Engine_Data',
                                    CollectionName='URL_Inverted_Index')
 
-    SQL_stmt = 'select ChildPageId, ParentPageId from Alex_urlforward'
+    SQL_stmt = 'select Child_Page_Id, Parent_Page_Id from url_forward'
     url_forward_index = dict()
-    for f in MDBU.retrieve_from_MySQL(connection, SQL_stmt):
+    for f in MDBU.retrieve_from_SQLite(connection, SQL_stmt):
         templist = list(map(str, f))
         if url_forward_index.get(templist[0], 'Null')=='Null':
             url_forward_index[templist[0]] = [f[1]]
@@ -285,7 +325,7 @@ def page_rank_index(user='root', password='admin',
 
 if __name__ == '__main__':
     now = datetime.now()
-    #upload_data_to_mongodb()
+    upload_data_to_mongodb()
     page_rank = page_rank_index()
     os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
     f = open('url_inverted_index.dat','rb')

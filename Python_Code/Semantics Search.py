@@ -1,11 +1,12 @@
 from sentence_transformers import SentenceTransformer
-
+from pymongo import MongoClient
 # model = SentenceTransformer('all-MiniLM-L6-v2')
 import pickle
 import numpy as np
 from numpy import linalg as LA
-from datetime import datetime, timedelta
+from datetime import datetime
 import os
+import MongoDB_utilites as MDBU
 
 class semantics_search():
 
@@ -13,8 +14,9 @@ class semantics_search():
 
 
         print("semantics init start")
-        f = open('body_content.dat', 'rb')
-        self.sentences = pickle.load(f)
+        self.mongo_client = MongoClient()
+        self.sentences = MDBU.retrieve_all_value_from_db(self.mongo_client, DBName='Search_Engine_Data',
+                                                           CollectionName='Raw_Page_Content')
         print("semantics init done")
         f = open('model.dat', 'rb')
         self.model = pickle.load(f)
@@ -65,6 +67,6 @@ if __name__ == '__main__':
     running_time = datetime.now() - running_time
     print('Initialization Time:\t',running_time)
 
-    for i in range(10):
+    for i in range(1):
         query= 'Enrollment Method'
         Semantic_Search.query_semantics(query)

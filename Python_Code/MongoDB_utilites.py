@@ -11,7 +11,7 @@ def Update_Database_json_update(client, DBName='Search_Engine_Data', CollectionN
     collection.drop()
     collection = db[CollectionName]
 
-    # Can replace by retrieving record from MySQL
+    # Can replace by retrieving record from SQLite
     f = open(json_path,'r')
     temp_dict = json.load(f)
     f.close()
@@ -27,7 +27,7 @@ def Update_Database_from_dict(client, input_dict, DBName='Search_Engine_Data', C
             temp = {key: value}
             collection.insert_one(temp)
 
-def retrieve_from_MySQL(DB_Connection, SQL_stmt):
+def retrieve_from_SQLite(DB_Connection, SQL_stmt):
 
     cursor = DB_Connection.cursor()
 
