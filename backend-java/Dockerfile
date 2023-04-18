@@ -9,4 +9,4 @@ COPY db /app/db
 COPY entrypoint.sh /app/
 
 # Set the ENTRYPOINT for running the entrypoint.sh script
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["java","-jar","/app/app.jar"]
