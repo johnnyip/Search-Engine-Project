@@ -33,7 +33,7 @@ const Indexing = () => {
     }
 
     useEffect(() => {
-        console.log("Indexing page loaded")
+        // console.log("Indexing page loaded")
         loadData()
     }, [])
 

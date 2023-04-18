@@ -19,8 +19,6 @@ function App() {
 
       console.log("process.env.REACT_APP_BACKEND1_URL: " + process.env.REACT_APP_BACKEND1_URL)
       console.log("process.env.REACT_APP_BACKEND2_URL: " + process.env.REACT_APP_BACKEND2_URL)
-
-
     }
 
     getStatus()

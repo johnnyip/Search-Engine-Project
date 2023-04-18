@@ -34,7 +34,6 @@ const SearchBar = () => {
                 await queryPageRank(keyword) :
                 await querySemantics(keyword)
         setQueryResult(result)
-        console.log(result)
 
         result.queryDate = formatDate(new Date());
         result.algo = chosenAlgo
@@ -44,14 +43,11 @@ const SearchBar = () => {
 
         let historyToken = getHistoryToken()
         let history = await getRedis(historyToken)
-        console.log("history")
-        console.log(history)
 
         history.unshift(result)
         setHistory(history)
 
         await saveRedis(historyToken, history)
-        console.log(history)
 
     }
 
