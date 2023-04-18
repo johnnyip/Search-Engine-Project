@@ -5,5 +5,5 @@ cp -R /app/db_init/* /app/db/
 
 chmod -R 777 /app/db
 
-# Start the Java application
-exec java -jar app.jar
+# Start the Java application with a relative path to the JAR file
+exec java -jar /app/app.jar
