@@ -8,7 +8,7 @@ import sqlite3
 import pickle
 
 os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
-def upload_data_to_mongodb(sqlitedb='csit5930.db',mongo_host='localhost', mongo_port=27017):
+def upload_data_to_mongodb(sqlitedb='csit5930',mongo_host='localhost', mongo_port=27017):
 
     connection = sqlite3.connect(sqlitedb)
     mongoclient = MongoClient()
@@ -234,7 +234,6 @@ def upload_data_to_mongodb(sqlitedb='csit5930.db',mongo_host='localhost', mongo_
 
     # Retrieving the raw content for each webpage
     SQL_stmt = 'select url, raw_content from url;'
-    cursor.execute(SQL_stmt)
     temp_dict = dict()
     for f in MDBU.retrieve_from_SQLite(connection, SQL_stmt):
         temp_list = list(map(str, f))
@@ -243,8 +242,18 @@ def upload_data_to_mongodb(sqlitedb='csit5930.db',mongo_host='localhost', mongo_
     MDBU.Update_Database_from_dict(mongoclient, temp_dict, DBName='Search_Engine_Data',
                                    CollectionName='Raw_Page_Content')
 
+    # Retrieving the Page URL, Doc Length, Page Size to MongoDB
+    SQL_stmt = 'select page_id, raw_title, last_modified_date, doc_length from url;'
+    temp_dict = dict()
+    for f in MDBU.retrieve_from_SQLite(connection, SQL_stmt):
+        temp_list = list(map(str, f))
+        if temp_dict.get(temp_list[0]) is None:
+            temp_dict[temp_list[0]] = [temp_list[1], temp_list[2], temp_list[3]]
+    MDBU.Update_Database_from_dict(mongoclient, temp_dict, DBName='Search_Engine_Data',
+                                   CollectionName='Display_Layout')
+
 # Perform Page Ranking on the document
-def page_rank_index(sqlite_db='csit5930.db', mongo_host='localhost', mongo_port=27017,
+def page_rank_index(sqlite_db='csit5930', mongo_host='localhost', mongo_port=27017,
                     iternation_no=50, damping_factor=0.8):
     connection = sqlite3.connect(sqlite_db)
     mongoclient = MongoClient(host=mongo_host, port=mongo_port)

@@ -43,6 +43,10 @@ class query_retrieval():
                                                                CollectionName='URL_To_ID_Index')
         self.url_inverted_index = MDBU.retrieve_all_value_from_db(self.mongo_client, DBName='Search_Engine_Data',
                                                                CollectionName='ID_To_URL_Index')
+        self.url_par_to_chi = MDBU.retrieve_all_value_from_db(self.mongo_client, DBName='Search_Engine_Data',
+                                                              CollectionName='URL_Inverted_Index')
+        self.url_chi_to_par = MDBU.retrieve_all_value_from_db(self.mongo_client, DBName='Search_Engine_Data',
+                                                              CollectionName='URL_Forward_Index')
 
     def stopword_removal(self, inword, stopword_list):
 
@@ -324,13 +328,36 @@ class query_retrieval():
         full_query_match_item = copy.deepcopy(temp_dict)
 
         return_result=list()
+
+
+
         for key, value in return_url_list.items():
             temp_dict = dict()
+            temp_key = self.url_forward_index[key]
+            temp_dict1 = MDBU.retrieve_value_from_db(self.mongo_client, temp_key,
+                                                     DBName='Search_Engine_Data', CollectionName='Display_Layout')
             temp_dict['url'] = key
             temp_dict['Score'] = value
             temp_dict['Matched Key Item'] = full_query_match_item[key]
+            temp_dict['Title'] = temp_dict1[temp_key][0]
+            temp_dict['Last Modified Date'] = temp_dict1[temp_key][1]
+            temp_dict['Size of the Page'] = temp_dict1[temp_key][2]
+            temp_dict['Most Frequent Item'] = return_url_items[key]
+            temp_list = list()
+            if self.url_par_to_chi.get(self.url_forward_index[key]) is not None:
+                temp_list = list()
+                for item in self.url_par_to_chi[self.url_forward_index[key]]:
+                    temp_value = self.url_inverted_index[str(item)]
+                    temp_list.extend([temp_value])
+            temp_dict['Parent Link'] = copy.deepcopy(temp_list)
+            temp_list = list()
+            if self.url_chi_to_par.get(self.url_forward_index[key]) is not None:
+                temp_list = list()
+                for item in self.url_chi_to_par[self.url_forward_index[key]]:
+                    temp_value = self.url_inverted_index[str(item)]
+                    temp_list.extend([temp_value])
+            temp_dict['Child Link'] = copy.deepcopy(temp_list)
             return_result.extend([temp_dict])
-
         return return_result, return_url_items
 
     def page_similarity_search(self, url, original_query):
@@ -368,11 +395,11 @@ class query_retrieval():
         return_result = return_result[:5]
         return_url_items = list()
         for item in return_result:
+
             temp_dict = dict()
             temp_dict['url'] = item['url']
             temp_dict['item'] = self.return_most_frequent_items(self.url_forward_index[item['url']])
             return_url_items.extend([temp_dict])
-
         return revised_query, return_result, return_url_items
 
 

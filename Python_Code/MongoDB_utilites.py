@@ -22,6 +22,8 @@ def Update_Database_json_update(client, DBName='Search_Engine_Data', CollectionN
 def Update_Database_from_dict(client, input_dict, DBName='Search_Engine_Data', CollectionName='Body_Inverted_Index'):
     db = client[DBName]
     collection = db[CollectionName]
+    collection.drop()
+    collection = db[CollectionName]
     if len(input_dict) != 0:
         for key, value in input_dict.items():
             temp = {key: value}
