@@ -60,6 +60,7 @@ class query_retrieval():
         query_items = query.split()
         document_collection = dict()
         # Removing stopword and stemming the query
+        return_query_match = dict()
         for id, item in enumerate(query_items):
             query_items[id] = self.stopword_removal(inword=item, stopword_list=self.stopword_list)
         ps = PorterStemmer()
@@ -79,6 +80,10 @@ class query_retrieval():
                                 document_collection[doc] = temp
                             else:
                                 document_collection[doc] = document_collection[doc] + temp
+                            if return_query_match.get(doc) is None:
+                                return_query_match[doc] = [item]
+                            else:
+                                return_query_match[doc].extend([item])
                     else:
                         temp_inverted_file = MDBU.retrieve_value_from_db(self.mongo_client, item,
                                                                          DBName='Search_Engine_Data',
@@ -90,11 +95,16 @@ class query_retrieval():
                                     document_collection[doc] = temp
                                 else:
                                     document_collection[doc] = document_collection[doc] + temp
+                                if return_query_match.get(doc) is None:
+                                    return_query_match[doc] = [item]
+                                else:
+                                    return_query_match[doc].extend([item])
                             # If size of inverted_index exceeds 1 Gb, the memory of the inverted index would be cleared
                             if (sys.getsizeof(self.header_inverted_index)) / 1024 ** 3 < 1:
                                 self.header_inverted_index[item] = temp_inverted_file[item]
                             else:
                                 self.header_inverted_index = copy.deepcopy(temp_inverted_file)
+
             else:
                 if self.body_df_index.get(item, 'Null') != 'Null':
                     idf = math.log(float(len(self.body_doc_length)) / float(self.body_df_index[item]))
@@ -105,6 +115,10 @@ class query_retrieval():
                                 document_collection[doc] = temp
                             else:
                                 document_collection[doc] = document_collection[doc] + temp
+                            if return_query_match.get(doc) is None:
+                                return_query_match[doc] = [item]
+                            else:
+                                return_query_match[doc].extend([item])
                     else:
                         temp_inverted_file = MDBU.retrieve_value_from_db(self.mongo_client, item,
                                                                          DBName='Search_Engine_Data',
@@ -116,18 +130,25 @@ class query_retrieval():
                                     document_collection[doc] = temp
                                 else:
                                     document_collection[doc] = document_collection[doc] + temp
+                                if return_query_match.get(doc) is None:
+                                    return_query_match[doc] = [item]
+                                else:
+                                    return_query_match[doc].extend([item])
                             # If size of inverted_index exceeds 1 Gb, the memory of the inverted index would be cleared
                             if (sys.getsizeof(self.body_inverted_index)) / 1024 ** 3 < 1:
                                 self.body_inverted_index[item] = temp_inverted_file[item]
                             else:
                                 self.body_inverted_index = copy.deepcopy(temp_inverted_file)
 
+
         query_len = (len(query_items)) ** 0.5
         for key, value in document_collection.items():
             doc_length = self.header_doc_length[key] if type == 'header' else self.body_doc_length[key]
             document_collection[key] = value / query_len / doc_length
         temp_test = dict(sorted(document_collection.items(), key=lambda x: x[1], reverse=True))
-        return temp_test
+        for key, value in return_query_match.items():
+            return_query_match[key] = list(set(value))
+        return temp_test, return_query_match
 
     def dict_to_list(self, key, in_list):
         out_list = []
@@ -227,8 +248,14 @@ class query_retrieval():
 
     def return_most_frequent_items(self, page_id):
         temp_dict = MDBU.retrieve_value_from_db(self.mongo_client, page_id, CollectionName='Body_Forward_Index')
+        temp_dict = temp_dict[page_id]
         temp_list = sorted(temp_dict.items(), key=lambda x: x[1], reverse=True)
-        return temp_list[:5]
+        temp_list = temp_list[:5]
+        temp_dict = dict()
+        for item in temp_list:
+            temp_key = self.word_inverted_index[item[0]]
+            temp_dict[temp_key] = item[1]
+        return temp_dict
 
     def overall_retreival_function(self, query, title_weight=10):
         phrase_query = query.replace('"', '<')
@@ -237,8 +264,18 @@ class query_retrieval():
         phrase_query = ' '.join(phrase_query)
         phrase_query = phrase_query.replace('<', '')
         filtered_query += ' ' + phrase_query
-        body_similarity_score = self.similarity_score_calculation(filtered_query, type='Body')
-        header_similarity_score = self.similarity_score_calculation(filtered_query, type='Header')
+        body_similarity_score, body_query_match_list = self.similarity_score_calculation(filtered_query, type='Body')
+        header_similarity_score, header_query_match_list = self.similarity_score_calculation(filtered_query, type='Header')
+        full_query_match_item = dict()
+        for key, value in body_query_match_list.items():
+            if header_query_match_list.get(key) is not None:
+                full_query_match_item[key] = list(set(header_query_match_list[key]) | set(body_query_match_list[key]))
+            else:
+                full_query_match_item[key] = body_query_match_list[key]
+        for key, value in header_query_match_list.items():
+            if body_query_match_list.get(key) is None:
+                full_query_match_item[key] = header_query_match_list[key]
+
         return_url_list = copy.deepcopy(body_similarity_score)
         if len(return_url_list) == 0:
             return_url_list = copy.deepcopy(header_similarity_score)
@@ -277,7 +314,24 @@ class query_retrieval():
         return_url_items = dict()
         for key in return_url_list.keys():
             return_url_items[key] = self.return_most_frequent_items(self.url_forward_index[key])
-        return return_url_list, return_url_items
+
+        temp_dict = dict()
+        for key, value in full_query_match_item.items():
+            temp_key = self.url_inverted_index[key]
+            temp_dict[temp_key] = list(map(lambda x: self.word_inverted_index[x], full_query_match_item[key]))
+            if return_url_list.get(temp_key) is None:
+                del temp_dict[temp_key]
+        full_query_match_item = copy.deepcopy(temp_dict)
+
+        return_result=list()
+        for key, value in return_url_list.items():
+            temp_dict = dict()
+            temp_dict['url'] = key
+            temp_dict['Score'] = value
+            temp_dict['Matched Key Item'] = full_query_match_item[key]
+            return_result.extend([temp_dict])
+
+        return return_result, return_url_items
 
     def page_similarity_search(self, url, original_query):
         self.page_rank_selection = False
@@ -285,33 +339,39 @@ class query_retrieval():
         body_forward_index = MDBU.retrieve_value_from_db(self.mongo_client, page_id,
                                                          DBName='Search_Engine_Data',
                                                          CollectionName='Body_Forward_Index')
+        '''
         header_forward_index = MDBU.retrieve_value_from_db(self.mongo_client, page_id,
                                                            DBName='Search_Engine_Data',
                                                            CollectionName='Header_Forward_Index')
-
+        '''
         temp_list = list(body_forward_index.values())
         temp_list = temp_list[0]
         body_word_index = sorted(temp_list.items(), key=lambda  x:x[1], reverse=True)
-        body_word_index = dict(body_word_index[:5]).keys()
+        full_word_list = dict(body_word_index[:5]).keys()
+        '''
         temp_list = list(header_forward_index.values())
         temp_list = temp_list[0]
         header_word_list = list(sorted(temp_list.items(), key=lambda  x:x[1], reverse=True))
         header_word_list = dict(header_word_list[:5]).keys()
         full_word_list = list(set(header_word_list) | set(body_word_index))
+        '''
 
         revised_query = list(map(lambda  x:self.word_inverted_index[x], full_word_list))
         revised_query = ' '.join(revised_query)
         revised_query = original_query + ' ' + revised_query
         revised_query = revised_query.replace('"','')
-        return_result, _ = self.overall_retreival_function(revised_query)
-        if return_result.get(url) is not None:
-            del return_result[url]
-        return_result = sorted(return_result.items(), key=lambda x: x[1], reverse=True)
-        return_result = dict(return_result[:5])
-        return_url_items = dict()
-        for key in return_result.keys():
-            return_url_items[key] = self.return_most_frequent_items(self.url_forward_index[key])
-
+        return_result, temp_dict = self.overall_retreival_function(revised_query)
+        for key, item in enumerate(return_result):
+            if item['url'] == url:
+                del_key = key
+        return_result.pop(del_key)
+        return_result = return_result[:5]
+        return_url_items = list()
+        for item in return_result:
+            temp_dict = dict()
+            temp_dict['url'] = item['url']
+            temp_dict['item'] = self.return_most_frequent_items(self.url_forward_index[item['url']])
+            return_url_items.extend([temp_dict])
 
         return revised_query, return_result, return_url_items
 
@@ -334,6 +394,7 @@ if __name__ == '__main__':
     search_result, search_frequent_items = search.overall_retreival_function(query)
     print('Query:\t\t\t', query, '\n''Phrasal query:\t', phrasal_query, '\n'
                                                                         'Search Result:\t', search_result)
+
     running_time = datetime.now() - running_time
     running_min = running_time.total_seconds() // 60
     running_sec = running_time.total_seconds() // 60 * 60
@@ -370,3 +431,5 @@ if __name__ == '__main__':
     running_sec = running_time.total_seconds() // 60 * 60
     running_msec = (running_time.total_seconds() - running_time.total_seconds() // 60 * 60) * 1000
     print('Running_time:\t %d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec))
+
+    print(return_url_list)
