@@ -5,50 +5,45 @@ import com.example.backendjava.service.CrawlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/crawl")
 public class CrawlController {
 
-    private CrawlService crawlService;
-
     @Autowired
-    public CrawlController(CrawlService crawlService) {
-        this.crawlService = crawlService;
-//        this.crawlService.startCrawling("https://www.cse.ust.hk/~kwtleung/COMP4321/testpage.htm");
-    }
-
+    private CrawlService crawlService;
 
 
     @GetMapping("/remove")
-    public String removeCrawled() {
-        crawlService.removeCrawledContent();
+    public String removeCrawled() throws IOException {
+        crawlService.remove();
         return "ok";
     }
 
     @GetMapping("/start")
-    public String startCrawling(@RequestParam String url) {
+    public String startCrawling() {
         System.out.println("Start crawling");
-        crawlService.startCrawling(url);
+        crawlService.start();
         System.out.println("Finish crawling");
 
         return "done";
     }
 
-    @GetMapping("/count")
-    public int getCrawledPageCount() {
-        if (crawlService.getCrawledContent() != null) {
-            return crawlService.getCrawledContent().size();
-        }
-        return 0;
-    }
-
-    @GetMapping("/")
-    public List<PageContent> getCrawledContent() {
-        if (crawlService.getCrawledContent() == null) {
-            crawlService.startCrawling("https://www.cse.ust.hk/~kwtleung/COMP4321/testpage.htm");
-        }
-        return crawlService.getCrawledContent();
-    }
+//    @GetMapping("/count")
+//    public int getCrawledPageCount() {
+//        if (crawlService.getCrawledContent() != null) {
+//            return crawlService.getCrawledContent().size();
+//        }
+//        return 0;
+//    }
+//
+//    @GetMapping("/")
+//    public List<PageContent> getCrawledContent() {
+//        if (crawlService.getCrawledContent() == null) {
+//            crawlService.startCrawling("https://www.cse.ust.hk/~kwtleung/COMP4321/testpage.htm");
+//        }
+//        return crawlService.getCrawledContent();
+//    }
 }

@@ -1,7 +1,11 @@
 #!/bin/sh
 
 # Copy the db folder contents from the container to the host folder
-cp -R /app/db_init/* /app/db/
+if [ "$(ls -A /app/db)" ]; then
+    echo "Local folder is not empty. Skipping file copy."
+else
+    echo "Local folder is empty. Copying files from container."
+    cp -R /app/db_init/* /app/db/
 
 chmod -R 777 /app/db
 
