@@ -6,6 +6,7 @@ if [ "$(ls -A /app/db)" ]; then
 else
     echo "Local folder is empty. Copying files from container."
     cp -R /app/db_init/* /app/db/
+fi
 
 chmod -R 777 /app/db
 
