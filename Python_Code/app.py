@@ -1,14 +1,14 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from datetime import datetime, timedelta
 
-from api_webpage_crawling import api_webpage_crawling
+from api_Mongo_sync import upload_data_to_mongodb
 from api_query_retrieval import api_query_retrieval
 from api_semantics_search import api_semantics_search
 
 app = Flask(__name__)
 CORS(app, origins="*")
 
-crawl = api_webpage_crawling()
 query = api_query_retrieval()
 semantics = api_semantics_search()
 
@@ -17,12 +17,15 @@ semantics = api_semantics_search()
 def status():
     return "ok"
 
-
-@app.route('/crawl', methods=['GET'])
-def start_crawl():
-    crawl.start()
-    return jsonify({'status': 'ok'})
-
+@app.route('/sync',methods=['GET'])
+def startSync():
+    print("Mongo db init start")
+    now = datetime.now()
+    upload_data_to_mongodb()
+    now = datetime.now() - now
+    print("Mongo db init start")
+    print('Running Time: ', now)
+    return "ok"
 
 @app.route('/query_vector', methods=['GET'])
 def retrieval_vector():

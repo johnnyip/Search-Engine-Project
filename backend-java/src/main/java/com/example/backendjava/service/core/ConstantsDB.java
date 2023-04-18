@@ -2,7 +2,7 @@ package com.example.backendjava.service.core;
 
 public class ConstantsDB {
     
-    public final static String db_path  = "/SQLite/";
+    public final static String db_path  = "/db/";
     public static final String dbFile   = db_path + "csit5930";
     
     /****************************************************************************************************
