@@ -22,7 +22,6 @@ const SearchResult = (props) => {
 
     }, [result, activePage])
 
-
     if (Object.keys(result).length !== 0) {
         return (
             <>
@@ -52,7 +51,7 @@ const SearchResult = (props) => {
                         position="center"
                         value={activePage}
                         onChange={setPage}
-                        total={10} />
+                        total={(result.data.result.length / 5) + 1} />
 
                     <br />
                 </div>
