@@ -7,7 +7,7 @@ ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar
 
 # Copy the db folder into the /app/db directory inside the container
-COPY db /app/db
+COPY ./db_init /app/db_init
 
 # Copy the entrypoint.sh script into the container
 COPY entrypoint.sh /app/
