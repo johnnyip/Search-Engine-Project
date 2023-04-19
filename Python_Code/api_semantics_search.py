@@ -14,9 +14,8 @@ class api_semantics_search():
 
     def __init__(self):
 
-
         print("semantics init start")
-        self.mongo_client = MongoClient()
+        self.mongo_client = MongoClient(host=os.environ.get("MONGO_HOST", "localhost"), port=27017)
         self.sentences = MDBU.retrieve_all_value_from_db(self.mongo_client, DBName='Search_Engine_Data',
                                                            CollectionName='Raw_Page_Content')
         print("semantics init done")

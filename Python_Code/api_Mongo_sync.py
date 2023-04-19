@@ -14,7 +14,7 @@ load_dotenv()
 def upload_data_to_mongodb(sqlitedb='db/csit5930',mongo_host=os.environ.get("MONGO_HOST", "localhost"), mongo_port=27017):
     
     connection = sqlite3.connect(sqlitedb)
-    mongoclient = MongoClient()
+    mongoclient = MongoClient(host=mongo_host, port=mongo_port)
 
     # Update Body Inverted File
     db = mongoclient['Search_Engine_Data']
