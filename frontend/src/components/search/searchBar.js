@@ -4,6 +4,7 @@ import { Modal, TextInput, Button, Grid, SegmentedControl, Group } from '@mantin
 
 import SearchResult from './searchResult';
 import History from './history';
+import Indexes from './indexes';
 import { formatDate } from '../../functions/date'
 
 import { queryVector, queryPageRank, querySemantics } from '../../functions/query';
@@ -14,6 +15,7 @@ const SearchBar = () => {
     const [keyword, setKeyword] = useState('')
     const [loading, setLoading] = useState(false)
     const [opened, { open, close }] = useDisclosure(false);
+    const [isHistory, setIsHistory] = useState(false)
     const [chosenAlgo, setChosenAlgo] = useState("vector")
     const [queryResult, setQueryResult] = useState({})
     const [history, setHistory] = useState("")
@@ -93,13 +95,19 @@ const SearchBar = () => {
                         <Button
                             style={{ textAlign: "left" }}
                             loading={loading}
-                            onClick={open}>
+                            onClick={() => {
+                                open();
+                                setIsHistory(true)
+                            }}>
                             History
                         </Button>
                         <Button
                             style={{ textAlign: "left" }}
                             loading={loading}
-                            onClick={open}>
+                            onClick={() => {
+                                open();
+                                setIsHistory(false)
+                            }}>
                             Indexes
                         </Button>
 
@@ -122,14 +130,23 @@ const SearchBar = () => {
             <Modal
                 size="70%"
                 opened={opened}
-                onClose={close} title="Search History">
+                onClose={close} title={isHistory ? "Search History" : "Indexes"}>
 
-                <History
-                    opened={opened}
-                    keyword={keyword}
-                    setKeyword={setKeyword}
-                    onSubmit={onSubmit}
-                    close={close} />
+                {(isHistory) ?
+                    <History
+                        opened={opened}
+                        keyword={keyword}
+                        setKeyword={setKeyword}
+                        onSubmit={onSubmit}
+                        close={close} />
+
+                    : <Indexes
+                        opened={opened}
+                        keyword={keyword}
+                        setKeyword={setKeyword}
+                        onSubmit={onSubmit}
+                        close={close} />
+                }
             </Modal>
 
         </>

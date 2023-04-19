@@ -3,7 +3,7 @@ import { Button, Group, TextInput, Grid } from '@mantine/core';
 import { IconX } from '@tabler/icons';
 
 import HistoryItem from './historyItem'
-import { saveHistoryToken, getHistoryToken } from '../../functions/cookie'
+import { getHistoryToken } from '../../functions/cookie'
 import { saveRedis, getRedis } from '../../functions/redis'
 
 const History = (props) => {
@@ -63,7 +63,7 @@ const History = (props) => {
 
                     </Group>
                 </Grid.Col>
-            </Grid>
+            </Grid><br />
             <Button
                 color='red'
                 onClick={async () => {
@@ -71,11 +71,11 @@ const History = (props) => {
                     await saveRedis(historyToken, [])
                     setHistory([])
                 }}>
-                Remove History
+                Remove All History
             </Button>
             <hr />
 
-            {(history != []) ? [...history].map((item, index) => {
+            {/* {(history != []) ? [...history].map((item, index) => {
                 return (
                     <HistoryItem
                         keyword={keyword}
@@ -83,7 +83,7 @@ const History = (props) => {
                         key={index}
                         item={item} />
                 )
-            }) : <>No History</>}
+            }) : <>No History</>} */}
         </>
     )
 }
