@@ -255,11 +255,14 @@ class query_retrieval():
         temp_dict = temp_dict[page_id]
         temp_list = sorted(temp_dict.items(), key=lambda x: x[1], reverse=True)
         temp_list = temp_list[:5]
-        temp_dict = dict()
+        temp_list1 = list()
         for item in temp_list:
+            temp_dict = dict()
             temp_key = self.word_inverted_index[item[0]]
-            temp_dict[temp_key] = item[1]
-        return temp_dict
+            temp_dict['Item'] = temp_key
+            temp_dict['Frequency'] = item[1]
+            temp_list1.extend([copy.deepcopy(temp_dict)])
+        return temp_list1
 
     def overall_retreival_function(self, query, title_weight=10):
         phrase_query = query.replace('"', '<')
@@ -342,20 +345,32 @@ class query_retrieval():
             temp_dict['Title'] = temp_dict1[temp_key][0]
             temp_dict['Last Modified Date'] = temp_dict1[temp_key][1]
             temp_dict['Size of the Page'] = temp_dict1[temp_key][2]
-            temp_dict['Most Frequent Item'] = return_url_items[key]
+            temp_dict['Most Frequent Items'] = return_url_items[key]
             temp_list = list()
             if self.url_par_to_chi.get(self.url_forward_index[key]) is not None:
                 temp_list = list()
                 for item in self.url_par_to_chi[self.url_forward_index[key]]:
                     temp_value = self.url_inverted_index[str(item)]
-                    temp_list.extend([temp_value])
+                    temp_dict_2 = dict()
+                    temp_dict_2['url'] = temp_value
+                    temp_dict1 = MDBU.retrieve_value_from_db(self.mongo_client, str(item),
+                                                             DBName='Search_Engine_Data',
+                                                             CollectionName='Display_Layout')
+                    temp_dict_2['Title'] = temp_dict1[str(item)][0]
+                    temp_list.extend([temp_dict_2])
             temp_dict['Parent Link'] = copy.deepcopy(temp_list)
             temp_list = list()
             if self.url_chi_to_par.get(self.url_forward_index[key]) is not None:
                 temp_list = list()
                 for item in self.url_chi_to_par[self.url_forward_index[key]]:
                     temp_value = self.url_inverted_index[str(item)]
-                    temp_list.extend([temp_value])
+                    temp_dict_2 = dict()
+                    temp_dict_2['url'] = temp_value
+                    temp_dict1 = MDBU.retrieve_value_from_db(self.mongo_client, str(item),
+                                                             DBName='Search_Engine_Data',
+                                                             CollectionName='Display_Layout')
+                    temp_dict_2['Title'] = temp_dict1[str(item)][0]
+                    temp_list.extend([temp_dict_2])
             temp_dict['Child Link'] = copy.deepcopy(temp_list)
             return_result.extend([temp_dict])
         return return_result, return_url_items
@@ -388,10 +403,12 @@ class query_retrieval():
         revised_query = original_query + ' ' + revised_query
         revised_query = revised_query.replace('"','')
         return_result, temp_dict = self.overall_retreival_function(revised_query)
+        del_key = -9999
         for key, item in enumerate(return_result):
             if item['url'] == url:
                 del_key = key
-        return_result.pop(del_key)
+        if del_key != -9999:
+            return_result.pop(del_key)
         return_result = return_result[:5]
         return_url_items = list()
         for item in return_result:
@@ -413,7 +430,7 @@ if __name__ == '__main__':
     running_msec = (running_time.total_seconds() - running_time.total_seconds() // 60 * 60) * 1000
     print('Initializing time:\t %d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec))
 
-    print('/*********\tOnly_Vector_Space_Model_Algorithm_Apply\t*********/')
+    print('/*********\tVector_Space_Model_Algorithm_Apply\t*********/')
     query = '"Hong kong" Movie Film University'
     running_time = datetime.now()
     phrasal_query = str(re.findall('<.*?<', query.replace('"', '<'))[0]).replace('<', '') if len(
@@ -459,4 +476,3 @@ if __name__ == '__main__':
     running_msec = (running_time.total_seconds() - running_time.total_seconds() // 60 * 60) * 1000
     print('Running_time:\t %d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec))
 
-    print(return_url_list)
