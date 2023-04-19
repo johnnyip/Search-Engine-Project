@@ -12,11 +12,13 @@ import java.util.Map;
 @RestController
 @RequestMapping("/index")
 public class IndexesController {
-    @Autowired
     private CrawlService crawlService;
 
+    public IndexesController(CrawlService crawlService) {
+        this.crawlService = crawlService;
+    }
 
-//    @GetMapping("/url_forward")
+    //    @GetMapping("/url_forward")
 //    public Map<String, List<String>> getURLForwardIndex() {
 //        return urlIndexService.getUrlForwardIndex(crawlService.getCrawledContent());
 //    }

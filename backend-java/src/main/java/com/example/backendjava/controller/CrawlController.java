@@ -1,6 +1,6 @@
 package com.example.backendjava.controller;
 
-import com.example.backendjava.entity.PageContent;
+import com.example.backendjava.entity.Statistics;
 import com.example.backendjava.service.CrawlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,23 +12,25 @@ import java.util.List;
 @RequestMapping("/crawl")
 public class CrawlController {
 
-    @Autowired
     private CrawlService crawlService;
 
+    public CrawlController(CrawlService crawlService) {
+        this.crawlService = crawlService;
+    }
 
     @GetMapping("/remove")
-    public String removeCrawled() throws IOException {
+    public Statistics removeCrawled() throws IOException {
         crawlService.remove();
-        return "ok";
+        return crawlService.getStatistics();
     }
 
     @GetMapping("/start")
-    public String startCrawling() {
+    public Statistics startCrawling() {
         System.out.println("Start crawling");
         crawlService.start();
         System.out.println("Finish crawling");
 
-        return "done";
+        return crawlService.getStatistics();
     }
 
 //    @GetMapping("/count")
