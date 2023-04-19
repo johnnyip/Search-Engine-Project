@@ -94,7 +94,7 @@ const SearchBar = () => {
                         </Button>
                         <Button
                             style={{ textAlign: "left" }}
-                            loading={loading}
+                            disabled={loading}
                             onClick={() => {
                                 open();
                                 setIsHistory(true)
@@ -103,7 +103,7 @@ const SearchBar = () => {
                         </Button>
                         <Button
                             style={{ textAlign: "left" }}
-                            loading={loading}
+                            disabled={loading}
                             onClick={() => {
                                 open();
                                 setIsHistory(false)
@@ -118,14 +118,8 @@ const SearchBar = () => {
 
             <br />
             <hr />
-            <div
-                style={{
-                    backgroundColor: "#F7F7F7",
-                    borderRadius: 20
-                }}>
 
-                <SearchResult result={queryResult} />
-            </div>
+            <SearchResult result={queryResult} />
 
             <Modal
                 size="70%"
