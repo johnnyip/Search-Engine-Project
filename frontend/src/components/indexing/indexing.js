@@ -51,6 +51,7 @@ const Indexing = () => {
             <TextInput
                 value={url}
                 onChange={(event) => setUrl(event.currentTarget.value)}
+                disabled
                 style={{marginLeft: "20%", marginRight: "20%"}}
             /><br/>
 

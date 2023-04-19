@@ -2,6 +2,7 @@ package com.example.backendjava.service;
 
 import com.example.backendjava.entity.Statistics;
 import com.example.backendjava.service.core.Indexer;
+import com.example.backendjava.service.core.SearchEngine;
 import com.example.backendjava.service.utils.StopWatch;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ public class CrawlService {
 
     public CrawlService() {
         this.timer = new StopWatch();
+        this.statistics = new Statistics();
     }
 
     public Statistics getStatistics() {
@@ -34,6 +36,8 @@ public class CrawlService {
 
         timer.stop();
         statistics.setDuration(timer.getElapsedTimeInSecond());
+        statistics.setTotalPageCrawled(SearchEngine.getFullUrlList(false).size());
+
     }
 
     @Transactional

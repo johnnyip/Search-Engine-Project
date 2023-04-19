@@ -33,6 +33,11 @@ public class CrawlController {
         return crawlService.getStatistics();
     }
 
+    @GetMapping("/stat")
+    public Statistics getStat(){
+        return crawlService.getStatistics();
+    }
+
 //    @GetMapping("/count")
 //    public int getCrawledPageCount() {
 //        if (crawlService.getCrawledContent() != null) {
