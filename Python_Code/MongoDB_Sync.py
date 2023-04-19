@@ -21,6 +21,7 @@ def upload_data_to_mongodb(sqlitedb='csit5930',mongo_host='localhost', mongo_por
     temp_dict = dict()
     SQL_stmt = 'select Stem_ID, Page_ID, Position from stem_token where Type = 2 ' + \
                ' order by Stem_ID, Page_ID, Position'
+
     fetch = MDBU.retrieve_from_SQLite(connection, SQL_stmt)
     for f in fetch:
         temp_list = list(map(str, f))
@@ -104,7 +105,7 @@ def upload_data_to_mongodb(sqlitedb='csit5930',mongo_host='localhost', mongo_por
                'stem_token where type = 2 group by Page_ID, Stem_ID'
 
     cursor.execute(SQL_stmt)
-    SQL_stmt = 'select a.Page_ID, a.Stem_ID, a.word_count/b.tfmax from word_counter a left join tfmax b on ' \
+    SQL_stmt = 'select a.Page_ID, a.Stem_ID, a.word_count*1.0/b.tfmax from word_counter a left join tfmax b on ' \
                'a.Page_ID = b.Page_ID'
     temp_dict = dict()
     for f in MDBU.retrieve_from_SQLite(connection, SQL_stmt):
@@ -206,7 +207,7 @@ def upload_data_to_mongodb(sqlitedb='csit5930',mongo_host='localhost', mongo_por
                'stem_token where type = 1 group by Page_ID, Stem_ID'
 
     cursor.execute(SQL_stmt)
-    SQL_stmt = 'select a.Page_ID, a.Stem_ID, a.word_count/b.tfmax from word_counter a left join tfmax b on ' \
+    SQL_stmt = 'select a.Page_ID, a.Stem_ID, a.word_count*1.0/b.tfmax from word_counter a left join tfmax b on ' \
                'a.Page_ID = b.Page_ID'
     temp_dict = dict()
     for f in MDBU.retrieve_from_SQLite(connection, SQL_stmt):

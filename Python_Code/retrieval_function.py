@@ -440,9 +440,9 @@ if __name__ == '__main__':
                                                                         'Search Result:\t', search_result)
 
     running_time = datetime.now() - running_time
-    running_min = running_time.total_seconds() // 60
-    running_sec = running_time.total_seconds() // 60 * 60
-    running_msec = (running_time.total_seconds() - running_time.total_seconds() // 60 * 60) * 1000
+    running_min = int(running_time.total_seconds() // 60)
+    running_sec = int(running_time.total_seconds() - running_time.total_seconds() // 60 * 60)
+    running_msec = ((running_time.total_seconds() - running_time.total_seconds() // 60 * 60) - running_sec) * 1000
     print('Running_time:\t %d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec))
 
     print('/*********\tPage_Rank_Algorithm_Apply\t*********/')
@@ -453,10 +453,12 @@ if __name__ == '__main__':
     search_result, search_frequent_items = search.overall_retreival_function(query)
     print('Query:\t\t\t', query, '\nPhrasal query:\t', phrasal_query, '\n'
                                                                       'Search Result:\t', search_result)
+
+
     running_time = datetime.now() - running_time
-    running_min = running_time.total_seconds() // 60
-    running_sec = running_time.total_seconds() // 60 * 60
-    running_msec = (running_time.total_seconds() - running_time.total_seconds() // 60 * 60) * 1000
+    running_min = int(running_time.total_seconds() // 60)
+    running_sec = int(running_time.total_seconds() - running_time.total_seconds() // 60 * 60)
+    running_msec = ((running_time.total_seconds() - running_time.total_seconds() // 60 * 60) - running_sec) * 1000
     print('Running_time:\t %d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec))
 
 
@@ -471,8 +473,8 @@ if __name__ == '__main__':
     print('Query:\t\t\t', query, '\nPhrasal query:\t', phrasal_query, '\nInput URL:\t', page_search,
                                   '\nRevised Query:\t',revised_query, '\nSearch Result:\t', return_result)
     running_time = datetime.now() - running_time
-    running_min = running_time.total_seconds() // 60
-    running_sec = running_time.total_seconds() // 60 * 60
-    running_msec = (running_time.total_seconds() - running_time.total_seconds() // 60 * 60) * 1000
+    running_min = int(running_time.total_seconds() // 60)
+    running_sec = int(running_time.total_seconds() - running_time.total_seconds() // 60 * 60)
+    running_msec = ((running_time.total_seconds() - running_time.total_seconds() // 60 * 60) - running_sec) * 1000
     print('Running_time:\t %d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec))
 
