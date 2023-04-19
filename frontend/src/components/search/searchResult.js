@@ -17,6 +17,7 @@ const SearchResult = (props) => {
             let dataInPage = result.data.result.slice(start, end)
             setResultInPage(dataInPage)
         }
+        console.log(resultInPage)
 
     }, [result, activePage])
 
@@ -33,7 +34,6 @@ const SearchResult = (props) => {
                     }}>
 
                     {[...resultInPage].map((item, index) => {
-                        console.log(item)
                         return (
                             <ResultItem item={item} key={index} />
                         )
@@ -45,7 +45,7 @@ const SearchResult = (props) => {
                         position="center"
                         value={activePage}
                         onChange={setPage}
-                        total={(result.data.result.length / 5) + 1} />
+                        total={(result.data.result.length / 5)} />
 
                     <br />
                 </div>

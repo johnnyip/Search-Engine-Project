@@ -117,9 +117,10 @@ public class ConstantsDB {
 
     public static final String selectTotalTerms = "select count(*) from term";
     public static final String selectTotalStem = "select count(*) from stem";
-    public static final String selectTitleAndMaxTF = "select u.raw_title, t.max_tf " +
+    public static final String selectTitleAndMaxTF = "select u.raw_title, max(t.max_tf) as max_tf " +
             "from max_tf t " +
-            "left join url u on u.page_id = t.page_id; ";
+            "left join url u on u.page_id = t.page_id " +
+            "group by t.page_id ; ";
     public static final String selectStemListFrequency = "SELECT s.stem , count(st.page_id) as count\n" +
             "FROM stem s \n" +
             "LEFT JOIN stem_token st ON s.stem_id = st.stem_id\n" +
