@@ -115,7 +115,7 @@ public class SearchEngine extends Base {
             conn = db.getConnection();
             rs = db.genericSearch(conn, ConstantsDB.selectAllUrl, null);
 
-            while (rs.next()) {
+            while (rs != null && rs.next()) {
                 String pageId = rs.getString("page_id");
                 String url = rs.getString("url");
                 if (m_with_page_id) {
