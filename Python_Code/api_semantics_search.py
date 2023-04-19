@@ -20,7 +20,7 @@ class api_semantics_search():
         self.sentences = MDBU.retrieve_all_value_from_db(self.mongo_client, DBName='Search_Engine_Data',
                                                            CollectionName='Raw_Page_Content')
         print("semantics init done")
-        f = open('model.dat', 'rb')
+        f = open('data/model.dat', 'rb')
         self.model = pickle.load(f)
         f.close()
         self.doc_embedding = dict()
