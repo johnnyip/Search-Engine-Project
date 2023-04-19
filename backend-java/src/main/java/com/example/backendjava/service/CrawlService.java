@@ -30,6 +30,7 @@ public class CrawlService {
         statistics.setTotalTerms(SearchEngine.getTerms());
         statistics.setTotalStems(SearchEngine.getStem());
         statistics.setMaxTFList(SearchEngine.getTitleMaxTF());
+        statistics.setStemFrequencies(SearchEngine.getStemFrequency());
 
         return statistics;
     }

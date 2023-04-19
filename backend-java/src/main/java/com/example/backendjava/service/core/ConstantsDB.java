@@ -120,6 +120,11 @@ public class ConstantsDB {
     public static final String selectTitleAndMaxTF = "select u.raw_title, t.max_tf " +
             "from max_tf t " +
             "left join url u on u.page_id = t.page_id; ";
+    public static final String selectStemListFrequency = "SELECT s.stem , count(st.page_id) as count\n" +
+            "FROM stem s \n" +
+            "LEFT JOIN stem_token st ON s.stem_id = st.stem_id\n" +
+            "GROUP BY s.stem_id\n" +
+            "ORDER BY count DESC;";
     
     /****************************************************************************************************
      * Insert-Select

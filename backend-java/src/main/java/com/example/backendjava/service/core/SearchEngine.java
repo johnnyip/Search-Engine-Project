@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.backendjava.entity.MaxTF;
+import com.example.backendjava.entity.StemFrequency;
 import com.example.backendjava.service.utils.DBUtil;
 
 public class SearchEngine extends Base {
@@ -294,10 +295,8 @@ public class SearchEngine extends Base {
     }
 
     public static List<MaxTF> getTitleMaxTF() {
-        int total = 0;
         List<MaxTF> maxTFs = new ArrayList<>();
         try {
-
             db = new DBUtil();
             conn = db.getConnection();
             rs = db.genericSearch(conn, ConstantsDB.selectTitleAndMaxTF, null);
@@ -315,6 +314,27 @@ public class SearchEngine extends Base {
         }
 
         return maxTFs;
+    }
+    public static List<StemFrequency> getStemFrequency() {
+        List<StemFrequency> stemFrequencies = new ArrayList<>();
+        try {
+            db = new DBUtil();
+            conn = db.getConnection();
+            rs = db.genericSearch(conn, ConstantsDB.selectStemListFrequency, null);
+
+            while (rs != null && rs.next() ) {
+                StemFrequency stemFrequency = new StemFrequency();
+                stemFrequency.setStem(rs.getString(1));
+                stemFrequency.setCount(rs.getInt(2));
+                stemFrequencies.add(stemFrequency);
+            }
+
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return stemFrequencies;
     }
 
 }
