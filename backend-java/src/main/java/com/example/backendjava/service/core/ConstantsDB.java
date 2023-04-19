@@ -114,6 +114,12 @@ public class ConstantsDB {
             + "     and st.type=? "
             + "group by st.page_id, st.stem_id, s.stem"
             + ")";
+
+    public static final String selectTotalTerms = "select count(*) from term";
+    public static final String selectTotalStem = "select count(*) from stem";
+    public static final String selectTitleAndMaxTF = "select u.raw_title, t.max_tf " +
+            "from max_tf t " +
+            "left join url u on u.page_id = t.page_id; ";
     
     /****************************************************************************************************
      * Insert-Select

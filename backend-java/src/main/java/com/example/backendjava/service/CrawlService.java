@@ -25,6 +25,12 @@ public class CrawlService {
     }
 
     public Statistics getStatistics() {
+        statistics.setDuration(timer.getElapsedTimeInSecond());
+        statistics.setTotalPageCrawled(SearchEngine.getFullUrlList(false).size());
+        statistics.setTotalTerms(SearchEngine.getTerms());
+        statistics.setTotalStems(SearchEngine.getStem());
+        statistics.setMaxTFList(SearchEngine.getTitleMaxTF());
+
         return statistics;
     }
 
@@ -35,9 +41,6 @@ public class CrawlService {
         idxr.reBuildAllIndexes();
 
         timer.stop();
-        statistics.setDuration(timer.getElapsedTimeInSecond());
-        statistics.setTotalPageCrawled(SearchEngine.getFullUrlList(false).size());
-
     }
 
     @Transactional
