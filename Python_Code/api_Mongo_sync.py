@@ -17,7 +17,7 @@ def upload_data_to_mongodb(sqlitedb='db/csit5930', mongo_host=os.environ.get("MO
     connection = sqlite3.connect(sqlitedb)
     mongoclient = MongoClient(host=mongo_host, port=mongo_port)
 
-    # Update Body Inverted File
+     # Update Body Inverted File
     db = mongoclient['Search_Engine_Data']
     collection = db['Body_Inverted_Index']
     collection.drop()
@@ -45,7 +45,7 @@ def upload_data_to_mongodb(sqlitedb='db/csit5930', mongo_host=os.environ.get("MO
     collection.drop()
 
     temp_dict = dict()
-    SQL_stmt = 'select Page_ID, Stem_ID, count(Position) from stem_token where Type=2' \
+    SQL_stmt = 'select Page_ID, Stem_ID, count(Position) from stem_token where Type=2'\
                ' group by Page_ID, Stem_ID order by Page_ID, Stem_ID'
     fetch = MDBU.retrieve_from_SQLite(connection, SQL_stmt)
     for f in fetch:
@@ -94,6 +94,7 @@ def upload_data_to_mongodb(sqlitedb='db/csit5930', mongo_host=os.environ.get("MO
     cursor.execute(SQL_stmt)
     SQL_stmt = 'Drop table if exists word_counter;'
     cursor.execute(SQL_stmt)
+
 
     no_of_pages = len(MDBU.retrieve_key_from_db(client=mongoclient, DBName='Search_Engine_Data',
                                                 CollectionName='Body_Forward_Index'))
@@ -237,7 +238,6 @@ def upload_data_to_mongodb(sqlitedb='db/csit5930', mongo_host=os.environ.get("MO
 
     # Retrieving the raw content for each webpage
     SQL_stmt = 'select url, raw_content from url;'
-    cursor.execute(SQL_stmt)
     temp_dict = dict()
     for f in MDBU.retrieve_from_SQLite(connection, SQL_stmt):
         temp_list = list(map(str, f))
@@ -246,6 +246,15 @@ def upload_data_to_mongodb(sqlitedb='db/csit5930', mongo_host=os.environ.get("MO
     MDBU.Update_Database_from_dict(mongoclient, temp_dict, DBName='Search_Engine_Data',
                                    CollectionName='Raw_Page_Content')
 
+    # Retrieving the Page URL, Doc Length, Page Size to MongoDB
+    SQL_stmt = 'select page_id, raw_title, last_modified_date, doc_length from url;'
+    temp_dict = dict()
+    for f in MDBU.retrieve_from_SQLite(connection, SQL_stmt):
+        temp_list = list(map(str, f))
+        if temp_dict.get(temp_list[0]) is None:
+            temp_dict[temp_list[0]] = [temp_list[1], temp_list[2], temp_list[3]]
+    MDBU.Update_Database_from_dict(mongoclient, temp_dict, DBName='Search_Engine_Data',
+                                   CollectionName='Display_Layout')
 
 # Perform Page Ranking on the document
 def page_rank_index(sqlite_db='db/csit5930', mongo_host=os.environ.get("MONGO_HOST", "localhost"), mongo_port=27017,
@@ -269,11 +278,12 @@ def page_rank_index(sqlite_db='db/csit5930', mongo_host=os.environ.get("MONGO_HO
     MDBU.Update_Database_from_dict(mongoclient, temp_dict_1, DBName='Search_Engine_Data',
                                    CollectionName='URL_To_ID_Index')
 
+
     SQL_stmt = 'select Parent_Page_Id, Child_Page_Id from url_inverted;'
     url_inverted_index = dict()
     for f in MDBU.retrieve_from_SQLite(connection, SQL_stmt):
         templist = list(map(str, f))
-        if url_inverted_index.get(templist[0], 'Null') == 'Null':
+        if url_inverted_index.get(templist[0], 'Null')=='Null':
             url_inverted_index[templist[0]] = [templist[1]]
         else:
             url_inverted_index[templist[0]].extend([templist[1]])
@@ -284,7 +294,7 @@ def page_rank_index(sqlite_db='db/csit5930', mongo_host=os.environ.get("MONGO_HO
     url_forward_index = dict()
     for f in MDBU.retrieve_from_SQLite(connection, SQL_stmt):
         templist = list(map(str, f))
-        if url_forward_index.get(templist[0], 'Null') == 'Null':
+        if url_forward_index.get(templist[0], 'Null')=='Null':
             url_forward_index[templist[0]] = [f[1]]
         else:
             url_forward_index[templist[0]].extend([f[1]])
@@ -324,23 +334,3 @@ def page_rank_index(sqlite_db='db/csit5930', mongo_host=os.environ.get("MONGO_HO
     MDBU.Update_Database_from_dict(mongoclient, page_rank, DBName='Search_Engine_Data',
                                    CollectionName='Page_Rank_Index')
     return page_rank
-
-
-if __name__ == '__main__':
-    print("Mongo db init start")
-    now = datetime.now()
-    upload_data_to_mongodb()
-    # page_rank = page_rank_index()
-    # # os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
-    # f = open('data/url_inverted_index.dat', 'rb')
-    # url_index = pickle.load(f)
-    # temp_dict = dict()
-    # for key in page_rank.keys():
-    #     temp_key = url_index[int(key)]
-    #     print(temp_key)
-    #     temp_dict[temp_key] = page_rank[key]
-    # temp_dict = dict(sorted(temp_dict.items(), key=lambda x: x[1], reverse=True))
-    # print(temp_dict)
-    now = datetime.now() - now
-    print("Mongo db init start")
-    print('Running Time: ', now)
