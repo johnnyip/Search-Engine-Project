@@ -37,13 +37,13 @@ class api_query_retrieval():
                                                                CollectionName='Page_Rank_Index')
         self.page_rank_selection = False
         self.word_forward_index = MDBU.retrieve_all_value_from_db(self.mongo_client, DBName='Search_Engine_Data',
-                                                               CollectionName='Word_Forward_Index')
+                                                                  CollectionName='Word_Forward_Index')
         self.word_inverted_index = MDBU.retrieve_all_value_from_db(self.mongo_client, DBName='Search_Engine_Data',
-                                                               CollectionName='Word_Inverted_Index')
+                                                                   CollectionName='Word_Inverted_Index')
         self.url_forward_index = MDBU.retrieve_all_value_from_db(self.mongo_client, DBName='Search_Engine_Data',
-                                                               CollectionName='URL_To_ID_Index')
+                                                                 CollectionName='URL_To_ID_Index')
         self.url_inverted_index = MDBU.retrieve_all_value_from_db(self.mongo_client, DBName='Search_Engine_Data',
-                                                               CollectionName='ID_To_URL_Index')
+                                                                  CollectionName='ID_To_URL_Index')
         self.url_par_to_chi = MDBU.retrieve_all_value_from_db(self.mongo_client, DBName='Search_Engine_Data',
                                                               CollectionName='URL_Inverted_Index')
         self.url_chi_to_par = MDBU.retrieve_all_value_from_db(self.mongo_client, DBName='Search_Engine_Data',
@@ -144,7 +144,6 @@ class api_query_retrieval():
                                 self.body_inverted_index[item] = temp_inverted_file[item]
                             else:
                                 self.body_inverted_index = copy.deepcopy(temp_inverted_file)
-
 
         query_len = (len(query_items)) ** 0.5
         for key, value in document_collection.items():
@@ -256,11 +255,14 @@ class api_query_retrieval():
         temp_dict = temp_dict[page_id]
         temp_list = sorted(temp_dict.items(), key=lambda x: x[1], reverse=True)
         temp_list = temp_list[:5]
-        temp_dict = dict()
+        temp_list1 = list()
         for item in temp_list:
+            temp_dict = dict()
             temp_key = self.word_inverted_index[item[0]]
-            temp_dict[temp_key] = item[1]
-        return temp_dict
+            temp_dict['Item'] = temp_key
+            temp_dict['Frequency'] = item[1]
+            temp_list1.extend([copy.deepcopy(temp_dict)])
+        return temp_list1
 
     def overall_retreival_function(self, query, title_weight=10):
         phrase_query = query.replace('"', '<')
@@ -270,7 +272,8 @@ class api_query_retrieval():
         phrase_query = phrase_query.replace('<', '')
         filtered_query += ' ' + phrase_query
         body_similarity_score, body_query_match_list = self.similarity_score_calculation(filtered_query, type='Body')
-        header_similarity_score, header_query_match_list = self.similarity_score_calculation(filtered_query, type='Header')
+        header_similarity_score, header_query_match_list = self.similarity_score_calculation(filtered_query,
+                                                                                             type='Header')
         full_query_match_item = dict()
         for key, value in body_query_match_list.items():
             if header_query_match_list.get(key) is not None:
@@ -328,9 +331,7 @@ class api_query_retrieval():
                 del temp_dict[temp_key]
         full_query_match_item = copy.deepcopy(temp_dict)
 
-        return_result=list()
-
-
+        return_result = list()
 
         for key, value in return_url_list.items():
             temp_dict = dict()
@@ -340,23 +341,35 @@ class api_query_retrieval():
             temp_dict['url'] = key
             temp_dict['Score'] = value
             temp_dict['Matched Key Item'] = full_query_match_item[key]
-            temp_dict['Title'] = temp_dict1.get(temp_key, "Title not found")[0]
-            temp_dict['Last Modified Date'] = temp_dict1.get(temp_key, 'Date not found')[1]
-            temp_dict['Size of the Page'] = temp_dict1.get(temp_key, "size not found")[2]
-            temp_dict['Most Frequent Item'] = return_url_items[key]
+            temp_dict['Title'] = temp_dict1[temp_key][0]
+            temp_dict['Last Modified Date'] = temp_dict1[temp_key][1]
+            temp_dict['Size of the Page'] = temp_dict1[temp_key][2]
+            temp_dict['Most Frequent Items'] = return_url_items[key]
             temp_list = list()
             if self.url_par_to_chi.get(self.url_forward_index[key]) is not None:
                 temp_list = list()
                 for item in self.url_par_to_chi[self.url_forward_index[key]]:
                     temp_value = self.url_inverted_index[str(item)]
-                    temp_list.extend([temp_value])
+                    temp_dict_2 = dict()
+                    temp_dict_2['url'] = temp_value
+                    temp_dict1 = MDBU.retrieve_value_from_db(self.mongo_client, str(item),
+                                                             DBName='Search_Engine_Data',
+                                                             CollectionName='Display_Layout')
+                    temp_dict_2['Title'] = temp_dict1[str(item)][0]
+                    temp_list.extend([temp_dict_2])
             temp_dict['Parent Link'] = copy.deepcopy(temp_list)
             temp_list = list()
             if self.url_chi_to_par.get(self.url_forward_index[key]) is not None:
                 temp_list = list()
                 for item in self.url_chi_to_par[self.url_forward_index[key]]:
                     temp_value = self.url_inverted_index[str(item)]
-                    temp_list.extend([temp_value])
+                    temp_dict_2 = dict()
+                    temp_dict_2['url'] = temp_value
+                    temp_dict1 = MDBU.retrieve_value_from_db(self.mongo_client, str(item),
+                                                             DBName='Search_Engine_Data',
+                                                             CollectionName='Display_Layout')
+                    temp_dict_2['Title'] = temp_dict1[str(item)][0]
+                    temp_list.extend([temp_dict_2])
             temp_dict['Child Link'] = copy.deepcopy(temp_list)
             return_result.extend([temp_dict])
         return return_result, return_url_items
@@ -374,7 +387,7 @@ class api_query_retrieval():
         '''
         temp_list = list(body_forward_index.values())
         temp_list = temp_list[0]
-        body_word_index = sorted(temp_list.items(), key=lambda  x:x[1], reverse=True)
+        body_word_index = sorted(temp_list.items(), key=lambda x: x[1], reverse=True)
         full_word_list = dict(body_word_index[:5]).keys()
         '''
         temp_list = list(header_forward_index.values())
@@ -384,19 +397,20 @@ class api_query_retrieval():
         full_word_list = list(set(header_word_list) | set(body_word_index))
         '''
 
-        revised_query = list(map(lambda  x:self.word_inverted_index[x], full_word_list))
+        revised_query = list(map(lambda x: self.word_inverted_index[x], full_word_list))
         revised_query = ' '.join(revised_query)
         revised_query = original_query + ' ' + revised_query
-        revised_query = revised_query.replace('"','')
+        revised_query = revised_query.replace('"', '')
         return_result, temp_dict = self.overall_retreival_function(revised_query)
+        del_key = -9999
         for key, item in enumerate(return_result):
             if item['url'] == url:
                 del_key = key
-        return_result.pop(del_key)
+        if del_key != -9999:
+            return_result.pop(del_key)
         return_result = return_result[:5]
         return_url_items = list()
         for item in return_result:
-
             temp_dict = dict()
             temp_dict['url'] = item['url']
             temp_dict['item'] = self.return_most_frequent_items(self.url_forward_index[item['url']])
@@ -404,23 +418,18 @@ class api_query_retrieval():
         return revised_query, return_result, return_url_items
 
     def query_vector(self, query):
-        self.page_rank_selection = False
-
-        # search = query_retrieval()
         running_time = datetime.now()
+        search = api_query_retrieval()
 
         print('/*********\tOnly_Vector_Space_Model_Algorithm_Apply\t*********/')
         # query = 'MOvie "dinosaur" imDB hkust admission ug'
-        matches = re.findall('<.*?<', query.replace('"', '<'))
-        phrasal_query = matches[0].replace('<', '') if matches else ""
-        result = self.overall_retreival_function(query)
         running_time = datetime.now()
-        print('Query:\t\t\t', query, '\n'
-                                     'Phrasal query:\t',
-              phrasal_query,
-              '\n'
-              'Search Result:\t',
-              result)
+        phrasal_query = str(re.findall('<.*?<', query.replace('"', '<'))[0]).replace('<', '') if len(
+            re.findall('<.*?<', query.replace('"', '<'))) > 0 else ""
+        search_result, search_frequent_items = search.overall_retreival_function(query)
+        print('Query:\t\t\t', query, '\n''Phrasal query:\t', phrasal_query, '\n'
+                                                                            'Search Result:\t', search_result)
+
         running_time = datetime.now() - running_time
         running_min = running_time.total_seconds() // 60
         running_sec = running_time.total_seconds() // 60 * 60
@@ -428,23 +437,18 @@ class api_query_retrieval():
         print('Running_time:\t %d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec))
         time = '%d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec)
 
-        return {"keyword": query, "result": result, "time": time}
+        return {"keyword": query, "result": search_result, "time": time}
 
     def query_page_rank(self, query):
         print('/*********\tPage_Rank_Algorithm_Apply\t*********/')
-        self.page_rank_selection = True
-        # query = 'MOvie "dinosaur" imDB hkust admission ug'
-        matches = re.findall('<.*?<', query.replace('"', '<'))
-        phrasal_query = matches[0].replace('<', '') if matches else ""
-        result = self.overall_retreival_function(query)
+        search = api_query_retrieval()
+        search.page_rank_selection = True
         running_time = datetime.now()
-
-        print('Query:\t\t\t', query, '\n'
-                                     'Phrasal query:\t',
-              phrasal_query,
-              '\n'
-              'Search Result:\t',
-              result)
+        phrasal_query = str(re.findall('<.*?<', query.replace('"', '<'))[0]).replace('<', '') if len(
+            re.findall('<.*?<', query.replace('"', '<'))) > 0 else ""
+        search_result, search_frequent_items = search.overall_retreival_function(query)
+        print('Query:\t\t\t', query, '\nPhrasal query:\t', phrasal_query, '\n'
+                                                                          'Search Result:\t', search_result)
         running_time = datetime.now() - running_time
         running_min = running_time.total_seconds() // 60
         running_sec = running_time.total_seconds() // 60 * 60
@@ -452,63 +456,4 @@ class api_query_retrieval():
         print('Running_time:\t %d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec))
         time = '%d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec)
 
-        return {"keyword": query, "result": result, "time": time}
-
-
-if __name__ == '__main__':
-    running_time = datetime.now()
-    # os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
-    search = api_query_retrieval()
-    running_time = datetime.now() - running_time
-    running_min = running_time.total_seconds() // 60
-    running_sec = running_time.total_seconds() // 60 * 60
-    running_msec = (running_time.total_seconds() - running_time.total_seconds() // 60 * 60) * 1000
-    print('Initializing time:\t %d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec))
-
-    print('/*********\tOnly_Vector_Space_Model_Algorithm_Apply\t*********/')
-    query = '"Hong kong" Movie Film University'
-    running_time = datetime.now()
-    phrasal_query = str(re.findall('<.*?<', query.replace('"', '<'))[0]).replace('<', '') if len(
-        re.findall('<.*?<', query.replace('"', '<'))) > 0 else ""
-    search_result, search_frequent_items = search.overall_retreival_function(query)
-    print('Query:\t\t\t', query, '\n''Phrasal query:\t', phrasal_query, '\n'
-                                                                        'Search Result:\t', search_result)
-
-    running_time = datetime.now() - running_time
-    running_min = running_time.total_seconds() // 60
-    running_sec = running_time.total_seconds() // 60 * 60
-    running_msec = (running_time.total_seconds() - running_time.total_seconds() // 60 * 60) * 1000
-    print('Running_time:\t %d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec))
-
-    print('/*********\tPage_Rank_Algorithm_Apply\t*********/')
-    search.page_rank_selection = True
-    running_time = datetime.now()
-    phrasal_query = str(re.findall('<.*?<', query.replace('"', '<'))[0]).replace('<', '') if len(
-        re.findall('<.*?<', query.replace('"', '<'))) > 0 else ""
-    search_result, search_frequent_items = search.overall_retreival_function(query)
-    print('Query:\t\t\t', query, '\nPhrasal query:\t', phrasal_query, '\n'
-                                                                      'Search Result:\t', search_result)
-    running_time = datetime.now() - running_time
-    running_min = running_time.total_seconds() // 60
-    running_sec = running_time.total_seconds() // 60 * 60
-    running_msec = (running_time.total_seconds() - running_time.total_seconds() // 60 * 60) * 1000
-    print('Running_time:\t %d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec))
-
-
-    print('/*********\tSimilar_Page_Result\t*********/')
-    running_time = datetime.now()
-    page_search = 'https://www.cse.ust.hk/~kwtleung/COMP4321/Movie/84.html'
-    phrasal_query = str(re.findall('<.*?<', query.replace('"', '<'))[0]).replace('<', '') if len(
-        re.findall('<.*?<', query.replace('"', '<'))) > 0 else ""
-    # search_result, search_frequent_items = search.overall_retreival_function(query)
-    revised_query, return_result, return_url_list = search.page_similarity_search(url=page_search, original_query=query)
-
-    print('Query:\t\t\t', query, '\nPhrasal query:\t', phrasal_query, '\nInput URL:\t', page_search,
-                                  '\nRevised Query:\t',revised_query, '\nSearch Result:\t', return_result)
-    running_time = datetime.now() - running_time
-    running_min = running_time.total_seconds() // 60
-    running_sec = running_time.total_seconds() // 60 * 60
-    running_msec = (running_time.total_seconds() - running_time.total_seconds() // 60 * 60) * 1000
-    print('Running_time:\t %d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec))
-
-    print(return_url_list)
+        return {"keyword": query, "result": search_result, "time": time}

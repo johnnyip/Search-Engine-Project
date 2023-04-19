@@ -4,20 +4,22 @@ import json
 import sys
 from datetime import datetime, timedelta
 
+
 def Update_Database_json_update(client, DBName='Search_Engine_Data', CollectionName='Body_Inverted_Index',
-                                json_path='body_inverted_index.json'):
+                                json_path='data/body_inverted_index.json'):
     db = client[DBName]
     collection = db[CollectionName]
     collection.drop()
     collection = db[CollectionName]
 
     # Can replace by retrieving record from SQLite
-    f = open(json_path,'r')
+    f = open(json_path, 'r')
     temp_dict = json.load(f)
     f.close()
 
     for key, value in temp_dict.items():
         collection.insert_one({key: value})
+
 
 def Update_Database_from_dict(client, input_dict, DBName='Search_Engine_Data', CollectionName='Body_Inverted_Index'):
     db = client[DBName]
@@ -29,14 +31,12 @@ def Update_Database_from_dict(client, input_dict, DBName='Search_Engine_Data', C
             temp = {key: value}
             collection.insert_one(temp)
 
-def retrieve_from_SQLite(DB_Connection, SQL_stmt):
 
+def retrieve_from_SQLite(DB_Connection, SQL_stmt):
     cursor = DB_Connection.cursor()
 
     cursor.execute(SQL_stmt)
     return cursor.fetchall()
-
-
 
 
 # Retrieve all the keys of documents from MongoDB
@@ -50,8 +50,9 @@ def retrieve_key_from_db(client, DBName='Search_Engine_Data', CollectionName='Bo
         keys[temp[1]] = None
     return keys
 
+
 # Retrieve value of a document from MongoDB
-def retrieve_value_from_db(client, key='',DBName='Search_Engine_Data', CollectionName='Body_Inverted_Index'):
+def retrieve_value_from_db(client, key='', DBName='Search_Engine_Data', CollectionName='Body_Inverted_Index'):
     db = client[DBName]
     collection = db[CollectionName]
     projection = {key: 1}
@@ -62,12 +63,13 @@ def retrieve_value_from_db(client, key='',DBName='Search_Engine_Data', Collectio
         break
     return temp_dict
 
+
 # Retrieve all documents from MongoDB
 def retrieve_all_value_from_db(client, DBName='Search_Engine_Data', CollectionName='Body_Inverted_Index'):
     db = client[DBName]
     collection = db[CollectionName]
     temp_dict = dict()
-    #documents = collection.find({key: {'$exists': True}}, projection)
+    # documents = collection.find({key: {'$exists': True}}, projection)
     documents = collection.find()
     temp_dict1 = dict()
     for document in documents:
@@ -77,13 +79,12 @@ def retrieve_all_value_from_db(client, DBName='Search_Engine_Data', CollectionNa
         temp_dict1[temp_key[0]] = temp_dict[temp_key[0]]
     return temp_dict1
 
-if __name__==('__main__'):
-    os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
+
+if __name__ == ('__main__'):
+    # os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
     running_time = datetime.now()
     DBName = 'Search_Engine_Data'
     CollectionName = 'Body_Inverted_Index'
-
-
 
     client = MongoClient()
     Update_Database_from_dict(client, {'1': 123, '2': 456, '3': 789}, DBName, CollectionName)

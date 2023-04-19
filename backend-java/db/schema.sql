@@ -21,7 +21,8 @@ create table url (
     raw_content text,
     clear_content text,
     stem_content text,
-    last_modified_date text
+    last_modified_date text,
+    doc_length integer
 );
 pragma table_info(url);
 -- ----------------------------------------------------------------------------------------------------

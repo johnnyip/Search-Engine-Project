@@ -11,9 +11,8 @@ load_dotenv()
 
 
 # os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
-def upload_data_to_mongodb(sqlitedb='db/csit5930', mongo_host=os.environ.get("MONGO_HOST", "localhost"),
-                           mongo_port=27017):
-    print(mongo_host)
+def upload_data_to_mongodb(sqlitedb='db/csit5930',mongo_host=os.environ.get("MONGO_HOST", "localhost"), mongo_port=27017):
+    
     connection = sqlite3.connect(sqlitedb)
     mongoclient = MongoClient()
 

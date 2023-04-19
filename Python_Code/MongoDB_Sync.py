@@ -7,8 +7,8 @@ import MongoDB_utilites as MDBU
 import sqlite3
 import pickle
 
-os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
-def upload_data_to_mongodb(sqlitedb='csit5930',mongo_host='localhost', mongo_port=27017):
+# os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
+def upload_data_to_mongodb(sqlitedb='db/csit5930',mongo_host='localhost', mongo_port=27017):
 
     connection = sqlite3.connect(sqlitedb)
     mongoclient = MongoClient()
@@ -254,7 +254,7 @@ def upload_data_to_mongodb(sqlitedb='csit5930',mongo_host='localhost', mongo_por
                                    CollectionName='Display_Layout')
 
 # Perform Page Ranking on the document
-def page_rank_index(sqlite_db='csit5930', mongo_host='localhost', mongo_port=27017,
+def page_rank_index(sqlite_db='db/csit5930', mongo_host='localhost', mongo_port=27017,
                     iternation_no=50, damping_factor=0.8):
     connection = sqlite3.connect(sqlite_db)
     mongoclient = MongoClient(host=mongo_host, port=mongo_port)
@@ -337,15 +337,15 @@ if __name__ == '__main__':
     now = datetime.now()
     upload_data_to_mongodb()
     page_rank = page_rank_index()
-    os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
-    f = open('url_inverted_index.dat','rb')
-    url_index = pickle.load(f)
-    temp_dict = dict()
-    for key in page_rank.keys():
-        temp_key = url_index[int(key)]
-        print(temp_key)
-        temp_dict[temp_key] = page_rank[key]
-    temp_dict = dict(sorted(temp_dict.items(), key=lambda x: x[1], reverse=True))
-    print(temp_dict)
+    # os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
+    # f = open('data/url_inverted_index.dat','rb')
+    # url_index = pickle.load(f)
+    # temp_dict = dict()
+    # for key in page_rank.keys():
+    #     temp_key = url_index[int(key)]
+    #     print(temp_key)
+    #     temp_dict[temp_key] = page_rank[key]
+    # temp_dict = dict(sorted(temp_dict.items(), key=lambda x: x[1], reverse=True))
+    # print(temp_dict)
     now = datetime.now()-now
     print('Running Time: ', now)

@@ -16,7 +16,6 @@ const SearchResult = (props) => {
             let end = start + itemPerPage;
             let dataInPage = result.data.result.slice(start, end)
             setResultInPage(dataInPage)
-            // console.log(dataInPage)
         }
 
     }, [result, activePage])
@@ -33,12 +32,8 @@ const SearchResult = (props) => {
                         marginTop: "10px"
                     }}>
 
-                    {/* {[...result.data.result].map((item, index) => {
-                        return (
-                            <ResultItem item={item} key={index} />
-                        )
-                    })} */}
                     {[...resultInPage].map((item, index) => {
+                        console.log(item)
                         return (
                             <ResultItem item={item} key={index} />
                         )

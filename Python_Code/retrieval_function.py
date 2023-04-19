@@ -12,7 +12,7 @@ import sys
 
 class query_retrieval():
 
-    def __init__(self, mongo_host='localhost', mongo_port=27017, stopwords_path='stopwords.txt'):
+    def __init__(self, mongo_host='localhost', mongo_port=27017, stopwords_path='data/stopwords.txt'):
         f = open(stopwords_path, 'r', encoding='utf-8')
         text = f.read()
         f.close()
@@ -422,7 +422,7 @@ class query_retrieval():
 
 if __name__ == '__main__':
     running_time = datetime.now()
-    os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
+    # os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
     search = query_retrieval()
     running_time = datetime.now() - running_time
     running_min = running_time.total_seconds() // 60

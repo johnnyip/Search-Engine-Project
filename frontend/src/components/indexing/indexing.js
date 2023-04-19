@@ -5,10 +5,12 @@ import { IconSend, IconTrash } from '@tabler/icons';
 import IndexingInfo from './indexingInfo';
 
 import { checkIndexStat, startCrawl, removeCrawlContent } from '../../functions/crawl'
+import { dbUpdate } from '../../functions/query'
 
 const Indexing = () => {
     const [url, setUrl] = useState('https://www.cse.ust.hk/~kwtleung/COMP4321/testpage.htm')
     const [loading, setLoading] = useState(false)
+    const [loading2, setLoading2] = useState(false)
     const [indexStat, setIndexStat] = useState({})
     const [timeElapsed, setTimeElapsed] = useState(0)
 
@@ -58,7 +60,7 @@ const Indexing = () => {
             <Group position="center">
                 <Button
                     color="red"
-                    disabled={indexStat.totalPageCrawled === undefined && indexStat.totalPageCrawled === 0}
+                    disabled={indexStat.totalPageCrawled === undefined && indexStat.totalPageCrawled === 0 || loading || loading2}
                     onClick={async () => {
                         setLoading(true)
                         let stat = await removeCrawlContent()
@@ -71,6 +73,7 @@ const Indexing = () => {
 
                 <Button
                     loading={loading}
+                    disabled={loading2}
                     onClick={async () => {
                         setLoading(true)
                         let timerStopped = false;
@@ -89,7 +92,30 @@ const Indexing = () => {
                         }
                     }}
                     leftIcon={<IconSend size={20} />}>
-                    {(loading) ? `Crawling and Indexing...(${timeElapsed}s)` : "Start Crawl and Indexing"}
+                    {(loading) ? `Crawling and Indexing...(${timeElapsed}s)` : "Start Crawl and Indexing (Java)"}
+                </Button>
+
+                <Button
+                    loading={loading2}
+                    disabled={loading}
+                    onClick={async () => {
+                        setLoading2(true)
+                        let timerStopped = false;
+                        const stopTimerCallback = () => {
+                            timerStopped = true;
+                            setLoading2(false);
+                        };
+                        const stopTimer = startTimer(stopTimerCallback);
+                        await dbUpdate();
+
+
+                        // Stop the timer only if it's still running
+                        if (!timerStopped) {
+                            stopTimer();
+                        }
+                    }}
+                    leftIcon={<IconSend size={20} />}>
+                    {(loading2) ? `Sync Database...(${timeElapsed}s)` : "Sync Database (Python)"}
                 </Button>
 
             </Group>

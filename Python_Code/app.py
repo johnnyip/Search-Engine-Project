@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
-from api_Mongo_sync import upload_data_to_mongodb
+from api_Mongo_sync import upload_data_to_mongodb, page_rank_index
 from api_query_retrieval import api_query_retrieval
 from api_semantics_search import api_semantics_search
 
@@ -16,7 +16,7 @@ CORS(app, origins="*")
 print("env: " + os.environ.get("MONGO_HOST", "localhost"))
 
 query = api_query_retrieval()
-semantics = api_semantics_search()
+# semantics = api_semantics_search()
 
 
 @app.route('/', methods=['GET'])
@@ -29,6 +29,7 @@ def startSync():
     print("Mongo db init start")
     now = datetime.now()
     upload_data_to_mongodb()
+    page_rank_index()
     now = datetime.now() - now
     print("Mongo db init start")
     print('Running Time: ', now)
@@ -49,12 +50,12 @@ def retrieval_pagerank():
     result = query.query_page_rank(keyword)
     return jsonify({'status': 'ok', 'data': result})
 
-
-@app.route('/query_semantics', methods=['GET'])
-def retrieval_semantics():
-    keyword = request.args.get("keyword")
-    result = semantics.query_semantics(keyword)
-    return jsonify({'status': 'ok', 'data': result})
+#
+# @app.route('/query_semantics', methods=['GET'])
+# def retrieval_semantics():
+#     keyword = request.args.get("keyword")
+#     result = semantics.query_semantics(keyword)
+#     return jsonify({'status': 'ok', 'data': result})
 
 
 if __name__ == '__main__':
