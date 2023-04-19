@@ -268,9 +268,8 @@ class api_query_retrieval():
         phrase_query = query.replace('"', '<')
         filtered_query = re.sub('<.*?<', '', phrase_query)
         phrase_query = re.findall('<.*?<', phrase_query)
-        phrase_query = ' '.join(phrase_query)
-        phrase_query = phrase_query.replace('<', '')
-        filtered_query += ' ' + phrase_query
+        phrase_query = list(map(lambda x: x.replace('<', ''), phrase_query))
+        filtered_query += ' ' + ' '.join(phrase_query)
         body_similarity_score, body_query_match_list = self.similarity_score_calculation(filtered_query, type='Body')
         header_similarity_score, header_query_match_list = self.similarity_score_calculation(filtered_query,
                                                                                              type='Header')
@@ -296,15 +295,16 @@ class api_query_retrieval():
                 else:
                     return_url_list[key] += title_weight * value
 
-        if phrase_query != '':
-            body_collection = self.phrase_searching(phrase_query, type1='Body')
-            header_collection = self.phrase_searching(phrase_query, type1='Header')
-            collection_list = set(list(body_collection.keys())) | set(list(header_collection.keys()))
-            del_list = set(list(return_url_list.keys()))
-            del_list = list(del_list - collection_list)
+        for item in phrase_query:
+            if item != '':
+                body_collection = self.phrase_searching(item, type1='Body')
+                header_collection = self.phrase_searching(item, type1='Header')
+                collection_list = set(list(body_collection.keys())) | set(list(header_collection.keys()))
+                del_list = set(list(return_url_list.keys()))
+                del_list = list(del_list - collection_list)
 
-            for doc in del_list:
-                del return_url_list[doc]
+                for doc in del_list:
+                    del return_url_list[doc]
 
         if self.page_rank_selection == False:
             return_url_list = dict(sorted(return_url_list.items(), key=lambda x: x[1], reverse=True))
