@@ -7,7 +7,7 @@ import History from './history';
 import { formatDate } from '../../functions/date'
 
 import { queryVector, queryPageRank, querySemantics } from '../../functions/query';
-import { saveHistoryToken, getHistoryToken } from '../../functions/cookie'
+import { getHistoryToken } from '../../functions/cookie'
 import { saveRedis, getRedis } from '../../functions/redis'
 
 const SearchBar = () => {
@@ -65,8 +65,8 @@ const SearchBar = () => {
 
             <h3>Enter Search Keyword</h3>
 
-            <Grid style={{ marginLeft: "25%", marginRight: "15%" }}>
-                <Grid.Col span={8}>
+            <Grid style={{ marginLeft: "22%", marginRight: "15%" }}>
+                <Grid.Col span={7}>
                     <TextInput
                         value={keyword}
                         onKeyDown={(e) => {
@@ -78,7 +78,7 @@ const SearchBar = () => {
                     />
                 </Grid.Col>
 
-                <Grid.Col span={4}>
+                <Grid.Col span={5}>
                     <Group position="left" spacing="xs">
                         <Button
                             disabled={keyword.length === 0}
@@ -95,6 +95,12 @@ const SearchBar = () => {
                             loading={loading}
                             onClick={open}>
                             History
+                        </Button>
+                        <Button
+                            style={{ textAlign: "left" }}
+                            loading={loading}
+                            onClick={open}>
+                            Indexes
                         </Button>
 
                     </Group>

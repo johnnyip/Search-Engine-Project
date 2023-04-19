@@ -1,15 +1,15 @@
-import {useState, useEffect} from 'react'
-import {TextInput, Button, Group} from '@mantine/core';
-import {IconSend, IconTrash} from '@tabler/icons';
+import { useState, useEffect } from 'react'
+import { TextInput, Button, Group } from '@mantine/core';
+import { IconSend, IconTrash } from '@tabler/icons';
 
 import IndexingInfo from './indexingInfo';
 
-import {checkCrawlPageCount, startCrawl, removeCrawlContent} from '../../functions/crawl'
+import { checkIndexStat, startCrawl, removeCrawlContent } from '../../functions/crawl'
 
 const Indexing = () => {
     const [url, setUrl] = useState('https://www.cse.ust.hk/~kwtleung/COMP4321/testpage.htm')
     const [loading, setLoading] = useState(false)
-    const [pageCount, setPageCount] = useState(0)
+    const [indexStat, setIndexStat] = useState({})
     const [timeElapsed, setTimeElapsed] = useState(0)
 
     const startTimer = (stopCallback) => {
@@ -28,8 +28,8 @@ const Indexing = () => {
     };
 
     const loadData = async () => {
-        const countResult = await checkCrawlPageCount()
-        setPageCount(countResult)
+        const indexStat_ = await checkIndexStat()
+        setIndexStat(indexStat_)
     }
 
     useEffect(() => {
@@ -44,7 +44,7 @@ const Indexing = () => {
             <Button
                 color="gray"
                 onClick={() => setUrl("https://www.cse.ust.hk/~kwtleung/COMP4321/testpage.htm")}
-                style={{margin: 10}}>
+                style={{ margin: 10 }}>
                 Load sample data URL
             </Button>
 
@@ -52,21 +52,20 @@ const Indexing = () => {
                 value={url}
                 onChange={(event) => setUrl(event.currentTarget.value)}
                 disabled
-                style={{marginLeft: "20%", marginRight: "20%"}}
-            /><br/>
+                style={{ marginLeft: "20%", marginRight: "20%" }}
+            /><br />
 
             <Group position="center">
                 <Button
                     color="red"
-                    disabled={pageCount === 0}
+                    disabled={indexStat.totalPageCrawled === undefined && indexStat.totalPageCrawled === 0}
                     onClick={async () => {
                         setLoading(true)
-                        await removeCrawlContent()
-                        const countResult = await checkCrawlPageCount()
-                        setPageCount(countResult)
+                        let stat = await removeCrawlContent()
+                        setIndexStat(stat)
                         setLoading(false)
                     }}
-                    leftIcon={<IconTrash size="1rem"/>}>
+                    leftIcon={<IconTrash size="1rem" />}>
                     Remove All Indexing
                 </Button>
 
@@ -80,8 +79,8 @@ const Indexing = () => {
                             setLoading(false);
                         };
                         const stopTimer = startTimer(stopTimerCallback);
-                        await startCrawl(url);
-                        setPageCount(await checkCrawlPageCount())
+                        let stat = await startCrawl(url);
+                        setIndexStat(stat)
 
 
                         // Stop the timer only if it's still running
@@ -89,12 +88,12 @@ const Indexing = () => {
                             stopTimer();
                         }
                     }}
-                    leftIcon={<IconSend size={20}/>}>
+                    leftIcon={<IconSend size={20} />}>
                     {(loading) ? `Crawling and Indexing...(${timeElapsed}s)` : "Start Crawl and Indexing"}
                 </Button>
 
             </Group>
-            <IndexingInfo pageCount={pageCount}/>
+            <IndexingInfo indexStat={indexStat} />
         </div>
     )
 

@@ -17,16 +17,17 @@ export const javaStatus = async () => {
     return status
 }
 
-export const checkCrawlPageCount = async () => {
+export const checkIndexStat = async () => {
     let result = 0
     let url = (process.env.REACT_APP_BACKEND1_URL !== undefined) ? process.env.REACT_APP_BACKEND1_URL : 'http://localhost:8080'
     // let url = (process.env.REACT_APP_SERVER_URL !== undefined) ? process.env.REACT_APP_SERVER_URL : 'https://search-back1.johnnyip.com'
-    url += '/crawl/count'
+    url += '/crawl/stat'
 
     await axios.get(url)
         .then((response) => {
             if (response.status === 200) {
                 result = response.data
+                console.log(result)
             } else {
                 result = 0
             }

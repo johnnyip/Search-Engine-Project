@@ -2,8 +2,14 @@ import { useState, useEffect } from 'react'
 import { Badge, Table } from '@mantine/core';
 import { IconSend } from '@tabler/icons';
 
+
 const IndexingInfo = (props) => {
-    const pageCount = props.pageCount
+    const indexStat = props.indexStat
+
+    const duration = indexStat.duration !== undefined ? indexStat.duration : 0
+    const totalPageCrawled = indexStat.totalPageCrawled !== undefined ? indexStat.totalPageCrawled : 0
+    const totalTerms = indexStat.totalTerms !== undefined ? indexStat.totalTerms : 0
+    const totalStems = indexStat.totalStems !== undefined ? indexStat.totalStems : 0
 
     return (
         <>
@@ -16,20 +22,20 @@ const IndexingInfo = (props) => {
 
                     <tbody>
                         <tr>
+                            <th>Time Used For Crawling Indexing</th>
+                            <th>{duration}</th>
+                        </tr>
+                        <tr>
                             <th>Total Document Indexed</th>
-                            <th>{pageCount}</th>
+                            <th>{totalPageCrawled}</th>
                         </tr>
                         <tr>
-                            <th>Total Keywords Indexed</th>
-                            <th>2</th>
+                            <th>Total Terms</th>
+                            <th>{totalTerms}</th>
                         </tr>
                         <tr>
-                            <th>Time Used For Crawling</th>
-                            <th>50 Seconds</th>
-                        </tr>
-                        <tr>
-                            <th>Time Used For Indexing</th>
-                            <th>50 Seconds</th>
+                            <th>Total Stemmed Words</th>
+                            <th>{totalStems}</th>
                         </tr>
                     </tbody>
                 </Table>
