@@ -17,7 +17,6 @@ const SearchResult = (props) => {
             let dataInPage = result.data.result.slice(start, end)
             setResultInPage(dataInPage)
         }
-        console.log(resultInPage)
 
     }, [result, activePage])
 

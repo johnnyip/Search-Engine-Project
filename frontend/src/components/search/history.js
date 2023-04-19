@@ -75,7 +75,7 @@ const History = (props) => {
             </Button>
             <hr />
 
-            {/* {(history != []) ? [...history].map((item, index) => {
+            {(history != []) ? [...history].map((item, index) => {
                 return (
                     <HistoryItem
                         keyword={keyword}
@@ -83,7 +83,7 @@ const History = (props) => {
                         key={index}
                         item={item} />
                 )
-            }) : <>No History</>} */}
+            }) : <>No History</>}
         </>
     )
 }
