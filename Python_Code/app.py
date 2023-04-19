@@ -1,13 +1,19 @@
+import os
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
 
+load_dotenv()
 from api_Mongo_sync import upload_data_to_mongodb
 from api_query_retrieval import api_query_retrieval
 from api_semantics_search import api_semantics_search
 
 app = Flask(__name__)
 CORS(app, origins="*")
+
+print("env: " + os.environ.get("MONGO_HOST", "localhost"))
 
 query = api_query_retrieval()
 semantics = api_semantics_search()
@@ -17,7 +23,8 @@ semantics = api_semantics_search()
 def status():
     return "ok"
 
-@app.route('/sync',methods=['GET'])
+
+@app.route('/sync', methods=['GET'])
 def startSync():
     print("Mongo db init start")
     now = datetime.now()
@@ -26,6 +33,7 @@ def startSync():
     print("Mongo db init start")
     print('Running Time: ', now)
     return "ok"
+
 
 @app.route('/query_vector', methods=['GET'])
 def retrieval_vector():
