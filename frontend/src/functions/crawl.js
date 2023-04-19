@@ -45,7 +45,7 @@ export const startCrawl = async (crawl_url) => {
     let url = (process.env.REACT_APP_BACKEND1_URL !== undefined) ? process.env.REACT_APP_BACKEND1_URL : 'http://localhost:8080'
     url += '/crawl/start?url=' + crawl_url
 
-    await axios.get(url)
+    await axios.get(url, { timeout: 2000 * 60 * 60 })
         .then((response) => {
             if (response.status === 200) {
                 result = response.data

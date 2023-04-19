@@ -261,7 +261,7 @@ public class SearchEngine extends Base {
             conn = db.getConnection();
             rs = db.genericSearch(conn, ConstantsDB.selectTotalTerms, null);
 
-            while (rs.next()) {
+            while (rs != null && rs.next()) {
                 total = rs.getInt(1);
             }
 
@@ -282,7 +282,7 @@ public class SearchEngine extends Base {
             conn = db.getConnection();
             rs = db.genericSearch(conn, ConstantsDB.selectTotalStem, null);
 
-            while (rs.next()) {
+            while (rs != null && rs.next()) {
                 total = rs.getInt(1);
             }
 
@@ -301,7 +301,7 @@ public class SearchEngine extends Base {
             conn = db.getConnection();
             rs = db.genericSearch(conn, ConstantsDB.selectTitleAndMaxTF, null);
 
-            while (rs != null && rs.next() ) {
+            while (rs != null && rs.next()) {
                 MaxTF maxTF = new MaxTF();
                 maxTF.setTitle(rs.getString(1));
                 maxTF.setFrequency(rs.getInt(2));
@@ -315,6 +315,7 @@ public class SearchEngine extends Base {
 
         return maxTFs;
     }
+
     public static List<StemFrequency> getStemFrequency() {
         List<StemFrequency> stemFrequencies = new ArrayList<>();
         try {
@@ -322,7 +323,7 @@ public class SearchEngine extends Base {
             conn = db.getConnection();
             rs = db.genericSearch(conn, ConstantsDB.selectStemListFrequency, null);
 
-            while (rs != null && rs.next() ) {
+            while (rs != null && rs.next()) {
                 StemFrequency stemFrequency = new StemFrequency();
                 stemFrequency.setStem(rs.getString(1));
                 stemFrequency.setCount(rs.getInt(2));
