@@ -8,7 +8,7 @@ WORKDIR /app
 COPY requirements.txt /app/
 
 # Install any needed packages specified in requirements.txt
-RUN pip install --download-cache=/tmp/pipInstall --trusted-host pypi.python.org -r requirements.txt sentence-transformers
+RUN pip install --trusted-host pypi.python.org -r requirements.txt sentence-transformers
 
 # Copy the rest of the application into the container at /app
 COPY . /app
