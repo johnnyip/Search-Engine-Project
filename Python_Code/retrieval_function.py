@@ -12,7 +12,7 @@ import sys
 
 class query_retrieval():
 
-    def __init__(self, mongo_host='localhost', mongo_port=27017, stopwords_path='data/stopwords.txt'):
+    def __init__(self, mongo_host='localhost', mongo_port=27017, stopwords_path='stopwords.txt'):
         f = open(stopwords_path, 'r', encoding='utf-8')
         text = f.read()
         f.close()
@@ -268,9 +268,8 @@ class query_retrieval():
         phrase_query = query.replace('"', '<')
         filtered_query = re.sub('<.*?<', '', phrase_query)
         phrase_query = re.findall('<.*?<', phrase_query)
-        phrase_query = ' '.join(phrase_query)
-        phrase_query = phrase_query.replace('<', '')
-        filtered_query += ' ' + phrase_query
+        phrase_query = list(map(lambda x:x.replace('<', ''), phrase_query))
+        filtered_query += ' ' + ' '.join(phrase_query)
         body_similarity_score, body_query_match_list = self.similarity_score_calculation(filtered_query, type='Body')
         header_similarity_score, header_query_match_list = self.similarity_score_calculation(filtered_query, type='Header')
         full_query_match_item = dict()
@@ -295,15 +294,16 @@ class query_retrieval():
                 else:
                     return_url_list[key] += title_weight * value
 
-        if phrase_query != '':
-            body_collection = self.phrase_searching(phrase_query, type1='Body')
-            header_collection = self.phrase_searching(phrase_query, type1='Header')
-            collection_list = set(list(body_collection.keys())) | set(list(header_collection.keys()))
-            del_list = set(list(return_url_list.keys()))
-            del_list = list(del_list - collection_list)
+        for item in phrase_query:
+            if item != '':
+                body_collection = self.phrase_searching(item, type1='Body')
+                header_collection = self.phrase_searching(item, type1='Header')
+                collection_list = set(list(body_collection.keys())) | set(list(header_collection.keys()))
+                del_list = set(list(return_url_list.keys()))
+                del_list = list(del_list - collection_list)
 
-            for doc in del_list:
-                del return_url_list[doc]
+                for doc in del_list:
+                    del return_url_list[doc]
 
         if self.page_rank_selection == False:
             return_url_list = dict(sorted(return_url_list.items(), key=lambda x: x[1], reverse=True))
@@ -422,7 +422,7 @@ class query_retrieval():
 
 if __name__ == '__main__':
     running_time = datetime.now()
-    # os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
+    os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
     search = query_retrieval()
     running_time = datetime.now() - running_time
     running_min = running_time.total_seconds() // 60
@@ -431,12 +431,14 @@ if __name__ == '__main__':
     print('Initializing time:\t %d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec))
 
     print('/*********\tVector_Space_Model_Algorithm_Apply\t*********/')
-    query = '"Hong kong" Movie Film University'
+    query = '"Dinosaur Simulator" Movie Film University "Dinosaur Island"'
     running_time = datetime.now()
-    phrasal_query = str(re.findall('<.*?<', query.replace('"', '<'))[0]).replace('<', '') if len(
-        re.findall('<.*?<', query.replace('"', '<'))) > 0 else ""
+    phrase_query = query.replace('"', '<')
+    filtered_query = re.sub('<.*?<', '', phrase_query)
+    phrase_query = re.findall('<.*?<', phrase_query)
+    phrase_query = list(map(lambda x: x.replace('<', ''), phrase_query))
     search_result, search_frequent_items = search.overall_retreival_function(query)
-    print('Query:\t\t\t', query, '\n''Phrasal query:\t', phrasal_query, '\n'
+    print('Query:\t\t\t', query, '\n''Phrasal query:\t', phrase_query, '\n'
                                                                         'Search Result:\t', search_result)
 
     running_time = datetime.now() - running_time
@@ -448,10 +450,12 @@ if __name__ == '__main__':
     print('/*********\tPage_Rank_Algorithm_Apply\t*********/')
     search.page_rank_selection = True
     running_time = datetime.now()
-    phrasal_query = str(re.findall('<.*?<', query.replace('"', '<'))[0]).replace('<', '') if len(
-        re.findall('<.*?<', query.replace('"', '<'))) > 0 else ""
+    phrase_query = query.replace('"', '<')
+    filtered_query = re.sub('<.*?<', '', phrase_query)
+    phrase_query = re.findall('<.*?<', phrase_query)
+    phrase_query = list(map(lambda x: x.replace('<', ''), phrase_query))
     search_result, search_frequent_items = search.overall_retreival_function(query)
-    print('Query:\t\t\t', query, '\nPhrasal query:\t', phrasal_query, '\n'
+    print('Query:\t\t\t', query, '\nPhrasal query:\t', phrase_query, '\n'
                                                                       'Search Result:\t', search_result)
 
 
@@ -465,12 +469,14 @@ if __name__ == '__main__':
     print('/*********\tSimilar_Page_Result\t*********/')
     running_time = datetime.now()
     page_search = 'https://www.cse.ust.hk/~kwtleung/COMP4321/Movie/84.html'
-    phrasal_query = str(re.findall('<.*?<', query.replace('"', '<'))[0]).replace('<', '') if len(
-        re.findall('<.*?<', query.replace('"', '<'))) > 0 else ""
+    phrase_query = query.replace('"', '<')
+    filtered_query = re.sub('<.*?<', '', phrase_query)
+    phrase_query = re.findall('<.*?<', phrase_query)
+    phrase_query = list(map(lambda x: x.replace('<', ''), phrase_query))
     # search_result, search_frequent_items = search.overall_retreival_function(query)
     revised_query, return_result, return_url_list = search.page_similarity_search(url=page_search, original_query=query)
 
-    print('Query:\t\t\t', query, '\nPhrasal query:\t', phrasal_query, '\nInput URL:\t', page_search,
+    print('Query:\t\t\t', query, '\nPhrasal query:\t', phrase_query, '\nInput URL:\t', page_search,
                                   '\nRevised Query:\t',revised_query, '\nSearch Result:\t', return_result)
     running_time = datetime.now() - running_time
     running_min = int(running_time.total_seconds() // 60)
