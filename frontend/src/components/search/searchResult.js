@@ -214,7 +214,9 @@ const SearchResult = (props) => {
                             <ResultItem
                                 item={item}
                                 key={index}
-                                filterTerm={filterTerm} />
+                                filterTerm={filterTerm}
+                                setFilterTerm={setFilterTerm}
+                                setShowFilter={setShowFilter} />
                         )
                     })}
 

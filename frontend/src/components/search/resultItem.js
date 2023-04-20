@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
-import { Card, Grid, Text, Group, Accordion, Badge } from '@mantine/core';
+import { Card, Grid, Text, Group, Accordion, Badge, Chip, Button } from '@mantine/core';
+import { IconCheck } from '@tabler/icons-react';
 
 import RelatedPages from './relatedPages';
 
 const ResultItem = (props) => {
     let result = props.item
     let filterTerm = props.filterTerm
+    let setFilterTerm = props.setFilterTerm
+    let setShowFilter = props.setShowFilter
 
     return (
         <Card
@@ -51,12 +54,25 @@ const ResultItem = (props) => {
             <Group style={{ margin: 10 }}>
                 {result["Most Frequent Items"].map((item, index) => {
                     return (
-                        <Badge key={index}
+                        <Button
+                            // style={{paddingLeft:5, paddingRight:5, paddingBottom:5, paddingTop:5}}
+                            radius="sm"
+                            key={index}
+                            compact
+                            multiple={false}
+                            leftIcon={(filterTerm === item.Item) ? <IconCheck size={19} /> : null}
+                            onClick={() => {
+                                if (filterTerm === item.Item) {
+                                    setFilterTerm("")
+                                } else {
+                                    setFilterTerm(item.Item)
+                                    setShowFilter(true)
+                                }
+                            }}
                             color={filterTerm === item.Item ? "blue" : "gray"}
-                            size="lg"
                             variant={filterTerm === item.Item ? "filled" : "outline"}>
                             {item.Item}: {item.Frequency}
-                        </Badge>
+                        </Button>
                     )
                 })}
             </Group>
@@ -92,7 +108,7 @@ const ResultItem = (props) => {
                 </Grid.Col>
             </Grid>
 
-        </Card>
+        </Card >
 
 
     )
