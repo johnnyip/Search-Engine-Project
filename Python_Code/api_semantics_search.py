@@ -117,8 +117,8 @@ class api_semantics_search():
 
         running_time = datetime.now() - running_time
         running_min = running_time.total_seconds() // 60
-        running_sec = (running_time.total_seconds() % 60) // 1
-        running_msec = (running_time.total_seconds() % 1) * 1000
+        running_sec = running_time.total_seconds() % 60
+        running_msec = running_time.microseconds / 1000
         print('Running_time:\t %d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec))
         time = '%d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec)
 

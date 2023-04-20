@@ -432,8 +432,8 @@ class api_query_retrieval():
 
         running_time = datetime.now() - running_time
         running_min = running_time.total_seconds() // 60
-        running_sec = running_time.total_seconds() // 60 * 60
-        running_msec = (running_time.total_seconds() - running_time.total_seconds() // 60 * 60) * 1000
+        running_sec = running_time.total_seconds() % 60
+        running_msec = running_time.microseconds / 1000
         print('Running_time:\t %d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec))
         time = '%d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec)
 
@@ -451,8 +451,8 @@ class api_query_retrieval():
                                                                           'Search Result:\t', search_result)
         running_time = datetime.now() - running_time
         running_min = running_time.total_seconds() // 60
-        running_sec = running_time.total_seconds() // 60 * 60
-        running_msec = (running_time.total_seconds() - running_time.total_seconds() // 60 * 60) * 1000
+        running_sec = running_time.total_seconds() % 60
+        running_msec = running_time.microseconds / 1000
         print('Running_time:\t %d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec))
         time = '%d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec)
 

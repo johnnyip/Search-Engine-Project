@@ -116,9 +116,7 @@ const SearchResult = (props) => {
                             <Select
                                 value={filterTerm}
                                 onChange={setFilterTerm}
-                                style={{ width: '23%' }}
                                 searchable
-                                placeholder='Term(# of occurence in retrieved document)'
                                 label={"Filter by page frequent terms"}
                                 data={termsArray}>
                             </Select>
