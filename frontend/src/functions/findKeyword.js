@@ -10,7 +10,7 @@ export const findKeyword = (text, keywords, contextWords = 5) => {
     };
 
     let match;
-    while ((match = keywordRegex.exec(text)) !== null) {
+    while ((match = keywordRegex.exec(text)) !== null && snippets.length < 5) {
         const beforeText = text.slice(0, match.index).trim();
         const afterText = text.slice(match.index + match[0].length).trim();
 
@@ -20,5 +20,6 @@ export const findKeyword = (text, keywords, contextWords = 5) => {
         snippets.push([beforeMatch, match[0], afterMatch]);
     }
 
+    
     return snippets;
 };

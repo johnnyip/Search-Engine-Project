@@ -59,7 +59,7 @@ const ResultItem = (props) => {
 
             </Card.Section>
 
-            {isHistory ? null :
+            {isHistory ? null || rawContent !== "" :
                 <>
                     {rawTextMatched.length > 0 ?
                         [...rawTextMatched].map((item, index) => (
