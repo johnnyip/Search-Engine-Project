@@ -9,6 +9,7 @@ const SearchResult = (props) => {
 
     const [activePage, setPage] = useState(1);
     const [resultInPage, setResultInPage] = useState([])
+    const [terms, setTerms] = useState([])
 
     useEffect(() => {
         if (Object.keys(result).length !== 0) {
@@ -16,6 +17,16 @@ const SearchResult = (props) => {
             let end = start + itemPerPage;
             let dataInPage = result.data.result.slice(start, end)
             setResultInPage(dataInPage)
+
+            //Extract all terms in the document
+            // if (result.data !== undefined) {
+            //     for (let result_ in result.data.result) {
+            //         console.log(result)
+            //         result = result_["Most Frequent Items"]
+            //         // console.log(result)
+            //     }
+            //     console.log(result.data.result)
+            // }
         }
 
     }, [result, activePage])

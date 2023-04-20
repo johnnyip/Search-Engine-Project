@@ -4,16 +4,15 @@ import { ScrollArea, Box, Card, Text, Group } from '@mantine/core';
 const RelatedPages = (props) => {
     let result = props.pages
 
-    console.log(result)
-
     return (
         <>
             <ScrollArea >
                 <Box >
                     {result.map((item, index) => {
-                        console.log(item)
+                        // console.log(item)
                         return (
                             <Card
+                                key={index}
                                 withBorder
                                 radius="md"
                                 style={{

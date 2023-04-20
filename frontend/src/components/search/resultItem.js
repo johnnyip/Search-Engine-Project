@@ -5,7 +5,6 @@ import RelatedPages from './relatedPages';
 
 const ResultItem = (props) => {
     let result = props.item
-    console.log(result)
 
     return (
         <Card
