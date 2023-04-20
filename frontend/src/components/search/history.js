@@ -13,17 +13,19 @@ const History = (props) => {
     let setKeyword = props.setKeyword
     let onSubmit = props.onSubmit
 
-    const [history, setHistory] = useState([])
+    let history = props.history
+    let setHistory = props.setHistory
 
-    useEffect(() => {
-        const getSearchHistory = async () => {
-            let historyToken = getHistoryToken()
-            let history = await getRedis(historyToken)
-            setHistory(history)
-        }
 
-        getSearchHistory()
-    }, [opened])
+    // useEffect(() => {
+    //     const getSearchHistory = async () => {
+    //         let historyToken = getHistoryToken()
+    //         let history = await getRedis(historyToken)
+    //         setHistory(history)
+    //     }
+
+    //     getSearchHistory()
+    // }, [opened])
     return (
         <>
             <div>Current Search</div>
@@ -47,11 +49,11 @@ const History = (props) => {
                             onClick={() => {
                                 setKeyword("")
                             }}
-                            leftIcon={<IconX size="15" />}>
+                            leftIcon={<IconX height={20} width={20} />}>
                             Clear
                         </Button>
                         <Button
-                            leftIcon={<IconSearch size={20} />}
+                            leftIcon={<IconSearch height={20} width={20} />}
                             disabled={keyword.length === 0}
                             style={{ textAlign: "left" }}
                             onClick={async (e) => {

@@ -37,21 +37,21 @@ const Indexes = (props) => {
 
 
     const filterItem = () => {
-        if ((chosenTab == "maxtf" && maxTF.length !== 0) ||
-            chosenTab == "stem" && stemmedWord.length !== 0 ||
-            chosenTab == "raw" && rawWord.length !== 0) {
+        if ((chosenTab === "maxtf" && maxTF.length !== 0) ||
+            (chosenTab === "stem" && stemmedWord.length !== 0) ||
+            (chosenTab === "raw" && rawWord.length !== 0)) {
             let start = (activePage - 1) * itemPerPage;
             let end = start + itemPerPage;
 
             let dataInPage = []
             //Apply filter
-            if (searchFilter == "") {
-                dataInPage = chosenTab == "maxtf" ? maxTF : chosenTab == "stem" ? stemmedWord : rawWord
-            } else if (chosenTab == "maxtf") {
+            if (searchFilter === "") {
+                dataInPage = chosenTab === "maxtf" ? maxTF : chosenTab === "stem" ? stemmedWord : rawWord
+            } else if (chosenTab === "maxtf") {
                 dataInPage = maxTF.filter((item) => {
                     return item.title !== undefined && item.title.toLowerCase().includes(searchFilter.toLowerCase())
                 })
-            } else if (chosenTab == "stem") {
+            } else if (chosenTab === "stem") {
                 dataInPage = stemmedWord.filter((item) => {
                     return item.stem !== undefined && item.stem.toLowerCase().includes(searchFilter.toLowerCase())
                 })
@@ -123,11 +123,11 @@ const Indexes = (props) => {
                             onClick={() => {
                                 setKeyword("")
                             }}
-                            leftIcon={<IconX size="15" />}>
+                            leftIcon={<IconX height={20} width={20} />}>
                             Clear
                         </Button>
                         <Button
-                            leftIcon={<IconSearch size={20} />}
+                            leftIcon={<IconSearch height={20} width={20} />}
                             disabled={keyword.length === 0}
                             style={{ textAlign: "left" }}
                             onClick={async (e) => {
@@ -174,7 +174,7 @@ const Indexes = (props) => {
                             onClick={() => {
                                 setAscending(!ascending);
                             }}
-                            leftIcon={ascending ? <IconArrowUp size={20} /> : <IconArrowDown size={20} />}>
+                            leftIcon={ascending ? <IconArrowUp height={20} width={20} /> : <IconArrowDown height={20} width={20} />}>
                             {ascending ? "Ascending" : "Descending"}
                         </Button>
                     </Grid.Col>
@@ -219,7 +219,7 @@ const Indexes = (props) => {
                                                     onClick={() => {
                                                         setKeyword(`${keyword} ${item.stem}`)
                                                     }}
-                                                    leftIcon={<IconPlus size={20} />}>
+                                                    leftIcon={<IconPlus height={20} width={20} />}>
                                                     Append keyword
                                                 </Button>
                                             </td>
@@ -245,7 +245,7 @@ const Indexes = (props) => {
                                                     onClick={() => {
                                                         setKeyword(`${keyword} ${item.stem}`)
                                                     }}
-                                                    leftIcon={<IconPlus size={20} />}>
+                                                    leftIcon={<IconPlus height={20} width={20} />}>
                                                     Append keyword
                                                 </Button>
                                             </td>

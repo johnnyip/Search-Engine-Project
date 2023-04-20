@@ -164,7 +164,7 @@ const SearchResult = (props) => {
                 <Group position='center'>
                     <b>{result.data.result.length} results ({result.data.time})</b>
                     <Button
-                        leftIcon={<IconFilter size={20} />}
+                        leftIcon={<IconFilter height={20} width={20} />}
                         onClick={() => setShowFilter(!showFilter)}>
                         {showFilter ? "Hide Filter" : "Show Filter"}
                     </Button>
@@ -194,7 +194,7 @@ const SearchResult = (props) => {
                                 onClick={() => {
                                     setAscending(!ascending)
                                 }}
-                                leftIcon={ascending ? <IconArrowUp size={20} /> : <IconArrowDown size={20} />}>
+                                leftIcon={ascending ? <IconArrowUp height={20} width={20} /> : <IconArrowDown height={20} width={20} />}>
                                 {ascending ? "Ascending" : "Descending"}
                             </Button>
                         </>}

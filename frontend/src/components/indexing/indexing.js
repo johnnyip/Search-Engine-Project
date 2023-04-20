@@ -67,7 +67,7 @@ const Indexing = () => {
                         setIndexStat(stat)
                         setLoading(false)
                     }}
-                    leftIcon={<IconTrash size="1rem" />}>
+                    leftIcon={<IconTrash height={20} width={20} />}>
                     Remove All Indexing
                 </Button>
 
@@ -91,7 +91,7 @@ const Indexing = () => {
                             stopTimer();
                         }
                     }}
-                    leftIcon={<IconSend size={20} />}>
+                    leftIcon={<IconSend height={20} width={20} />}>
                     {(loading) ? `Crawling and Indexing...(${timeElapsed}s)` : "Start Crawl and Indexing (Java)"}
                 </Button>
 
@@ -114,7 +114,7 @@ const Indexing = () => {
                             stopTimer();
                         }
                     }}
-                    leftIcon={<IconSend size={20} />}>
+                    leftIcon={<IconSend height={20} width={20}/>}>
                     {(loading2) ? `Sync Database...(${timeElapsed}s)` : "Sync Database (Python)"}
                 </Button>
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useDisclosure } from '@mantine/hooks';
-import { Modal, TextInput, Button, Grid, SegmentedControl, Group, Center, Box } from '@mantine/core';
+import { Modal, TextInput, Button, Grid, SegmentedControl, Group, Center, Autocomplete } from '@mantine/core';
 import { IconSearch, IconHistory, IconSitemap, Icon3dCubeSphere, IconMessageSearch, IconTopologyComplex } from '@tabler/icons-react';
 
 import SearchResult from './searchResult';
@@ -11,8 +11,12 @@ import { formatDate } from '../../functions/date'
 import { queryVector, queryPageRank, querySemantics } from '../../functions/query';
 import { getHistoryToken } from '../../functions/cookie'
 import { saveRedis, getRedis } from '../../functions/redis'
+import { getIndexedContent } from '../../functions/crawl'
+
+import { Trie } from '../../functions/keywordSuggestion'
 
 const SearchBar = () => {
+    const [trie, setTrie] = useState(new Trie())
     const [keyword, setKeyword] = useState('')
     const [loading, setLoading] = useState(false)
     const [opened, { open, close }] = useDisclosure(false);
@@ -21,13 +25,21 @@ const SearchBar = () => {
     const [queryResult, setQueryResult] = useState({})
     const [history, setHistory] = useState("")
 
+    const [indexMaxTF, setIndexMaxTF] = useState([])
+    const [indexStemFreq, setIndexStemFreq] = useState([])
+    const [indexRawFreq, setIndexRawFreq] = useState([])
+    const [historySuggestions, setHistorySuggestions] = useState([])
+    const [suggestions, setSuggestions] = useState([])
+
     let algoOptions = [
-        { label: (<Center><Icon3dCubeSphere size={20} />Vector Space</Center>), value: 'vector' },
-        { label: (<Center><IconTopologyComplex size={20} />PageRank</Center>), value: 'pagerank' },
-        { label: (<Center><IconMessageSearch size={20} />Semantics</Center>), value: 'semantics' }
-        // { label: 'PageRank', value: 'pagerank' },
-        // { label: 'Semantics Search', value: 'semantics' },
+        { label: (<Center><Icon3dCubeSphere height={20} width={20} />Vector Space</Center>), value: 'vector' },
+        { label: (<Center><IconTopologyComplex height={20} width={20} />PageRank</Center>), value: 'pagerank' },
+        { label: (<Center><IconMessageSearch height={20} width={20} />Semantics</Center>), value: 'semantics' }
     ]
+
+    const findKeywords = (keywords) => {
+        return trie.searchForSuggestions(keywords)
+    }
 
     const onSubmit = async () => {
 
@@ -47,14 +59,69 @@ const SearchBar = () => {
         //Save cookie
 
         let historyToken = getHistoryToken()
-        let history = await getRedis(historyToken)
+        let history_ = await getRedis(historyToken)
 
-        history.unshift(result)
-        setHistory(history)
+        history_.unshift(result)
+        setHistory(history_)
 
-        await saveRedis(historyToken, history)
+        await saveRedis(historyToken, history_)
+        loadHistorySuggestions(history_)
+    }
+
+    const loadHistorySuggestions = (history_) => {
+        let historyQuery = []
+        let historyCount = 0
+        for (let item of history_) {
+            if (!historyQuery.includes(item.data.keyword) && historyCount < 3) {
+                historyQuery.push(item.data.keyword)
+                historyCount++
+            }
+        }
+
+        let historySuggestion = []
+        // historyQuery.reverse()
+        for (let item of historyQuery) {
+            historySuggestion.push({ value: item, group: 'Your Last 3 Search History' })
+        }
+
+        setSuggestions(historySuggestion)
+        setHistorySuggestions(historySuggestion)
+    }
+
+    const getSearchHistory = async () => {
+        let historyToken = getHistoryToken()
+        let history_ = await getRedis(historyToken)
+        setHistory(history_)
+        loadHistorySuggestions(history_)
+    }
+
+    const getIndexes = async () => {
+        const indexStat_ = await getIndexedContent();
+        console.log(indexStat_)
+        setIndexMaxTF(indexStat_.maxTFList !== undefined ? indexStat_.maxTFList : [])
+        setIndexStemFreq(indexStat_.stemFrequencies !== undefined ? indexStat_.stemFrequencies : [])
+
+        let rawIndex = indexStat_.rawFrequencies !== undefined ? indexStat_.rawFrequencies : []
+        setIndexRawFreq(rawIndex)
+
+        //Init the keyword suggestion tree
+        // const keywords = ["apple", "banana", "avocado", "apricot", "blueberry", "almond"];
+        console.log(rawIndex.length)
+        for (let item of rawIndex) {
+            trie.insert(item.stem)
+        }
+
+        // console.log(trie.searchForSuggestions("am"))
 
     }
+    useEffect(() => {
+
+        getIndexes()
+        getSearchHistory()
+
+
+    }, [])
+
 
     return (
         <>
@@ -68,7 +135,7 @@ const SearchBar = () => {
                 />
 
                 <Button
-                    leftIcon={<IconHistory size={20} />}
+                    leftIcon={<IconHistory height={20} width={20} />}
                     style={{ textAlign: "left" }}
                     disabled={loading}
                     onClick={() => {
@@ -78,7 +145,7 @@ const SearchBar = () => {
                     History
                 </Button>
                 <Button
-                    leftIcon={<IconSitemap size={20} />}
+                    leftIcon={<IconSitemap height={20} width={20} />}
                     style={{ textAlign: "left" }}
                     disabled={loading}
                     onClick={() => {
@@ -94,21 +161,45 @@ const SearchBar = () => {
 
             <Grid style={{ marginLeft: "28%", marginRight: "15%" }}>
                 <Grid.Col span={8}>
-                    <TextInput
+                    <Autocomplete
                         value={keyword}
+                        onChange={(e) => {
+                            setKeyword(e)
+                            let suggestion = []
+
+                            if (e.length > 0) {
+                                let keyword_ = e
+                                let words = keyword_.split(' ')
+                                let firstWords = words.slice(0, words.length - 1)
+                                let lastWord = words[words.length - 1]
+                                let suggestedList = findKeywords(lastWord)
+                                console.log(suggestedList)
+                                for (let item of suggestedList) {
+                                    suggestion.push({ value: `${firstWords} ${item}`, group: 'Suggested Keywords' })
+                                }
+                            }
+                            
+                            // console.log(historySuggestions)
+                            suggestion = suggestion.concat(historySuggestions)
+                            setSuggestions(suggestion)
+
+
+                        }}
+                        icon={<IconSearch height={20} width={20} />}
+                        data={suggestions}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                                 onSubmit();
                             }
                         }}
-                        onChange={(event) => setKeyword(event.currentTarget.value)}
                     />
+
                 </Grid.Col>
 
                 <Grid.Col span={2}>
                     <Group position="left" spacing="xs">
                         <Button
-                            leftIcon={<IconSearch size={20} />}
+                            leftIcon={<IconSearch height={20} width={20} />}
                             disabled={keyword.length === 0}
                             style={{ textAlign: "left" }}
                             loading={loading}
@@ -135,6 +226,8 @@ const SearchBar = () => {
 
                 {(isHistory) ?
                     <History
+                        history={history}
+                        setHistory={setHistory}
                         opened={opened}
                         keyword={keyword}
                         setKeyword={setKeyword}

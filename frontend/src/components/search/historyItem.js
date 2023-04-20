@@ -13,7 +13,7 @@ const HistoryItem = (props) => {
     return (
         <>
             <Grid grow style={{ marginLeft: "5%", marginRight: "5%", textAlign: "left" }}>
-                <Grid.Col span={8} style={{}}>
+                <Grid.Col span={8} >
                     <b>Keyword:</b> {item.data.keyword}
                 </Grid.Col>
                 <Grid.Col span={2}>
@@ -21,7 +21,7 @@ const HistoryItem = (props) => {
                         onClick={() => {
                             setKeyword(`${keyword} ${item.data.keyword}`)
                         }}
-                        leftIcon={<IconPlus size={20} />}>
+                        leftIcon={<IconPlus height={20} width={20} />}>
                         Append keyword
                     </Button>
                 </Grid.Col>
