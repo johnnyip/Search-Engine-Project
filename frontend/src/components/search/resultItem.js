@@ -1,14 +1,25 @@
 import { useState, useEffect } from 'react'
-import { Card, Grid, Text, Group, Accordion, Badge, Chip, Button } from '@mantine/core';
+import { Card, Grid, Text, Group, Accordion, Badge, Button } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
 
 import RelatedPages from './relatedPages';
+import { findKeyword } from '../../functions/findKeyword'
 
 const ResultItem = (props) => {
     let result = props.item
     let filterTerm = props.filterTerm
     let setFilterTerm = props.setFilterTerm
     let setShowFilter = props.setShowFilter
+    let rawContent = props.rawContent
+    let keywordArr = props.keywordArr
+    let isHistory = props.isHistory
+
+    const [rawTextMatched, setRawTextMatched] = useState([])
+
+    useEffect(() => {
+        if (!isHistory)
+            setRawTextMatched(findKeyword(rawContent, keywordArr))
+    }, [result])
 
     return (
         <Card
@@ -47,7 +58,29 @@ const ResultItem = (props) => {
                 </Group>
 
             </Card.Section>
-            <Badge size="lg" radius="xs" color="gray">Top 5 Term Frequency In Document</Badge>
+
+            {isHistory ? null :
+                <>
+                    {rawTextMatched.length > 0 ?
+                        [...rawTextMatched].map((item, index) => (
+                            <span key={index}>
+                                {item[0]}{` `}
+                                <span style={{ color: 'red' }}>{item[1]}</span>
+                                {` `}{item[2]}...{` `}
+                            </span>
+
+                        )) :
+                        <>
+                            {/* show first 30 words in the string */}
+                            {rawContent.split(" ").slice(0, 30).join(" ")}...
+                        </>}
+                </>
+            }
+            <br />
+            <Badge size="lg" radius="xs" color="gray"
+                style={{ marginTop: 20 }}>
+                Top 5 Term Frequency In Document
+            </Badge>
             {/* <Text mt="xs" color="dimmed" size="md" style={{ paddingBottom: 5 }}>
                     Top 5 Term Frequency<br />
                 </Text> */}

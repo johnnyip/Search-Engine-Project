@@ -10,6 +10,7 @@ const HistoryItem = (props) => {
     let item = props.item
     let keyword = props.keyword
     let setKeyword = props.setKeyword
+
     return (
         <>
             <Grid grow style={{ marginLeft: "5%", marginRight: "5%", textAlign: "left" }}>
@@ -45,7 +46,10 @@ const HistoryItem = (props) => {
                         <Accordion.Control>Search Result</Accordion.Control>
                         <Accordion.Panel>
 
-                            <SearchResult variant="filled" result={item} />
+                            <SearchResult
+                                isHistory={true}
+                                variant="filled"
+                                result={item} />
 
                         </Accordion.Panel>
                     </Accordion.Item>

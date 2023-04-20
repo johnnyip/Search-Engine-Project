@@ -12,6 +12,7 @@ const History = (props) => {
     let keyword = props.keyword
     let setKeyword = props.setKeyword
     let onSubmit = props.onSubmit
+    let rawContents = props.rawContents
 
     let history = props.history
     let setHistory = props.setHistory
@@ -81,6 +82,7 @@ const History = (props) => {
             {(history != []) ? [...history].map((item, index) => {
                 return (
                     <HistoryItem
+                        rawContents={rawContents}
                         keyword={keyword}
                         setKeyword={setKeyword}
                         key={index}

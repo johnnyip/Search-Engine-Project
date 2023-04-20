@@ -6,6 +6,10 @@ import ResultItem from './resultItem'
 
 const SearchResult = (props) => {
     let result = props.result
+    let rawContents = props.rawContents
+    let isHistory = props.isHistory
+
+    // console.log(result)
     const itemPerPage = 5;
     const sortOptions_term = [
         { label: "Default (Score)", value: "" },
@@ -83,9 +87,6 @@ const SearchResult = (props) => {
             }
         }
 
-
-        // console.log(sortOption)
-        // console.log(result_)
         //Sort the result by the sortOption
         if (sortOption === "") {
             //Sort by Score
@@ -210,10 +211,15 @@ const SearchResult = (props) => {
                     }}>
 
                     {[...resultInPage].map((item, index) => {
+                        // console.log(item)
+                        let keywordArr = result.data.keyword.split(" ")
                         return (
                             <ResultItem
                                 item={item}
                                 key={index}
+                                isHistory={isHistory}
+                                rawContent={!isHistory ? rawContents[item.url] : {}}
+                                keywordArr={keywordArr}
                                 filterTerm={filterTerm}
                                 setFilterTerm={setFilterTerm}
                                 setShowFilter={setShowFilter} />

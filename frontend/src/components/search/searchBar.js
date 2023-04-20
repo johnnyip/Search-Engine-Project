@@ -28,6 +28,7 @@ const SearchBar = () => {
     const [indexMaxTF, setIndexMaxTF] = useState([])
     const [indexStemFreq, setIndexStemFreq] = useState([])
     const [indexRawFreq, setIndexRawFreq] = useState([])
+    const [rawContents, setRawContents] = useState({})
     const [historySuggestions, setHistorySuggestions] = useState([])
     const [suggestions, setSuggestions] = useState([])
 
@@ -104,9 +105,10 @@ const SearchBar = () => {
         let rawIndex = indexStat_.rawFrequencies !== undefined ? indexStat_.rawFrequencies : []
         setIndexRawFreq(rawIndex)
 
+        let rawContents = indexStat_.rawContentMap !== undefined ? indexStat_.rawContentMap : {}
+        setRawContents(rawContents)
+
         //Init the keyword suggestion tree
-        // const keywords = ["apple", "banana", "avocado", "apricot", "blueberry", "almond"];
-        console.log(rawIndex.length)
         for (let item of rawIndex) {
             trie.insert(item.stem)
         }
@@ -220,7 +222,9 @@ const SearchBar = () => {
             <br />
             <hr />
 
-            <SearchResult result={queryResult} />
+            <SearchResult
+                result={queryResult}
+                rawContents={rawContents} />
 
             <Modal
                 size="70%"
@@ -229,6 +233,7 @@ const SearchBar = () => {
 
                 {(isHistory) ?
                     <History
+                        rawContents={rawContents}
                         history={history}
                         setHistory={setHistory}
                         opened={opened}
