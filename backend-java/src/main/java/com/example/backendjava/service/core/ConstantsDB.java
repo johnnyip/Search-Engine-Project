@@ -133,6 +133,9 @@ public class ConstantsDB {
             "GROUP BY t.term_id \n" +
             "ORDER BY count DESC;";
 
+    public static final String selectRawContent = "SELECT u.url, u.raw_content  \n" +
+            "FROM url u;";
+
     /****************************************************************************************************
      * Insert-Select
      ****************************************************************************************************/

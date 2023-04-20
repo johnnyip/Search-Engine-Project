@@ -39,6 +39,7 @@ public class CrawlService {
         indexes.setMaxTFList(SearchEngine.getTitleMaxTF());
         indexes.setStemFrequencies(SearchEngine.getStemFrequency());
         indexes.setRawFrequencies(SearchEngine.getRawFrequency());
+        indexes.setRawContentMap(SearchEngine.getRawContent());
         return indexes;
     }
 

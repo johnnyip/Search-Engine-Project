@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.example.backendjava.entity.MaxTF;
 import com.example.backendjava.entity.TermFrequency;
@@ -363,6 +365,26 @@ public class SearchEngine extends Base {
         }
 
         return rawFrequencies;
+    }
+
+    public static Map<String, String> getRawContent() {
+        Map<String, String> rawContent = new HashMap<>();
+
+        try {
+            db = new DBUtil();
+            conn = db.getConnection();
+            rs = db.genericSearch(conn, ConstantsDB.selectRawContent, null);
+
+            while (rs != null && rs.next()) {
+                rawContent.put(rs.getString(1), rs.getString(2));
+            }
+
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return rawContent;
     }
 
 }
