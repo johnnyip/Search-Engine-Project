@@ -16,7 +16,7 @@ const Indexes = (props) => {
     const [indexStat, setIndexStat] = useState({})
     const [searchFilter, setSearchFilter] = useState("")
     const [filteredItems, setFilteredItems] = useState([])
-    const [ascending, setAscending] = useState(true)
+    const [ascending, setAscending] = useState(false)
     const [maxTF, setMaxTF] = useState([])
     const [stemmedWord, setStemmedWord] = useState([])
     const [resultInPage, setResultInPage] = useState([])

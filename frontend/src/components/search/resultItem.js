@@ -5,6 +5,7 @@ import RelatedPages from './relatedPages';
 
 const ResultItem = (props) => {
     let result = props.item
+    let filterTerm = props.filterTerm
 
     return (
         <Card
@@ -50,7 +51,10 @@ const ResultItem = (props) => {
             <Group style={{ margin: 10 }}>
                 {result["Most Frequent Items"].map((item, index) => {
                     return (
-                        <Badge key={index} color="gray" size="lg" variant="outline">
+                        <Badge key={index}
+                            color={filterTerm === item.Item ? "blue" : "gray"}
+                            size="lg"
+                            variant={filterTerm === item.Item ? "filled" : "outline"}>
                             {item.Item}: {item.Frequency}
                         </Badge>
                     )

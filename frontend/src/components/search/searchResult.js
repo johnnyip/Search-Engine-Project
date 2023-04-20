@@ -1,19 +1,33 @@
 import { useState, useEffect } from 'react'
 import { Pagination, Select, Group, Button } from '@mantine/core';
-import { IconFilter } from '@tabler/icons-react';
+import { IconFilter, IconArrowUp, IconArrowDown } from '@tabler/icons-react';
 
 import ResultItem from './resultItem'
 
 const SearchResult = (props) => {
     let result = props.result
     const itemPerPage = 5;
+    const sortOptions_term = [
+        { label: "Default (Score)", value: "" },
+        { label: "Page Size", value: "size" },
+        { label: "Filtered Term Frequency", value: "term" },
+        { label: "Rank of Filtered Term Frequency", value: "termRank" },
+        { label: "Last Modified Date", value: "date" },
+    ]
+    const sortOptions_noTerm = [
+        { label: "Default (Score)", value: "" },
+        { label: "Page Size", value: "size" },
+        { label: "Last Modified Date", value: "date" },
+    ]
 
     const [activePage, setPage] = useState(1);
     const [resultInPage, setResultInPage] = useState([])
     const [completeFilteredResult, setCompleteFilteredResult] = useState([])
+    const [ascending, setAscending] = useState(false)
 
     const [showFilter, setShowFilter] = useState(false)
     const [filterTerm, setFilterTerm] = useState("")
+    const [sortOption, setSortOption] = useState("")
     const [termsArray, setTermsArray] = useState([])
 
     const extractDocumentTerms = () => {
@@ -52,6 +66,8 @@ const SearchResult = (props) => {
 
     const extractResultInPage = async () => {
         let result_ = []
+
+        //Filter out the result by terms
         if (filterTerm === "") {
             result_ = result.data.result
         } else {
@@ -61,6 +77,41 @@ const SearchResult = (props) => {
                 }
             }
         }
+
+
+        console.log(sortOption)
+        console.log(result_)
+        //Sort the result by the sortOption
+        if (sortOption === "") {
+            result_ = result_
+        } else if (sortOption === "size") {
+            result_ = result_.sort((a, b) => b["Size of the Page"] - a["Size of the Page"])
+        } else if (sortOption === "term" && filterTerm !== "") {
+            result_ = result_.sort((a, b) => {
+                let aTerm = a["Most Frequent Items"].filter((item) => item.Item === filterTerm)[0]
+                let bTerm = b["Most Frequent Items"].filter((item) => item.Item === filterTerm)[0]
+                return bTerm.Frequency - aTerm.Frequency
+            })
+        } else if (sortOption === "termRank" && filterTerm !== "") {
+            //Sort the result by the position in the array of "Most Frequent Items"
+            result_ = result_.sort((a, b) => {
+                let aTerm = a["Most Frequent Items"].map((item) => item.Item).indexOf(filterTerm)
+                let bTerm = b["Most Frequent Items"].map((item) => item.Item).indexOf(filterTerm)
+                return aTerm - bTerm
+            })
+        } else if (sortOption === "date") {
+            result_ = result_.sort((a, b) => {
+                let aDate = new Date(a["Last Modified Date"])
+                let bDate = new Date(b["Last Modified Date"])
+                return bDate - aDate
+            })
+        }
+
+        //Sort the result by the ascending order
+        if (ascending) {
+            result_ = result_.reverse()
+        }
+        console.log(result_)
         setCompleteFilteredResult(result_)
     }
 
@@ -90,16 +141,12 @@ const SearchResult = (props) => {
             extractResultInPage()
             pagination()
         }
-    }, [filterTerm])
+    }, [filterTerm, sortOption, ascending])
 
     useEffect(() => {
         pagination()
     }, [activePage, completeFilteredResult]);
 
-    useEffect(() => {
-        console.log("resultInPage")
-        console.log(resultInPage)
-    })
 
     if (Object.keys(result).length !== 0) {
         return (
@@ -119,15 +166,27 @@ const SearchResult = (props) => {
                         <>
                             <Select
                                 value={filterTerm}
-                                onChange={(e) => {
-                                    setFilterTerm(e)
-                                    setPage(1)
-                                }}
+                                onChange={setFilterTerm}
                                 searchable
                                 label={"Filter by page frequent terms"}
                                 data={termsArray}>
                             </Select>
 
+                            <Select
+                                style={{ width: "15%" }}
+                                value={sortOption}
+                                onChange={setSortOption}
+                                label={"Sort By"}
+                                data={filterTerm === "" ? sortOptions_noTerm : sortOptions_term}>
+                            </Select>
+
+                            <Button
+                                onClick={() => {
+                                    setAscending(!ascending)
+                                }}
+                                leftIcon={ascending ? <IconArrowUp size={20} /> : <IconArrowDown size={20} />}>
+                                {ascending ? "Ascending" : "Descending"}
+                            </Button>
                         </>}
                 </Group>
 
@@ -142,7 +201,10 @@ const SearchResult = (props) => {
 
                     {[...resultInPage].map((item, index) => {
                         return (
-                            <ResultItem item={item} key={index} />
+                            <ResultItem
+                                item={item}
+                                key={index}
+                                filterTerm={filterTerm} />
                         )
                     })}
 
