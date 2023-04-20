@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Button, Group, TextInput, Grid } from '@mantine/core';
-import { IconX } from '@tabler/icons';
+import { IconX, IconSearch } from '@tabler/icons-react';
 
 import HistoryItem from './historyItem'
 import { getHistoryToken } from '../../functions/cookie'
@@ -51,6 +51,7 @@ const History = (props) => {
                             Clear
                         </Button>
                         <Button
+                            leftIcon={<IconSearch size={20} />}
                             disabled={keyword.length === 0}
                             style={{ textAlign: "left" }}
                             onClick={async (e) => {

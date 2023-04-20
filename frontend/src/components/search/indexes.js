@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Button, Group, TextInput, Grid, SegmentedControl, Table, Pagination } from '@mantine/core';
-import { IconX, IconPlus, IconArrowUp, IconArrowDown } from '@tabler/icons';
+import { IconX, IconPlus, IconArrowUp, IconArrowDown, IconSearch } from '@tabler/icons-react';
 
 import { checkIndexStat } from '../../functions/crawl'
 
@@ -118,6 +118,7 @@ const Indexes = (props) => {
                             Clear
                         </Button>
                         <Button
+                            leftIcon={<IconSearch size={20} />}
                             disabled={keyword.length === 0}
                             style={{ textAlign: "left" }}
                             onClick={async (e) => {
@@ -205,7 +206,7 @@ const Indexes = (props) => {
                                     <tr key={index}>
                                         <td>{item.stem}</td>
                                         <td>{item.count}</td>
-                                        <td style={{ textAlign: "center", width:"20%" }}>
+                                        <td style={{ textAlign: "center", width: "20%" }}>
                                             <Button
                                                 onClick={() => {
                                                     setKeyword(`${keyword} ${item.stem}`)

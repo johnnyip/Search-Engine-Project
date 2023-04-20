@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Tabs, Text } from '@mantine/core';
-import { IconHierarchy2, IconSearch } from '@tabler/icons';
+import { IconHierarchy2, IconSearch } from '@tabler/icons-react';
 
 import Indexing from './indexing/indexing';
 import SearchBar from './search/searchBar'

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Badge, Group } from '@mantine/core';
-// import { IconPhoto, IconMessageCircle, IconSettings } from '@tabler/icons';
+// import { IconPhoto, IconMessageCircle, IconSettings } from '@tabler/icons-react';
 
 import { pythonStatus } from './functions/query';
 import { javaStatus } from './functions/crawl';

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { TextInput, Button, Group } from '@mantine/core';
-import { IconSend, IconTrash } from '@tabler/icons';
+import { IconSend, IconTrash } from '@tabler/icons-react';
 
 import IndexingInfo from './indexingInfo';
 

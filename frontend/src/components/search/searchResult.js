@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Pagination, Select, Group, Button } from '@mantine/core';
+import { IconFilter } from '@tabler/icons-react';
 
 import ResultItem from './resultItem'
 
@@ -61,13 +62,9 @@ const SearchResult = (props) => {
             }
         }
         setCompleteFilteredResult(result_)
-        pagination(result_)
-
     }
 
     const pagination = (result_) => {
-        console.log("result_")
-        console.log(result_)
         let start = (activePage - 1) * itemPerPage;
         let end = start + itemPerPage;
         let dataInPage
@@ -80,23 +77,29 @@ const SearchResult = (props) => {
     }
 
     useEffect(() => {
-        console.log(result)
         if (Object.keys(result).length !== 0) {
-            setFilterTerm("")
-            extractResultInPage()
+            extractDocumentTerms();
+            extractResultInPage();
+            setPage(1);
+            setFilterTerm("");
         }
-        extractDocumentTerms()
-    }, [result])
+    }, [result]);
 
     useEffect(() => {
         if (Object.keys(result).length !== 0) {
             extractResultInPage()
+            pagination()
         }
     }, [filterTerm])
 
     useEffect(() => {
         pagination()
-    }, [activePage])
+    }, [activePage, completeFilteredResult]);
+
+    useEffect(() => {
+        console.log("resultInPage")
+        console.log(resultInPage)
+    })
 
     if (Object.keys(result).length !== 0) {
         return (
@@ -104,6 +107,7 @@ const SearchResult = (props) => {
                 <Group position='center'>
                     <b>{result.data.result.length} results ({result.data.time})</b>
                     <Button
+                        leftIcon={<IconFilter size={20} />}
                         onClick={() => setShowFilter(!showFilter)}>
                         {showFilter ? "Hide Filter" : "Show Filter"}
                     </Button>
@@ -115,7 +119,10 @@ const SearchResult = (props) => {
                         <>
                             <Select
                                 value={filterTerm}
-                                onChange={setFilterTerm}
+                                onChange={(e) => {
+                                    setFilterTerm(e)
+                                    setPage(1)
+                                }}
                                 searchable
                                 label={"Filter by page frequent terms"}
                                 data={termsArray}>
@@ -124,7 +131,7 @@ const SearchResult = (props) => {
                         </>}
                 </Group>
 
-                {(showFilter) ? <><br />Showing <b>{completeFilteredResult.length}</b> filtered results</> : <></>}
+                {(filterTerm !== "") ? <><br />Showing <b>{completeFilteredResult.length}</b> filtered results</> : <></>}
 
                 <div
                     style={{
@@ -145,7 +152,7 @@ const SearchResult = (props) => {
                         position="center"
                         value={activePage}
                         onChange={setPage}
-                        total={(completeFilteredResult.length / 5) + 1} />
+                        total={(completeFilteredResult.length / 5) + ((completeFilteredResult.length % 5 === 0) ? 0 : 1)} />
 
                     <br />
                 </div>

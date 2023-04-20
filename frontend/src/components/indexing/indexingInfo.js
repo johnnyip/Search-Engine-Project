@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Badge, Table } from '@mantine/core';
-import { IconSend } from '@tabler/icons';
+import { IconSend } from '@tabler/icons-react';
 
 
 const IndexingInfo = (props) => {

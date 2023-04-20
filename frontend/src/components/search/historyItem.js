@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Button, Group, TextInput, Grid, Accordion } from '@mantine/core';
-import { IconPlus } from '@tabler/icons';
+import { IconPlus } from '@tabler/icons-react';
 
 import SearchResult from './searchResult';
 
@@ -10,8 +10,6 @@ const HistoryItem = (props) => {
     let item = props.item
     let keyword = props.keyword
     let setKeyword = props.setKeyword
-
-    // console.log(item) 
     return (
         <>
             <Grid grow style={{ marginLeft: "5%", marginRight: "5%", textAlign: "left" }}>
