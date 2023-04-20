@@ -98,7 +98,7 @@ class semantics_search():
                                                              CollectionName='Display_Layout')
                     temp_dict_2['Title'] = temp_dict1[str(item1)][0]
                     temp_list.extend([temp_dict_2])
-            temp_dict['Parent Link'] = copy.deepcopy(temp_list)
+            temp_dict['Child Link'] = copy.deepcopy(temp_list)
             temp_list = list()
             if self.url_chi_to_par.get(self.url_forward_index[item[0]]) is not None:
                 temp_list = list()
@@ -111,7 +111,7 @@ class semantics_search():
                                                              CollectionName='Display_Layout')
                     temp_dict_2['Title'] = temp_dict1[str(item1)][0]
                     temp_list.extend([temp_dict_2])
-            temp_dict['Child Link'] = copy.deepcopy(temp_list)
+            temp_dict['Parent Link'] = copy.deepcopy(temp_list)
             return_result.extend([temp_dict])
 
 
