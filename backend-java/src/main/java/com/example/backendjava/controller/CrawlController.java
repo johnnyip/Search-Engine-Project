@@ -1,5 +1,6 @@
 package com.example.backendjava.controller;
 
+import com.example.backendjava.entity.Indexes;
 import com.example.backendjava.entity.Statistics;
 import com.example.backendjava.service.CrawlService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,11 @@ public class CrawlController {
     @GetMapping("/stat")
     public Statistics getStat(){
         return crawlService.getStatistics();
+    }
+
+    @GetMapping("/index")
+    public Indexes getIndexes(){
+        return crawlService.getIndexesContent();
     }
 
 //    @GetMapping("/count")

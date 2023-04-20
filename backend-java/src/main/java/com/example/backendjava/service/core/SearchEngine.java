@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.backendjava.entity.MaxTF;
-import com.example.backendjava.entity.StemFrequency;
+import com.example.backendjava.entity.TermFrequency;
 import com.example.backendjava.service.utils.DBUtil;
+import com.example.backendjava.service.utils.StopStem;
 
 public class SearchEngine extends Base {
 
@@ -316,18 +317,18 @@ public class SearchEngine extends Base {
         return maxTFs;
     }
 
-    public static List<StemFrequency> getStemFrequency() {
-        List<StemFrequency> stemFrequencies = new ArrayList<>();
+    public static List<TermFrequency> getStemFrequency() {
+        List<TermFrequency> stemFrequencies = new ArrayList<>();
         try {
             db = new DBUtil();
             conn = db.getConnection();
             rs = db.genericSearch(conn, ConstantsDB.selectStemListFrequency, null);
 
             while (rs != null && rs.next()) {
-                StemFrequency stemFrequency = new StemFrequency();
-                stemFrequency.setStem(rs.getString(1));
-                stemFrequency.setCount(rs.getInt(2));
-                stemFrequencies.add(stemFrequency);
+                TermFrequency termFrequency = new TermFrequency();
+                termFrequency.setStem(rs.getString(1));
+                termFrequency.setCount(rs.getInt(2));
+                stemFrequencies.add(termFrequency);
             }
 
             conn.close();
@@ -336,6 +337,32 @@ public class SearchEngine extends Base {
         }
 
         return stemFrequencies;
+    }
+
+    public static List<TermFrequency> getRawFrequency() {
+        List<TermFrequency> rawFrequencies = new ArrayList<>();
+        StopStem ss = new StopStem();
+
+        try {
+            db = new DBUtil();
+            conn = db.getConnection();
+            rs = db.genericSearch(conn, ConstantsDB.selectRawListFrequency, null);
+
+            while (rs != null && rs.next()) {
+                TermFrequency termFrequency = new TermFrequency();
+                if (!ss.isStopWord(rs.getString(1))) {
+                    termFrequency.setStem(rs.getString(1));
+                    termFrequency.setCount(rs.getInt(2));
+                    rawFrequencies.add(termFrequency);
+                }
+            }
+
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return rawFrequencies;
     }
 
 }

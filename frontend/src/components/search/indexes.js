@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Button, Group, TextInput, Grid, SegmentedControl, Table, Pagination } from '@mantine/core';
 import { IconX, IconPlus, IconArrowUp, IconArrowDown, IconSearch } from '@tabler/icons-react';
 
-import { checkIndexStat } from '../../functions/crawl'
+import { getIndexedContent } from '../../functions/crawl'
 
 const Indexes = (props) => {
     let opened = props.opened
@@ -31,7 +31,7 @@ const Indexes = (props) => {
 
 
     const loadData = async () => {
-        const indexStat_ = await checkIndexStat()
+        const indexStat_ = await getIndexedContent()
         setIndexStat(indexStat_)
         let maxTF_ = indexStat_.maxTFList !== undefined ? indexStat_.maxTFList : []
         let stemmedWord_ = indexStat_.stemFrequencies !== undefined ? indexStat_.stemFrequencies : []

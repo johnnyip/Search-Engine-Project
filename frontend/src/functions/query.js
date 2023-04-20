@@ -48,7 +48,7 @@ export const queryVector = async (keyword) => {
         .then((response) => {
             if (response.status === 200) {
                 result = response.data
-                console.log(result)
+                // console.log(result)
 
             } else {
                 result = 0

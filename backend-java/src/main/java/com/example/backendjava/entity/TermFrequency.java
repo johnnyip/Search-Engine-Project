@@ -1,6 +1,6 @@
 package com.example.backendjava.entity;
 
-public class StemFrequency {
+public class TermFrequency {
     private String stem;
     private int count;
 

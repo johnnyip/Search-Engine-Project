@@ -64,7 +64,7 @@ const SearchResult = (props) => {
                 })
             })
             // console.log(uniqueTerms)
-            console.log(uniqueTermsArray)
+            // console.log(uniqueTermsArray)
             setTermsArray(uniqueTermsArray)
         }
     }
@@ -84,8 +84,8 @@ const SearchResult = (props) => {
         }
 
 
-        console.log(sortOption)
-        console.log(result_)
+        // console.log(sortOption)
+        // console.log(result_)
         //Sort the result by the sortOption
         if (sortOption === "") {
             //Sort by Score
@@ -121,7 +121,7 @@ const SearchResult = (props) => {
         if (ascending) {
             result_ = result_.reverse()
         }
-        console.log(result_)
+        // console.log(result_)
         setCompleteFilteredResult(result_)
     }
 

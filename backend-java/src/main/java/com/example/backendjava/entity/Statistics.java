@@ -7,8 +7,6 @@ public class Statistics {
     private int totalPageCrawled;
     private int totalTerms;
     private int totalStems;
-    private List<MaxTF> maxTFList;
-    private List<StemFrequency> stemFrequencies;
 
 
     public float getDuration() {
@@ -43,19 +41,4 @@ public class Statistics {
         this.totalStems = totalStems;
     }
 
-    public List<MaxTF> getMaxTFList() {
-        return maxTFList;
-    }
-
-    public void setMaxTFList(List<MaxTF> maxTFList) {
-        this.maxTFList = maxTFList;
-    }
-
-    public List<StemFrequency> getStemFrequencies() {
-        return stemFrequencies;
-    }
-
-    public void setStemFrequencies(List<StemFrequency> stemFrequencies) {
-        this.stemFrequencies = stemFrequencies;
-    }
 }

@@ -1,5 +1,6 @@
 package com.example.backendjava.service;
 
+import com.example.backendjava.entity.Indexes;
 import com.example.backendjava.entity.Statistics;
 import com.example.backendjava.service.core.Indexer;
 import com.example.backendjava.service.core.SearchEngine;
@@ -18,10 +19,12 @@ import java.nio.file.StandardCopyOption;
 public class CrawlService {
     private StopWatch timer;
     private Statistics statistics;
+    private Indexes indexes;
 
     public CrawlService() {
         this.timer = new StopWatch();
         this.statistics = new Statistics();
+        this.indexes = new Indexes();
     }
 
     public Statistics getStatistics() {
@@ -29,10 +32,14 @@ public class CrawlService {
         statistics.setTotalPageCrawled(SearchEngine.getFullUrlList(false).size());
         statistics.setTotalTerms(SearchEngine.getTerms());
         statistics.setTotalStems(SearchEngine.getStem());
-        statistics.setMaxTFList(SearchEngine.getTitleMaxTF());
-        statistics.setStemFrequencies(SearchEngine.getStemFrequency());
-
         return statistics;
+    }
+
+    public Indexes getIndexesContent(){
+        indexes.setMaxTFList(SearchEngine.getTitleMaxTF());
+        indexes.setStemFrequencies(SearchEngine.getStemFrequency());
+        indexes.setRawFrequencies(SearchEngine.getRawFrequency());
+        return indexes;
     }
 
     @Transactional
