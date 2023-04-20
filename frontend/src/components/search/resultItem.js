@@ -43,14 +43,14 @@ const ResultItem = (props) => {
                 </Group>
 
             </Card.Section>
-            <Badge size="lg" radius="xs" color="gray">Top 5 Term Frequency</Badge>
+            <Badge size="lg" radius="xs" color="gray">Top 5 Term Frequency In Document</Badge>
             {/* <Text mt="xs" color="dimmed" size="md" style={{ paddingBottom: 5 }}>
                     Top 5 Term Frequency<br />
                 </Text> */}
             <Group style={{ margin: 10 }}>
                 {result["Most Frequent Items"].map((item, index) => {
                     return (
-                        <Badge color="gray" size="lg" variant="outline">
+                        <Badge key={index} color="gray" size="lg" variant="outline">
                             {item.Item}: {item.Frequency}
                         </Badge>
                     )
