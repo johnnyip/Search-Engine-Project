@@ -13,61 +13,65 @@ const Indexes = (props) => {
 
     const itemPerPage = 20;
 
-    const [indexStat, setIndexStat] = useState({})
     const [searchFilter, setSearchFilter] = useState("")
     const [filteredItems, setFilteredItems] = useState([])
     const [ascending, setAscending] = useState(false)
     const [maxTF, setMaxTF] = useState([])
     const [stemmedWord, setStemmedWord] = useState([])
+    const [rawWord, setRawWord] = useState([])
     const [resultInPage, setResultInPage] = useState([])
     const [activePage, setActivePage] = useState(1)
 
     const [chosenTab, setChosenTab] = useState("maxtf")
     let tabOptions = [
         { label: 'Max TF of document', value: 'maxtf' },
-        { label: 'Stemmed Word Frequency', value: 'stem' }
+        { label: 'Stemmed Word Frequency', value: 'stem' },
+        { label: 'Raw Word Frequency', value: 'raw' }
 
     ]
 
+    const sortDataByFrequency = (data) => {
+        const sortKey = data[0]?.count !== undefined ? 'count' : 'frequency';
+        return data.sort((a, b) => (ascending ? a[sortKey] - b[sortKey] : b[sortKey] - a[sortKey]));
+    };
 
-    const loadData = async () => {
-        const indexStat_ = await getIndexedContent()
-        setIndexStat(indexStat_)
-        let maxTF_ = indexStat_.maxTFList !== undefined ? indexStat_.maxTFList : []
-        let stemmedWord_ = indexStat_.stemFrequencies !== undefined ? indexStat_.stemFrequencies : []
-
-        // Sort
-        maxTF_.sort((a, b) => { return !ascending ? b.frequency - a.frequency : a.frequency - b.frequency })
-        stemmedWord_.sort((a, b) => { return !ascending ? b.frequency - a.frequency : a.frequency - b.frequency })
-
-        setMaxTF(maxTF_)
-        setStemmedWord(stemmedWord_)
-    }
 
     const filterItem = () => {
         if ((chosenTab == "maxtf" && maxTF.length !== 0) ||
-            chosenTab == "stem" && stemmedWord.length !== 0) {
+            chosenTab == "stem" && stemmedWord.length !== 0 ||
+            chosenTab == "raw" && rawWord.length !== 0) {
             let start = (activePage - 1) * itemPerPage;
             let end = start + itemPerPage;
 
             let dataInPage = []
             //Apply filter
             if (searchFilter == "") {
-                dataInPage = chosenTab == "maxtf" ? maxTF : stemmedWord
+                dataInPage = chosenTab == "maxtf" ? maxTF : chosenTab == "stem" ? stemmedWord : rawWord
             } else if (chosenTab == "maxtf") {
                 dataInPage = maxTF.filter((item) => {
                     return item.title !== undefined && item.title.toLowerCase().includes(searchFilter.toLowerCase())
                 })
-            } else {
+            } else if (chosenTab == "stem") {
                 dataInPage = stemmedWord.filter((item) => {
                     return item.stem !== undefined && item.stem.toLowerCase().includes(searchFilter.toLowerCase())
                 })
+            } else {
+                dataInPage = rawWord.filter((item) => {
+                    return item.stem !== undefined && item.stem.toLowerCase().includes(searchFilter.toLowerCase())
+                })
             }
+
+            // Sort data after filtering
+            dataInPage = sortDataByFrequency(dataInPage);
+
             setFilteredItems(dataInPage)
 
+
+
             if (dataInPage.length > 0) {
-                dataInPage = chosenTab == "maxtf" ? dataInPage.slice(start, end) : dataInPage.slice(start, end)
+                dataInPage = dataInPage.slice(start, end)
             }
+
 
             // setFilteredItems(dataInPage)
             setResultInPage(dataInPage)
@@ -77,19 +81,24 @@ const Indexes = (props) => {
 
     useEffect(() => {
         filterItem()
-    }, [searchFilter, maxTF, stemmedWord, activePage, ascending])
+    }, [searchFilter, maxTF, stemmedWord, rawWord, activePage, ascending, chosenTab])
 
     useEffect(() => {
-        setSearchFilter("")
-        filterItem()
-    }, [chosenTab])
+        const loadData = async () => {
+            const indexStat_ = await getIndexedContent();
+            let maxTF_ = indexStat_.maxTFList !== undefined ? indexStat_.maxTFList : [];
+            let stemmedWord_ = indexStat_.stemFrequencies !== undefined ? indexStat_.stemFrequencies : [];
+            let rawWord_ = indexStat_.rawFrequencies !== undefined ? indexStat_.rawFrequencies : [];
 
-    useEffect(() => {
-        // console.log("Indexing page loaded")
-        loadData()
-        filterItem()
-    }, [opened])
+            setMaxTF(sortDataByFrequency(maxTF_));
+            setStemmedWord(sortDataByFrequency(stemmedWord_));
+            setRawWord(sortDataByFrequency(rawWord_));
+        };
 
+        if (opened) {
+            loadData();
+        }
+    }, [opened]);
 
     return (
         <>
@@ -163,9 +172,7 @@ const Indexes = (props) => {
                     <Grid.Col span={2}>
                         <Button
                             onClick={() => {
-                                setAscending(!ascending)
-                                setMaxTF(maxTF.sort((a, b) => { return ascending ? b.frequency - a.frequency : a.frequency - b.frequency }))
-                                setStemmedWord(stemmedWord.sort((a, b) => { return ascending ? b.count - a.count : a.count - b.count }))
+                                setAscending(!ascending);
                             }}
                             leftIcon={ascending ? <IconArrowUp size={20} /> : <IconArrowDown size={20} />}>
                             {ascending ? "Ascending" : "Descending"}
@@ -194,32 +201,59 @@ const Indexes = (props) => {
                             })}
                         </tbody>
                     </Table> :
-                    <Table striped highlightOnHover withBorder withColumnBorders>
-                        <thead>
-                            <td style={{ textAlign: "center" }}>Stemmed word</td>
-                            <td style={{ textAlign: "center" }}>Frequency</td>
-                            <td style={{ textAlign: "center" }}>Action</td>
-                        </thead>
-                        <tbody>
-                            {resultInPage.map((item, index) => {
-                                return (
-                                    <tr key={index}>
-                                        <td>{item.stem}</td>
-                                        <td>{item.count}</td>
-                                        <td style={{ textAlign: "center", width: "20%" }}>
-                                            <Button
-                                                onClick={() => {
-                                                    setKeyword(`${keyword} ${item.stem}`)
-                                                }}
-                                                leftIcon={<IconPlus size={20} />}>
-                                                Append keyword
-                                            </Button>
-                                        </td>
-                                    </tr>
-                                )
-                            })}
-                        </tbody>
-                    </Table>}
+                    chosenTab === "stem" ?
+                        <Table striped highlightOnHover withBorder withColumnBorders>
+                            <thead>
+                                <td style={{ textAlign: "center" }}>Stemmed word</td>
+                                <td style={{ textAlign: "center" }}>Frequency</td>
+                                <td style={{ textAlign: "center" }}>Action</td>
+                            </thead>
+                            <tbody>
+                                {resultInPage.map((item, index) => {
+                                    return (
+                                        <tr key={index}>
+                                            <td style={{ textAlign: "center" }}>{item.stem}</td>
+                                            <td style={{ textAlign: "center" }}>{item.count}</td>
+                                            <td style={{ textAlign: "center", width: "20%" }}>
+                                                <Button
+                                                    onClick={() => {
+                                                        setKeyword(`${keyword} ${item.stem}`)
+                                                    }}
+                                                    leftIcon={<IconPlus size={20} />}>
+                                                    Append keyword
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </Table> :
+                        <Table striped highlightOnHover withBorder withColumnBorders>
+                            <thead>
+                                <td style={{ textAlign: "center" }}>Raw word</td>
+                                <td style={{ textAlign: "center" }}>Frequency</td>
+                                <td style={{ textAlign: "center" }}>Action</td>
+                            </thead>
+                            <tbody>
+                                {resultInPage.map((item, index) => {
+                                    return (
+                                        <tr key={index}>
+                                            <td style={{ textAlign: "center" }}>{item.stem}</td>
+                                            <td style={{ textAlign: "center" }}>{item.count}</td>
+                                            <td style={{ textAlign: "center", width: "20%" }}>
+                                                <Button
+                                                    onClick={() => {
+                                                        setKeyword(`${keyword} ${item.stem}`)
+                                                    }}
+                                                    leftIcon={<IconPlus size={20} />}>
+                                                    Append keyword
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </Table>}
                 <Pagination
                     position="center"
                     value={activePage}
