@@ -11,13 +11,18 @@ const SearchResult = (props) => {
         { label: "Default (Score)", value: "" },
         { label: "Page Size", value: "size" },
         { label: "Filtered Term Frequency", value: "term" },
-        { label: "Rank of Filtered Term Frequency", value: "termRank" },
+        { label: "Rank of Filtered Term Frequency In Document", value: "termRank" },
         { label: "Last Modified Date", value: "date" },
+        { label: "Number of Parents", value: "parent" },
+        { label: "Number of Children", value: "child" },
+
     ]
     const sortOptions_noTerm = [
         { label: "Default (Score)", value: "" },
         { label: "Page Size", value: "size" },
         { label: "Last Modified Date", value: "date" },
+        { label: "Number of Parents", value: "parent" },
+        { label: "Number of Children", value: "child" },
     ]
 
     const [activePage, setPage] = useState(1);
@@ -83,7 +88,8 @@ const SearchResult = (props) => {
         console.log(result_)
         //Sort the result by the sortOption
         if (sortOption === "") {
-            result_ = result_
+            //Sort by Score
+            result_ = result_.sort((a, b) => b.Score - a.Score)
         } else if (sortOption === "size") {
             result_ = result_.sort((a, b) => b["Size of the Page"] - a["Size of the Page"])
         } else if (sortOption === "term" && filterTerm !== "") {
@@ -105,6 +111,10 @@ const SearchResult = (props) => {
                 let bDate = new Date(b["Last Modified Date"])
                 return bDate - aDate
             })
+        } else if (sortOption === "parent") {
+            result_ = result_.sort((a, b) => b["Parent Link"].length - a["Parent Link"].length)
+        } else if (sortOption === "child") {
+            result_ = result_.sort((a, b) => b["Child Link"].length - a["Child Link"].length)
         }
 
         //Sort the result by the ascending order
@@ -173,7 +183,7 @@ const SearchResult = (props) => {
                             </Select>
 
                             <Select
-                                style={{ width: "15%" }}
+                                style={{ width: "20%" }}
                                 value={sortOption}
                                 onChange={setSortOption}
                                 label={"Sort By"}
