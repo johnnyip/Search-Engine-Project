@@ -204,11 +204,11 @@ const SearchResult = (props) => {
                 {(filterTerm !== "") ? <><br />Showing <b>{completeFilteredResult.length}</b> filtered results</> : <></>}
 
                 <div
-                    style={{
+                    style={(!isHistory) ? {
                         marginLeft: "15%",
                         marginRight: "15%",
                         marginTop: "10px"
-                    }}>
+                    } : {}}>
 
                     {[...resultInPage].map((item, index) => {
                         // console.log(item)
