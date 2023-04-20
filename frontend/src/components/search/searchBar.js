@@ -72,7 +72,7 @@ const SearchBar = () => {
         let historyQuery = []
         let historyCount = 0
         for (let item of history_) {
-            if (!historyQuery.includes(item.data.keyword) && historyCount < 3) {
+            if (!historyQuery.includes(item.data.keyword) && historyCount < 5) {
                 historyQuery.push(item.data.keyword)
                 historyCount++
             }
@@ -81,7 +81,7 @@ const SearchBar = () => {
         let historySuggestion = []
         // historyQuery.reverse()
         for (let item of historyQuery) {
-            historySuggestion.push({ value: item, group: 'Your Last 3 Search History' })
+            historySuggestion.push({ value: item, group: 'Your Last 5 Search History' })
         }
 
         setSuggestions(historySuggestion)
@@ -166,6 +166,8 @@ const SearchBar = () => {
                         onChange={(e) => {
                             setKeyword(e)
                             let suggestion = []
+                            //add historySuggestions to the suggestion
+                            suggestion = suggestion.concat(historySuggestions)
 
                             if (e.length > 0) {
                                 let keyword_ = e
@@ -173,14 +175,15 @@ const SearchBar = () => {
                                 let firstWords = words.slice(0, words.length - 1)
                                 let lastWord = words[words.length - 1]
                                 let suggestedList = findKeywords(lastWord)
-                                console.log(suggestedList)
-                                for (let item of suggestedList) {
-                                    suggestion.push({ value: `${firstWords} ${item}`, group: 'Suggested Keywords' })
+                                if (lastWord !== "") {
+                                    for (let item of suggestedList) {
+                                        suggestion.push({ value: `${firstWords} ${item}`, group: 'Suggested Keywords' })
+                                    }
                                 }
                             }
-                            
+
                             // console.log(historySuggestions)
-                            suggestion = suggestion.concat(historySuggestions)
+                            // suggestion = suggestion.concat(historySuggestions)
                             setSuggestions(suggestion)
 
 
@@ -235,6 +238,9 @@ const SearchBar = () => {
                         close={close} />
 
                     : <Indexes
+                        indexMaxTF={indexMaxTF}
+                        indexRawFreq={indexRawFreq}
+                        indexStemFreq={indexStemFreq}
                         opened={opened}
                         keyword={keyword}
                         setKeyword={setKeyword}

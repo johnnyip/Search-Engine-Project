@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Button, Group, TextInput, Grid, SegmentedControl, Table, Pagination } from '@mantine/core';
 import { IconX, IconPlus, IconArrowUp, IconArrowDown, IconSearch } from '@tabler/icons-react';
 
-import { getIndexedContent } from '../../functions/crawl'
+// import { getIndexedContent } from '../../functions/crawl'
 
 const Indexes = (props) => {
     let opened = props.opened
@@ -10,6 +10,9 @@ const Indexes = (props) => {
     let keyword = props.keyword
     let setKeyword = props.setKeyword
     let onSubmit = props.onSubmit
+    let indexMaxTF = props.indexMaxTF
+    let indexStemFreq = props.indexStemFreq
+    let indexRawFreq = props.indexRawFreq
 
     const itemPerPage = 20;
 
@@ -84,20 +87,9 @@ const Indexes = (props) => {
     }, [searchFilter, maxTF, stemmedWord, rawWord, activePage, ascending, chosenTab])
 
     useEffect(() => {
-        const loadData = async () => {
-            const indexStat_ = await getIndexedContent();
-            let maxTF_ = indexStat_.maxTFList !== undefined ? indexStat_.maxTFList : [];
-            let stemmedWord_ = indexStat_.stemFrequencies !== undefined ? indexStat_.stemFrequencies : [];
-            let rawWord_ = indexStat_.rawFrequencies !== undefined ? indexStat_.rawFrequencies : [];
-
-            setMaxTF(sortDataByFrequency(maxTF_));
-            setStemmedWord(sortDataByFrequency(stemmedWord_));
-            setRawWord(sortDataByFrequency(rawWord_));
-        };
-
-        if (opened) {
-            loadData();
-        }
+        setMaxTF(indexMaxTF)
+        setStemmedWord(indexStemFreq)
+        setRawWord(indexRawFreq)
     }, [opened]);
 
     return (
@@ -151,14 +143,12 @@ const Indexes = (props) => {
                     data={tabOptions}
                 />
             </div>
-            <br />
-            <br />
-
 
 
             <div style={{ paddingLeft: "15%", paddingRight: "15%" }}>
 
                 {/* Sort button */}
+                <h3>Search from Indexes</h3>
                 <Grid>
                     <Grid.Col span={10}>
                         <TextInput
@@ -180,7 +170,7 @@ const Indexes = (props) => {
                     </Grid.Col>
                 </Grid>
 
-                <h2>{filteredItems.length} Results</h2>
+                <h3>{filteredItems.length} Results</h3>
 
                 {chosenTab === "maxtf" ?
 

@@ -26,7 +26,7 @@ export class Trie {
         currentNode.isEndOfWord = true;
     }
 
-    searchForSuggestions(prefix, limit = 5) {
+    searchForSuggestions(prefix, limit = 10) {
         let currentNode = this.root;
 
         for (let char of prefix) {
