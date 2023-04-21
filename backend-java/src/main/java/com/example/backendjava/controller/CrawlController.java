@@ -32,7 +32,7 @@ public class CrawlController {
         System.out.println("Start crawling and build index");
         crawlService.start();
         System.out.println("Finish crawling and build index");
-        crawlService.outputDB();
+//        crawlService.outputDB();
 
         return crawlService.getStatistics();
     }
@@ -43,7 +43,7 @@ public class CrawlController {
         System.out.println("Start crawling and update index");
         crawlService.update();
         System.out.println("Finish crawling and update index");
-        crawlService.outputDB();
+//        crawlService.outputDB();
 
         return crawlService.getStatistics();
     }
