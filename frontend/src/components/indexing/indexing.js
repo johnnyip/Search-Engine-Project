@@ -18,7 +18,12 @@ const Indexing = (props) => {
     const [active, setActive] = useState(3);
     const [busy, setBusy] = useState(false);
 
+    function timeout(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     const startTimer = (stopCallback) => {
+        setTimeElapsed(0);
         const duration = setInterval(() => {
             setTimeElapsed(timeElapsed => timeElapsed + 1);
         }, 1000);
@@ -42,32 +47,37 @@ const Indexing = (props) => {
         }
     }
 
-    const startCrawl = async () => {
+    const crawl = async (fake) => {
         let timerStopped = false;
         const stopTimerCallback = () => {
             timerStopped = true;
         };
         const stopTimer = startTimer(stopTimerCallback);
-        let stat = await startCrawl(url);
-        setIndexStat(stat)
-
-
-        // Stop the timer only if it's still running
+        if (!fake) {
+            let stat = await startCrawl(url);
+            setIndexStat(stat)
+        } else {
+            console.log("fake")
+            await timeout(5000);
+        }
         if (!timerStopped) {
             stopTimer();
         }
     }
 
-    const startSync = async () => {
+    const sync = async (fake) => {
+        setTimeElapsed(0);
         let timerStopped = false;
         const stopTimerCallback = () => {
             timerStopped = true;
         };
         const stopTimer = startTimer(stopTimerCallback);
-        await dbUpdate();
-
-
-        // Stop the timer only if it's still running
+        if (!fake) {
+            await dbUpdate();
+        } else {
+            console.log("fake")
+            await timeout(5000);
+        }
         if (!timerStopped) {
             stopTimer();
         }
@@ -116,11 +126,13 @@ const Indexing = (props) => {
                     loading={loading}
                     disabled={loading2}
                     onClick={async () => {
+                        setBusy(true)
                         setActive(1)
-                        await startCrawl()
+                        await crawl(false)
                         setActive(2)
-                        await startSync()
+                        await sync(false)
                         setActive(3)
+                        setBusy(false)
                     }}
                     leftIcon={<IconSend height={20} width={20} />}>
                     {(loading) ? `Crawling and Indexing...(${timeElapsed}s)` : "Submit URL and Start"}
@@ -142,7 +154,15 @@ const Indexing = (props) => {
             <Stepper
                 style={{ marginLeft: "20%", marginRight: "20%" }}
                 active={active}
-                onStepClick={setActive}
+                onStepClick={async (e) => {
+                    setActive(e)
+                    if (e === 1) {
+                        await crawl(true)
+                        setActive(2)
+                        await sync(true)
+                        setActive(3)
+                    }
+                }}
                 breakpoint="sm">
                 <Stepper.Step
                     label="Enter URL"
