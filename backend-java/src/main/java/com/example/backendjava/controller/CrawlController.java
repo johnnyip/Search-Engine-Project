@@ -4,6 +4,7 @@ import com.example.backendjava.entity.Indexes;
 import com.example.backendjava.entity.Statistics;
 import com.example.backendjava.service.CrawlService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -26,6 +27,7 @@ public class CrawlController {
     }
 
     @GetMapping("/start")
+    @Transactional(timeout = 1000)
     public Statistics startCrawling() {
         System.out.println("Start crawling");
         crawlService.start();
