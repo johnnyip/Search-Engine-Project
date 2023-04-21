@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk
+FROM adoptopenjdk:17-jdk-hotspot
 
 # Set the working directory
 WORKDIR /app
