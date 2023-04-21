@@ -66,6 +66,14 @@ public class CrawlService {
     }
 
     @Transactional
+    public void outputDB() throws IOException {
+        Path sourceFile = Paths.get("db/", "csit5930");
+        Path destinationFile = Paths.get("db_output/", "csit5930");
+
+        // Copy the file from sourceFolder to destinationFolder, replacing it if it exists
+        Files.copy(sourceFile, destinationFile, StandardCopyOption.REPLACE_EXISTING);
+    }
+    @Transactional
     public void remove() throws IOException {
         Path sourceFile = Paths.get("db_init/", "csit5930");
         Path destinationFile = Paths.get("db/", "csit5930");

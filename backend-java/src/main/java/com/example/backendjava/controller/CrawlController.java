@@ -28,20 +28,22 @@ public class CrawlController {
 
     @GetMapping("/start")
     @Transactional(timeout = 1000)
-    public Statistics startCrawling() {
+    public Statistics startCrawling() throws IOException {
         System.out.println("Start crawling and build index");
         crawlService.start();
         System.out.println("Finish crawling and build index");
+        crawlService.outputDB();
 
         return crawlService.getStatistics();
     }
 
     @GetMapping("/update")
     @Transactional(timeout = 1000)
-    public Statistics startUpdate() {
+    public Statistics startUpdate() throws IOException {
         System.out.println("Start crawling and update index");
         crawlService.update();
         System.out.println("Finish crawling and update index");
+        crawlService.outputDB();
 
         return crawlService.getStatistics();
     }

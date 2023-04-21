@@ -3,7 +3,7 @@ services:
     image: johnnyip/search-frontend:latest
     ports:
       - "80:3000"
-  
+
   backend-java:
     image: johnnyip/search-backend-java:latest
     ports:
@@ -13,6 +13,8 @@ services:
     image: johnnyip/search-backend-python:latest
     ports:
       - "5000:5000"
+    depends_on:
+      - mongodb
 
   watchtower:
     image: containrrr/watchtower
@@ -25,5 +27,4 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - ./db:/data/db
-      
+      - ./mongodb:/data/db
