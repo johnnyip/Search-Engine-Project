@@ -21,25 +21,29 @@ public class CrawlService {
     private StopWatch updateTimer;
     private Statistics statistics;
     private Indexes indexes;
+    private boolean crawled;
 
     public CrawlService() {
         this.buildTimer = new StopWatch();
         this.updateTimer = new StopWatch();
-        this.statistics = new Statistics();
+        this.statistics = new Statistics(true);
         this.indexes = new Indexes();
+        this.crawled = false;
     }
 
     public Statistics getStatistics() {
 //        statistics.setDuration(timer.getElapsedTimeInSecond());
-        statistics.setBuildDuration(buildTimer.getElapsedTimeInSecond());
-        statistics.setUpdateDuration(updateTimer.getElapsedTimeInSecond());
+        if (crawled) {
+            statistics.setBuildDuration(buildTimer.getElapsedTimeInSecond());
+            statistics.setUpdateDuration(updateTimer.getElapsedTimeInSecond());
+        }
         statistics.setTotalPageCrawled(SearchEngine.getFullUrlList(false).size());
         statistics.setTotalTerms(SearchEngine.getTerms());
         statistics.setTotalStems(SearchEngine.getStem());
         return statistics;
     }
 
-    public Indexes getIndexesContent(){
+    public Indexes getIndexesContent() {
         indexes.setMaxTFList(SearchEngine.getTitleMaxTF());
         indexes.setStemFrequencies(SearchEngine.getStemFrequency());
         indexes.setRawFrequencies(SearchEngine.getRawFrequency());
@@ -73,6 +77,7 @@ public class CrawlService {
         // Copy the file from sourceFolder to destinationFolder, replacing it if it exists
         Files.copy(sourceFile, destinationFile, StandardCopyOption.REPLACE_EXISTING);
     }
+
     @Transactional
     public void remove() throws IOException {
         Path sourceFile = Paths.get("db_init/", "csit5930");
@@ -82,6 +87,6 @@ public class CrawlService {
         Files.copy(sourceFile, destinationFile, StandardCopyOption.REPLACE_EXISTING);
 
         //Reset stat
-        statistics = new Statistics();
+        statistics = new Statistics(false);
     }
 }
