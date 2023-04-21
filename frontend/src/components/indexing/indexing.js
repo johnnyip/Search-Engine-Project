@@ -162,6 +162,11 @@ const Indexing = (props) => {
                         await sync(true)
                         setActive(3)
                     }
+                    else if (e === 2) {
+                        await sync(true)
+                        setActive(3)
+                    }
+
                 }}
                 breakpoint="sm">
                 <Stepper.Step
