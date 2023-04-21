@@ -3,18 +3,27 @@ package com.example.backendjava.entity;
 import java.util.List;
 
 public class Statistics {
-    private float duration;
+    private float buildDuration;
+    private float updateDuration;
     private int totalPageCrawled;
     private int totalTerms;
     private int totalStems;
 
 
-    public float getDuration() {
-        return duration;
+    public float getBuildDuration() {
+        return buildDuration;
     }
 
-    public void setDuration(float duration) {
-        this.duration = duration;
+    public void setBuildDuration(float buildDuration) {
+        this.buildDuration = buildDuration;
+    }
+
+    public float getUpdateDuration() {
+        return updateDuration;
+    }
+
+    public void setUpdateDuration(float updateDuration) {
+        this.updateDuration = updateDuration;
     }
 
     public int getTotalPageCrawled() {

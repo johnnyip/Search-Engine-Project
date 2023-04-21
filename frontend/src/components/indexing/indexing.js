@@ -4,7 +4,7 @@ import { IconSend, IconTrash } from '@tabler/icons-react';
 
 import IndexingInfo from './indexingInfo';
 
-import { checkIndexStat, startCrawl, removeCrawlContent } from '../../functions/crawl'
+import { checkIndexStat, startCrawl, updateIndex, removeCrawlContent } from '../../functions/crawl'
 import { dbUpdate } from '../../functions/query'
 
 const Indexing = (props) => {
@@ -15,7 +15,7 @@ const Indexing = (props) => {
     const [loading2, setLoading2] = useState(false)
     const [indexStat, setIndexStat] = useState({})
     const [timeElapsed, setTimeElapsed] = useState(0)
-    const [active, setActive] = useState(3);
+    const [active, setActive] = useState(0);
     const [busy, setBusy] = useState(false);
 
     function timeout(ms) {
@@ -54,7 +54,12 @@ const Indexing = (props) => {
         };
         const stopTimer = startTimer(stopTimerCallback);
         if (!fake) {
-            let stat = await startCrawl(url);
+            let stat
+            if (indexStat.totalPageCrawled === 0) {
+                stat = await startCrawl(url);
+            } else {
+                stat = await updateIndex(url);
+            }
             setIndexStat(stat)
         } else {
             console.log("fake")
@@ -135,7 +140,7 @@ const Indexing = (props) => {
                         setBusy(false)
                     }}
                     leftIcon={<IconSend height={20} width={20} />}>
-                    {(loading) ? `Crawling and Indexing...(${timeElapsed}s)` : "Submit URL and Start"}
+                    Submit URL and {(indexStat.totalPageCrawled !== 0) ? "Update Index" : "Build Index"}
                 </Button>
 
                 {/* <Button
@@ -176,9 +181,11 @@ const Indexing = (props) => {
                 </Stepper.Step>
                 <Stepper.Step
                     loading={active === 1}
-                    label={`Crawling and Indexing ${active === 1 ? `(${timeElapsed}s)` : ""}`}
-                    description="[Java] Crawl and Index Content">
-                    Step 2: Java Server is crawling and indexing the webpages content, then store result to SQLite...
+                    label={`Crawling and ${(indexStat.totalPageCrawled !== 0) ? "Updating Index" : "Building Index"} ${active === 1 ? `(${timeElapsed}s)` : ""}`}
+                    description={`[Java] Crawl and ${(indexStat.totalPageCrawled !== 0) ? "Updating the Existing Index" : "Building Index For the First Time"}`}>
+                    Step 2: Java Server is crawling and
+                    {(indexStat.totalPageCrawled !== 0) ? "updating the index" : "building the index"}
+                    with the webpages content, then store result to SQLite...
                 </Stepper.Step>
                 <Stepper.Step
                     loading={active === 2}

@@ -1,9 +1,5 @@
 package com.example.backendjava.service.utils;
 
-//import java.io.FileInputStream;
-//import java.io.IOException;
-//import java.io.InputStream;
-//import java.util.Properties;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -13,8 +9,6 @@ import java.util.ArrayList;
 
 import com.example.backendjava.service.core.Base;
 import com.example.backendjava.service.core.ConstantsDB;
-
-import static com.example.backendjava.service.utils.Logger.printObject;
 
 public class DBUtil extends Base {
     
@@ -62,7 +56,7 @@ public class DBUtil extends Base {
      * Need to call commit() to update DB afterward,
      * as this method may be called by batch inserts
      */
-    public void genericInsertUpdate(Connection m_conn, String m_insert_query, ArrayList<Object> m_data) {
+    public void genericInsertUpdateDelete(Connection m_conn, String m_insert_query, ArrayList<Object> m_data) {
 //        System.out.println("insert data: " + m_data);
         PreparedStatement pstmt = null;
         
@@ -119,7 +113,7 @@ public class DBUtil extends Base {
             /*********************************
              * SQLite
              *********************************/
-            conn = DriverManager.getConnection("jdbc:sqlite:" + System. getProperty("user.dir") + ConstantsDB.dbFile);
+            conn = DriverManager.getConnection("jdbc:sqlite:" + System.getProperty("user.dir") + ConstantsDB.dbFile);
             
             
             // for insertion interrup handling purpose. (i.e. ful transaction rollback)

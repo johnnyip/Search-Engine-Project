@@ -29,9 +29,19 @@ public class CrawlController {
     @GetMapping("/start")
     @Transactional(timeout = 1000)
     public Statistics startCrawling() {
-        System.out.println("Start crawling");
+        System.out.println("Start crawling and build index");
         crawlService.start();
-        System.out.println("Finish crawling");
+        System.out.println("Finish crawling and build index");
+
+        return crawlService.getStatistics();
+    }
+
+    @GetMapping("/update")
+    @Transactional(timeout = 1000)
+    public Statistics startUpdate() {
+        System.out.println("Start crawling and update index");
+        crawlService.update();
+        System.out.println("Finish crawling and update index");
 
         return crawlService.getStatistics();
     }

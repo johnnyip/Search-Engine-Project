@@ -83,6 +83,27 @@ export const startCrawl = async (crawl_url) => {
     return result
 }
 
+export const updateIndex = async (crawl_url) => {
+    let result = 0
+    let url = (process.env.REACT_APP_BACKEND1_URL !== undefined) ? process.env.REACT_APP_BACKEND1_URL : 'http://localhost:8080'
+    url += '/crawl/update?url=' + crawl_url
+
+    await axios.get(url, { timeout: 10000 * 60 * 60 })
+        .then((response) => {
+            if (response.status === 200) {
+                result = response.data
+            } else {
+                result = 0
+            }
+        })
+        .catch((err) => {
+            console.error(err)
+            result = false
+        })
+
+    return result
+}
+
 
 export const removeCrawlContent = async (crawl_url) => {
     let result = 0

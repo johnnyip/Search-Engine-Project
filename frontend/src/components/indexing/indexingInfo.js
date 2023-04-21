@@ -6,7 +6,8 @@ import { IconSend } from '@tabler/icons-react';
 const IndexingInfo = (props) => {
     const indexStat = props.indexStat
 
-    const duration = indexStat.duration !== undefined ? indexStat.duration : 0
+    const buildDuration = indexStat.buildDuration !== undefined ? indexStat.buildDuration : 0
+    const updateDuration = indexStat.updateDuration !== undefined ? indexStat.updateDuration : 0
     const totalPageCrawled = indexStat.totalPageCrawled !== undefined ? indexStat.totalPageCrawled : 0
     const totalTerms = indexStat.totalTerms !== undefined ? indexStat.totalTerms : 0
     const totalStems = indexStat.totalStems !== undefined ? indexStat.totalStems : 0
@@ -22,8 +23,12 @@ const IndexingInfo = (props) => {
 
                     <tbody>
                         <tr>
-                            <th>Time Used For Crawling Indexing</th>
-                            <th>{duration}</th>
+                            <th>Time Used For Crawling and Building Index</th>
+                            <th>{buildDuration}</th>
+                        </tr>
+                        <tr>
+                            <th>Time Used For Crawling and Update Index</th>
+                            <th>{updateDuration}</th>
                         </tr>
                         <tr>
                             <th>Total Document Indexed</th>

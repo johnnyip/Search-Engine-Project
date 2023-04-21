@@ -17,18 +17,22 @@ import java.nio.file.StandardCopyOption;
 
 @Service
 public class CrawlService {
-    private StopWatch timer;
+    private StopWatch buildTimer;
+    private StopWatch updateTimer;
     private Statistics statistics;
     private Indexes indexes;
 
     public CrawlService() {
-        this.timer = new StopWatch();
+        this.buildTimer = new StopWatch();
+        this.updateTimer = new StopWatch();
         this.statistics = new Statistics();
         this.indexes = new Indexes();
     }
 
     public Statistics getStatistics() {
-        statistics.setDuration(timer.getElapsedTimeInSecond());
+//        statistics.setDuration(timer.getElapsedTimeInSecond());
+        statistics.setBuildDuration(buildTimer.getElapsedTimeInSecond());
+        statistics.setUpdateDuration(updateTimer.getElapsedTimeInSecond());
         statistics.setTotalPageCrawled(SearchEngine.getFullUrlList(false).size());
         statistics.setTotalTerms(SearchEngine.getTerms());
         statistics.setTotalStems(SearchEngine.getStem());
@@ -45,11 +49,20 @@ public class CrawlService {
 
     @Transactional
     public void start() {
-        timer.start();
+        buildTimer.start();
         Indexer idxr = new Indexer();
         idxr.reBuildAllIndexes();
 
-        timer.stop();
+        buildTimer.stop();
+    }
+
+    @Transactional
+    public void update() {
+        updateTimer.start();
+        Indexer idxr = new Indexer();
+        idxr.checkAndUpdateIndex();
+
+        updateTimer.stop();
     }
 
     @Transactional

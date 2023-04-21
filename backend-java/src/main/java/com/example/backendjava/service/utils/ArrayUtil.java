@@ -9,8 +9,6 @@ import java.util.StringTokenizer;
 
 import com.example.backendjava.service.core.Base;
 
-import static com.example.backendjava.service.utils.Logger.printObject;
-
 public class ArrayUtil extends Base {
     
     public static void printArrayList(ArrayList<?> m_obj) {

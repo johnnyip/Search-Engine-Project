@@ -2,30 +2,33 @@ package com.example.backendjava.service.core;
 
 public class ConstantsDB {
 
-    public final static String db_path = "/db/";
-    public static final String dbFile = db_path + "csit5930";
+    public final static String db_path  = "/db/";
+    public static final String dbFile   = db_path + "csit5930";
 
     /****************************************************************************************************
      * Insert
      ****************************************************************************************************/
-    public static final String insertUrl = "insert into url(url) values(?);";
-    public static final String insertTerm = "insert into term(term) values(?);";
-    public static final String insertStem = "insert into stem(stem) values(?);";
-    public static final String insertRawToken = "insert into raw_token(page_id, term_id, type, position) values(?, ?, ?, ?);";
-    public static final String insertStemToken = "insert into stem_token(page_id, stem_id,type, position) values(?, ?, ?, ?);";
-    public static final String insertMaxTF = "insert into max_tf(page_id, max_tf, type) values(?, ?, ?);";
-    public static final String insertUrlInverted = "insert into url_inverted(parent_page_id, child_page_id) values(?, ?);";
+    public static final String insertUrl          = "insert into url(url) values(?);";
+    public static final String insertUrlTemp      = "insert into url_temp(url, last_modified_date) values(?, ?);";
+    public static final String insertTerm         = "insert into term(term) values(?);";
+    public static final String insertStem         = "insert into stem(stem) values(?);";
+    public static final String insertRawToken     = "insert into raw_token(page_id, term_id, type, position) values(?, ?, ?, ?);";
+    public static final String insertStemToken    = "insert into stem_token(page_id, stem_id,type, position) values(?, ?, ?, ?);";
+    public static final String insertMaxTF        = "insert into max_tf(page_id, max_tf, type) values(?, ?, ?);";
+    public static final String insertUrlInverted  = "insert into url_inverted(parent_page_id, child_page_id) values(?, ?);";
     //    public static final String insertUrlForward   = "insert into url_forward(child_page_id, parent_page_id) values(?, ?);";
     public static final String insertStemInverted = "insert into stem_inverted(stem_id, page_id, type) values(?, ?, ?);";
-    public static final String insertStemForward = "insert into stem_forward(page_id, stem_id, type) values(?, ?, ?);";
+    public static final String insertStemForward  = "insert into stem_forward(page_id, stem_id, type) values(?, ?, ?);";
     public static final String insertStemPosition = "insert into stem_position(stem_id, page_id, type, position) values(?, ?, ?, ?);";
-    public static final String insertStemDF = "insert into stem_df(stem_id, df) values(?, ?);";
+    public static final String insertStemDF       = "insert into stem_df(stem_id, df) values(?, ?);";
+
+    public static final String insertHistory      = "insert into page_update_history values(?, ?, ?, ?, ?);";
 
     /****************************************************************************************************
      * Update
      ****************************************************************************************************/
     public static final String updateInitiallRawContent
-            = "update url set raw_title=?, last_modified_date=?, raw_content=? where url=?;";
+            = "update url set raw_title=?, last_modified_date=?, raw_content=?, doc_length=? where url=?;";
 
     public static final String updateInitiallClearTitle
             = "update url set clear_title=? where page_id=?;";
@@ -38,14 +41,103 @@ public class ConstantsDB {
             = "update url set stem_content=? where page_id=?;";
 
     /****************************************************************************************************
-     * Delete
+     * Delete / Drop / Create
      ****************************************************************************************************/
+    public static final String deleteUrl_temp   = "delete from url_temp";
+
+    public static final String dropUrl = "drop table if exists url;";
+    public static final String dropTerm = "drop table if exists term;";
+    public static final String dropStem = "drop table if exists stem;";
+    public static final String dropRawToken = "drop table if exists raw_token;";
+    public static final String dropStemToken = "drop table if exists stem_token;";
+    public static final String dropMaxTf = "drop table if exists max_tf;";
+    public static final String dropUrlInverted = "drop table if exists url_inverted;";
+    public static final String dropUrlForward = "drop table if exists url_forward;";
+
+    public static final String createUrl
+            = "create table url ("
+            + "page_id integer primary key autoincrement,"
+            + "url text not null,"
+            + "raw_title text,"
+            + "clear_title text,"
+            + "stem_title text,"
+            + "raw_content text,"
+            + "clear_content text,"
+            + "stem_content text,"
+            + "last_modified_date text,"
+            + "doc_length integer"
+            + ");";
+
+    public static final String createTerm
+            = "create table term ("
+            + "term_id integer primary key autoincrement,"
+            + "term text not null,"
+            + "unique(Term)"
+            + ");";
+
+    public static final String createStem
+            = "create table stem ("
+            + "stem_id integer primary key autoincrement,"
+            + "stem text not null,"
+            + "unique(stem)"
+            + ");";
+
+    public static final String createRawToken
+            = "create table raw_token ("
+            + "page_id integer not null,"
+            + "term_id integer not null,"
+            + "type integer not null,"
+            + "position integer not null,"
+            + "primary key(page_id, term_id, type, position)"
+            + ");";
+
+    public static final String createStemToken
+            = "create table stem_token ("
+            + "page_id integer not null,"
+            + "stem_id integer not null,"
+            + "type integer not null,"
+            + "position integer not null,"
+            + "primary key(page_id, stem_id, type, position)"
+            + ");";
+
+    public static final String createMaxTf
+            = "create table max_tf ("
+            + "page_id integer not null,"
+            + "max_tf integer not null,"
+            + "type integer not null,"
+            + "primary key(page_id, type)"
+            + ");";
+
+    public static final String createUrlInverted
+            = "create table url_inverted ("
+            + "parent_page_id integer not null,"
+            + "child_page_id integer not null,"
+            + "primary key(parent_page_id, child_page_id)"
+            + ");";
+
+    public static final String createUrlForward
+            = "create table url_forward ("
+            + "child_page_id integer not null,"
+            + "parent_page_id integer not null,"
+            + "primary key(child_page_id, parent_page_id)"
+            + ");";
+
 
     /****************************************************************************************************
      * Select
      ****************************************************************************************************/
     public static final String selectAllUrl
             = "select * from url;";
+    public static final String selectNewUrl
+            = "select * from url_temp ut left join url u on u.url = ut.url where u.url is null;";
+    public static final String selectRemovedUrl
+            = "select * from url u left join url_temp ut on ut.url = u.url where ut.url is null;";
+    public static final String selectModifiedUrl
+            = "select "
+            + "u.page_id, u.url, u.last_modified_date as old_date, ut.last_modified_date as new_date "
+            + "from url_temp ut "
+            + "inner join url u on u.url = ut.url "
+            + "where ut.last_modified_date > u.last_modified_date;";
 
     public static final String selectAllRawTitleWithPageId
             = "select page_id || ':' || raw_title as 'data' from url;";
@@ -99,9 +191,9 @@ public class ConstantsDB {
             = "select * from url where url=?;";
 
     public static final String selectTermIdByTerm
-            = "select term_id as item_id from term where term=?;";
+            = "select term_id as id from term where term=?;";
     public static final String selectStemIdByStem
-            = "select stem_id as item_id from stem where stem=?;";
+            = "select stem_id as id from stem where stem=?;";
 
     public static final String selectMaxTfByPageId
             = "select max(count) as max_tf "
@@ -160,14 +252,17 @@ public class ConstantsDB {
     public static final String scopeAllClearTitleAndContent = "scopeAllClearTitleAndContent";
     public static final String scopeAllStemTitleAndContent = "scopeAllStemTitleAndContent";
 
-    public static final String tokenTypeClearTitle = "clearTitleToken";
+    public static final String tokenTypeClearTitle   = "clearTitleToken";
     public static final String tokenTypeClearContent = "clearContentToken";
-    public static final String tokenTypeStemTitle = "stemTitleToken";
+    public static final String tokenTypeStemTitle   = "stemTitleToken";
     public static final String tokenTypeStemContent = "stemContentToken";
 
-    public static final String dataTypeTitle = "titleData";
-    public static final String dataTypeContent = "ContentData";
+    public static final String dataTypeTitle    = "titleData";
+    public static final String dataTypeContent  = "ContentData";
 
     public static final int dsTypeTitle = 1;
     public static final int dsTypeContent = 2;
+
+    public static final String buildUpdateTypeFull = "full";
+    public static final String buildUpdateTypePartial = "partial";
 }
