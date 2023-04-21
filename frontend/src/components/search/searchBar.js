@@ -15,7 +15,9 @@ import { getIndexedContent } from '../../functions/crawl'
 
 import { Trie } from '../../functions/keywordSuggestion'
 
-const SearchBar = () => {
+const SearchBar = (props) => {
+    let activeTab = props.activeTab
+
     const [trie, setTrie] = useState(new Trie())
     const [keyword, setKeyword] = useState('')
     const [loading, setLoading] = useState(false)
@@ -117,12 +119,11 @@ const SearchBar = () => {
 
     }
     useEffect(() => {
-
-        getIndexes()
-        getSearchHistory()
-
-
-    }, [])
+        if (activeTab === "search") {
+            getIndexes()
+            getSearchHistory()
+        }
+    }, [activeTab])
 
 
     return (

@@ -7,7 +7,9 @@ import IndexingInfo from './indexingInfo';
 import { checkIndexStat, startCrawl, removeCrawlContent } from '../../functions/crawl'
 import { dbUpdate } from '../../functions/query'
 
-const Indexing = () => {
+const Indexing = (props) => {
+    let activeTab = props.activeTab
+
     const [url, setUrl] = useState('https://www.cse.ust.hk/~kwtleung/COMP4321/testpage.htm')
     const [loading, setLoading] = useState(false)
     const [loading2, setLoading2] = useState(false)
@@ -35,9 +37,11 @@ const Indexing = () => {
     }
 
     useEffect(() => {
-        // console.log("Indexing page loaded")
-        loadData()
-    }, [])
+        if (activeTab === "index") {
+            console.log("Indexing page loaded")
+            loadData()
+        }
+    }, [activeTab])
 
 
     return (
@@ -114,7 +118,7 @@ const Indexing = () => {
                             stopTimer();
                         }
                     }}
-                    leftIcon={<IconSend height={20} width={20}/>}>
+                    leftIcon={<IconSend height={20} width={20} />}>
                     {(loading2) ? `Sync Database...(${timeElapsed}s)` : "Sync Database (Python)"}
                 </Button>
 

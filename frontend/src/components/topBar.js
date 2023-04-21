@@ -17,11 +17,13 @@ const TopBar = () => {
                 </Tabs.List>
 
                 <Tabs.Panel value="index" pt="xs">
-                    <Indexing />
+                    <Indexing
+                        activeTab={activeTab} />
                 </Tabs.Panel>
 
                 <Tabs.Panel value="search" pt="xs">
-                    <SearchBar />
+                    <SearchBar
+                        activeTab={activeTab} />
                 </Tabs.Panel>
 
             </Tabs>
