@@ -168,7 +168,7 @@ const Indexing = (props) => {
                         setActive(3)
                     }
                     else if (e === 2) {
-                        await sync(true)
+                        await sync(false)
                         setActive(3)
                     }
 
