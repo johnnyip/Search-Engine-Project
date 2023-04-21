@@ -114,7 +114,7 @@ const ResultItem = (props) => {
                 <Grid.Col span={6}>
                     <Accordion >
                         <Accordion.Item variant="separated" value='child'>
-                            <Accordion.Control style={{ padding: 5 }} >
+                            <Accordion.Control style={{ margin: 0 }} >
                                 <Text mt="xs" color="dimmed" >
                                     Child Pages({result["Child Link"].length})
                                 </Text>
@@ -128,7 +128,7 @@ const ResultItem = (props) => {
                 <Grid.Col span={6}>
                     <Accordion >
                         <Accordion.Item value="parent">
-                            <Accordion.Control style={{ padding: 5 }} >
+                            <Accordion.Control style={{ margin: 0 }} >
                                 <Text mt="xs" color="dimmed" >
                                     Parent Pages({result["Parent Link"].length})
                                 </Text>
