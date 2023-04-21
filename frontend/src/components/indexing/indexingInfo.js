@@ -24,11 +24,11 @@ const IndexingInfo = (props) => {
                     <tbody>
                         <tr>
                             <th>Time Used For Crawling and Building Index</th>
-                            <th>{buildDuration}</th>
+                            <th>{buildDuration} Seconds</th>
                         </tr>
                         <tr>
                             <th>Time Used For Crawling and Update Index</th>
-                            <th>{updateDuration}</th>
+                            <th>{updateDuration} Seconds</th>
                         </tr>
                         <tr>
                             <th>Total Document Indexed</th>

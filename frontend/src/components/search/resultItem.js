@@ -113,20 +113,6 @@ const ResultItem = (props) => {
             <Grid >
                 <Grid.Col span={6}>
                     <Accordion >
-                        <Accordion.Item variant="separated" value='child'>
-                            <Accordion.Control style={{ margin: 0 }} >
-                                <Text mt="xs" color="dimmed" >
-                                    Child Pages({result["Child Link"].length})
-                                </Text>
-                            </Accordion.Control>
-                            <Accordion.Panel>
-                                <RelatedPages pages={result["Child Link"]} />
-                            </Accordion.Panel>
-                        </Accordion.Item>
-                    </Accordion>
-                </Grid.Col>
-                <Grid.Col span={6}>
-                    <Accordion >
                         <Accordion.Item value="parent">
                             <Accordion.Control style={{ margin: 0 }} >
                                 <Text mt="xs" color="dimmed" >
@@ -135,6 +121,20 @@ const ResultItem = (props) => {
                             </Accordion.Control>
                             <Accordion.Panel>
                                 <RelatedPages pages={result["Parent Link"]} />
+                            </Accordion.Panel>
+                        </Accordion.Item>
+                    </Accordion>
+                </Grid.Col>
+                <Grid.Col span={6}>
+                    <Accordion >
+                        <Accordion.Item variant="separated" value='child'>
+                            <Accordion.Control style={{ margin: 0 }} >
+                                <Text mt="xs" color="dimmed" >
+                                    Child Pages({result["Child Link"].length})
+                                </Text>
+                            </Accordion.Control>
+                            <Accordion.Panel>
+                                <RelatedPages pages={result["Child Link"]} />
                             </Accordion.Panel>
                         </Accordion.Item>
                     </Accordion>
