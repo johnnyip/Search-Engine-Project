@@ -150,6 +150,7 @@ const SearchResult = (props) => {
     useEffect(() => {
         if (Object.keys(result).length !== 0) {
             extractResultInPage()
+            setPage(1)
             pagination()
         }
     }, [filterTerm, sortOption, ascending])

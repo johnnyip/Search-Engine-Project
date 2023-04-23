@@ -175,7 +175,7 @@ const SearchBar = (props) => {
                             if (e.length > 0) {
                                 let keyword_ = e
                                 let words = keyword_.split(' ')
-                                let firstWords = words.slice(0, words.length - 1)
+                                let firstWords = words.slice(0, words.length - 1).join(' ')
                                 let lastWord = words[words.length - 1]
                                 let suggestedList = findKeywords(lastWord)
                                 if (lastWord !== "") {
@@ -187,6 +187,7 @@ const SearchBar = (props) => {
 
                             // console.log(historySuggestions)
                             // suggestion = suggestion.concat(historySuggestions)
+                            console.log(suggestion)
                             setSuggestions(suggestion)
 
 
