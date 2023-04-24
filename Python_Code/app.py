@@ -58,7 +58,7 @@ def retrieval_pagerank():
 #     return jsonify({'status': 'ok', 'data': result})
 
 
-@app.route('/related', methods=['GET'])
+@app.route('/related', methods=['POST'])
 def related_page():
     data = request.get_json()
     print(data)
