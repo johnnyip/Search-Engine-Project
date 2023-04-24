@@ -16,9 +16,11 @@ const ResultItem = (props) => {
 
     const [rawTextMatched, setRawTextMatched] = useState([])
 
+
     useEffect(() => {
         if (!isHistory)
             setRawTextMatched(findKeyword(rawContent, keywordArr))
+        console.log(result)
     }, [result])
 
     return (

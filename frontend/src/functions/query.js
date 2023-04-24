@@ -109,3 +109,35 @@ export const querySemantics = async (keyword) => {
     return result
 }
 
+export const queryRelated = async (keyword) => {
+    let result = 0
+    // console.log("semantics")
+    let url = (process.env.REACT_APP_BACKEND2_URL !== undefined) ? process.env.REACT_APP_BACKEND2_URL : 'http://localhost:5100'
+    // let url = (process.env.REACT_APP_SERVER_URL !== undefined) ? process.env.REACT_APP_SERVER_URL : 'http://127.0.0.1:5000'
+    url += '/related'
+
+    let keywords = keyword.split(" ")
+    //First part is url
+    let relatedURL = keywords[0].substring(8)
+    //remaining is keyword
+    let relatedKeyword = keywords.slice(1).join(" ")
+
+    let data = {'url': relatedURL, 'keyword': relatedKeyword}
+
+    await axios.get(url, data)
+        .then((response) => {
+            console.log(response.data)
+            if (response.status === 200) {
+                result = response.data
+            } else {
+                result = 0
+            }
+        })
+        .catch((err) => {
+            console.error(err)
+            result = false
+        })
+
+    return result
+}
+

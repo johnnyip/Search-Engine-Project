@@ -8,7 +8,7 @@ import History from './history';
 import Indexes from './indexes';
 import { formatDate } from '../../functions/date'
 
-import { queryVector, queryPageRank, querySemantics } from '../../functions/query';
+import { queryVector, queryPageRank, querySemantics, queryRelated } from '../../functions/query';
 import { getHistoryToken } from '../../functions/cookie'
 import { saveRedis, getRedis } from '../../functions/redis'
 import { getIndexedContent } from '../../functions/crawl'
@@ -48,11 +48,15 @@ const SearchBar = (props) => {
 
         setLoading(true)
 
-        let result = (chosenAlgo === "vector") ?
-            await queryVector(keyword) :
-            (chosenAlgo === "pagerank") ?
-                await queryPageRank(keyword) :
-                await querySemantics(keyword)
+        let firstPart = keyword.split(" ")[0].substring(0, 8)
+
+        let result = (firstPart === "related:") ?
+            await queryRelated(keyword) :
+            (chosenAlgo === "vector") ?
+                await queryVector(keyword) :
+                (chosenAlgo === "pagerank") ?
+                    await queryPageRank(keyword) :
+                    await querySemantics(keyword)
         setQueryResult(result)
 
         result.queryDate = formatDate(new Date());
