@@ -1,4 +1,8 @@
-export const findKeyword = (text, keywords, contextWords = 5) => {
+export const findKeyword = (text, keywords_, contextWords = 5) => {
+    let keywords = keywords_
+    //remove duplicated keywords, and the empty string also
+    keywords = keywords.filter((item, index) => keywords.indexOf(item) === index && item !== '')
+
     const snippets = [];
     const keywordRegex = new RegExp(`\\b(${keywords.join('|')})\\b`, 'gi');
 
@@ -20,6 +24,5 @@ export const findKeyword = (text, keywords, contextWords = 5) => {
         snippets.push([beforeMatch, match[0], afterMatch]);
     }
 
-    
     return snippets;
 };

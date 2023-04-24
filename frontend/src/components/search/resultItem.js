@@ -141,7 +141,7 @@ const ResultItem = (props) => {
 
                             console.log(queryUrl)
                             setKeyword(queryUrl)
-                            onSubmit()
+                            onSubmit(queryUrl)
                             queryUrl = ""
                             setLoading(false)
                         }}

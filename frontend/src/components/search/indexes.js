@@ -102,7 +102,7 @@ const Indexes = (props) => {
                         value={keyword}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
-                                onSubmit();
+                                onSubmit(keyword);
                             }
                         }}
                         onChange={(event) => setKeyword(event.currentTarget.value)}
@@ -125,7 +125,7 @@ const Indexes = (props) => {
                             onClick={async (e) => {
                                 e.preventDefault();
                                 close()
-                                await onSubmit()
+                                await onSubmit(keyword)
                             }}>
                             Search
                         </Button>

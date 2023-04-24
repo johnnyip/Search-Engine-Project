@@ -44,19 +44,20 @@ const SearchBar = (props) => {
         return trie.searchForSuggestions(keywords)
     }
 
-    const onSubmit = async () => {
+    const onSubmit = async (keyword__) => {
+        let keyword_ = keyword__
 
         setLoading(true)
 
-        let firstPart = keyword.split(" ")[0].substring(0, 8)
+        let firstPart = keyword_.split(" ")[0].substring(0, 8)
 
         let result = (firstPart === "related:") ?
-            await queryRelated(keyword) :
+            await queryRelated(keyword_) :
             (chosenAlgo === "vector") ?
-                await queryVector(keyword) :
+                await queryVector(keyword_) :
                 (chosenAlgo === "pagerank") ?
-                    await queryPageRank(keyword) :
-                    await querySemantics(keyword)
+                    await queryPageRank(keyword_) :
+                    await querySemantics(keyword_)
         setQueryResult(result)
 
         result.queryDate = formatDate(new Date());
@@ -104,7 +105,7 @@ const SearchBar = (props) => {
 
     const getIndexes = async () => {
         const indexStat_ = await getIndexedContent();
-        console.log(indexStat_)
+        // console.log(indexStat_)
         setIndexMaxTF(indexStat_.maxTFList !== undefined ? indexStat_.maxTFList : [])
         setIndexStemFreq(indexStat_.stemFrequencies !== undefined ? indexStat_.stemFrequencies : [])
 
@@ -200,7 +201,7 @@ const SearchBar = (props) => {
                         data={suggestions}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
-                                onSubmit();
+                                onSubmit(keyword);
                             }
                         }}
                     />
@@ -216,7 +217,7 @@ const SearchBar = (props) => {
                             loading={loading}
                             onClick={async (e) => {
                                 e.preventDefault();
-                                await onSubmit()
+                                await onSubmit(keyword)
                             }}>
                             Search
                         </Button>
