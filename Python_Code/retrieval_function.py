@@ -409,7 +409,7 @@ class query_retrieval():
                 del_key = key
         if del_key != -9999:
             return_result.pop(del_key)
-        return_result = return_result[:5]
+        return_result = return_result
         return_url_items = list()
         for item in return_result:
 
