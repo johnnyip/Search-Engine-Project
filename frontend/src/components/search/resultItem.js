@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Card, Grid, Text, Group, Accordion, Badge, Button } from '@mantine/core';
-import { IconCheck } from '@tabler/icons-react';
+import { IconCheck, IconSearch } from '@tabler/icons-react';
 
 import RelatedPages from './relatedPages';
 import { findKeyword } from '../../functions/findKeyword'
@@ -14,13 +14,18 @@ const ResultItem = (props) => {
     let keywordArr = props.keywordArr
     let isHistory = props.isHistory
 
+    let onSubmit = props.onSubmit
+    let keyword = props.keyword
+    let setKeyword = props.setKeyword
+
     const [rawTextMatched, setRawTextMatched] = useState([])
+    const [loading, setLoading] = useState(false)
 
 
     useEffect(() => {
         if (!isHistory)
             setRawTextMatched(findKeyword(rawContent, keywordArr))
-        console.log(result)
+        // console.log(result)
     }, [result])
 
     return (
@@ -79,38 +84,72 @@ const ResultItem = (props) => {
                 </>
             }
             <br />
-            <Badge size="lg" radius="xs" color="gray"
-                style={{ marginTop: 20 }}>
-                Top 5 Term Frequency In Document
-            </Badge>
-            {/* <Text mt="xs" color="dimmed" size="md" style={{ paddingBottom: 5 }}>
+            <Grid justify="center" align="center">
+                <Grid.Col span={9}>
+                    <Badge size="lg" radius="xs" color="gray"
+                        style={{ marginTop: 20 }}>
+                        Top 5 Term Frequency In Document
+                    </Badge>
+                    {/* <Text mt="xs" color="dimmed" size="md" style={{ paddingBottom: 5 }}>
                     Top 5 Term Frequency<br />
                 </Text> */}
-            <Group style={{ margin: 10 }}>
-                {result["Most Frequent Items"].map((item, index) => {
-                    return (
-                        <Button
-                            // style={{paddingLeft:5, paddingRight:5, paddingBottom:5, paddingTop:5}}
-                            radius="sm"
-                            key={index}
-                            compact
-                            multiple={false}
-                            leftIcon={(filterTerm === item.Item) ? <IconCheck size={19} /> : null}
-                            onClick={() => {
-                                if (filterTerm === item.Item) {
-                                    setFilterTerm("")
-                                } else {
-                                    setFilterTerm(item.Item)
-                                    setShowFilter(true)
-                                }
-                            }}
-                            color={filterTerm === item.Item ? "blue" : "gray"}
-                            variant={filterTerm === item.Item ? "filled" : "outline"}>
-                            {item.Item}: {item.Frequency}
-                        </Button>
-                    )
-                })}
-            </Group>
+                    <Group style={{ margin: 10 }}>
+                        {result["Most Frequent Items"].map((item, index) => {
+                            return (
+                                <Button
+                                    // style={{paddingLeft:5, paddingRight:5, paddingBottom:5, paddingTop:5}}
+                                    radius="sm"
+                                    key={index}
+                                    compact
+                                    multiple={false}
+                                    leftIcon={(filterTerm === item.Item) ? <IconCheck size={19} /> : null}
+                                    onClick={() => {
+                                        if (filterTerm === item.Item) {
+                                            setFilterTerm("")
+                                        } else {
+                                            setFilterTerm(item.Item)
+                                            setShowFilter(true)
+                                        }
+                                    }}
+                                    color={filterTerm === item.Item ? "blue" : "gray"}
+                                    variant={filterTerm === item.Item ? "filled" : "outline"}>
+                                    {item.Item}: {item.Frequency}
+                                </Button>
+                            )
+                        })}
+                    </Group>
+                </Grid.Col>
+
+                <Grid.Col span={3}>
+                    <Button
+                        loading={loading}
+                        leftIcon={<IconSearch size={19} />}
+                        onClick={() => {
+                            setLoading(true)
+                            console.log(result)
+                            let queryUrl = "related:" + result.url + " "
+                            for (let item of keyword.split(" ")) {
+                                if (queryUrl.substring(0, 8) !== "related:")
+                                    queryUrl += item + " "
+                            }
+
+
+                            for (let item of result["Most Frequent Items"]) {
+                                // console.log(item.Item)
+                                queryUrl += item.Item + " "
+                            }
+
+                            console.log(queryUrl)
+                            setKeyword(queryUrl)
+                            onSubmit()
+                            queryUrl = ""
+                            setLoading(false)
+                        }}
+                    >
+                        Search Related Pages
+                    </Button>
+                </Grid.Col>
+            </Grid>
 
             <Grid >
                 <Grid.Col span={6}>

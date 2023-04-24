@@ -229,6 +229,9 @@ const SearchBar = (props) => {
             <hr />
 
             <SearchResult
+                keyword={keyword}
+                setKeyword={setKeyword}
+                onSubmit={onSubmit}
                 result={queryResult}
                 rawContents={rawContents} />
 

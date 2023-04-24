@@ -8,6 +8,9 @@ const SearchResult = (props) => {
     let result = props.result
     let rawContents = props.rawContents
     let isHistory = props.isHistory
+    let onSubmit = props.onSubmit
+    let keyword = props.keyword
+    let setKeyword = props.setKeyword
 
     // console.log(result)
     const itemPerPage = 5;
@@ -216,6 +219,9 @@ const SearchResult = (props) => {
                         let keywordArr = result.data.keyword.split(" ")
                         return (
                             <ResultItem
+                                keyword={keyword}
+                                setKeyword={setKeyword}
+                                onSubmit={onSubmit}
                                 item={item}
                                 key={index}
                                 isHistory={isHistory}
