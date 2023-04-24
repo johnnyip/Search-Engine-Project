@@ -78,7 +78,7 @@ const Indexes = (props) => {
 
             // setFilteredItems(dataInPage)
             setResultInPage(dataInPage)
-            console.log(dataInPage)
+            // console.log(dataInPage)
         }
     }
 

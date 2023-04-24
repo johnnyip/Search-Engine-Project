@@ -41,7 +41,7 @@ const Indexing = (props) => {
     const loadData = async () => {
         const indexStat_ = await checkIndexStat()
         setIndexStat(indexStat_)
-        console.log(indexStat_)
+        // console.log(indexStat_)
         if (indexStat_.totalPageCrawled !== 0) {
             setActive(3)
         }

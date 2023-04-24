@@ -48,7 +48,7 @@ export const queryVector = async (keyword) => {
         .then((response) => {
             if (response.status === 200) {
                 result = response.data
-                // console.log(result)
+                console.log(result)
 
             } else {
                 result = 0
@@ -122,13 +122,13 @@ export const queryRelated = async (keyword) => {
     //remaining is keyword
     let relatedKeyword = keywords.slice(1).join(" ")
 
-    let data = {'url': relatedURL, 'keyword': relatedKeyword}
+    let data = { 'url': relatedURL, 'keyword': relatedKeyword }
 
-    await axios.get(url, data)
+    await axios.post(url, data)
         .then((response) => {
-            console.log(response.data)
             if (response.status === 200) {
                 result = response.data
+                console.log(result)
             } else {
                 result = 0
             }

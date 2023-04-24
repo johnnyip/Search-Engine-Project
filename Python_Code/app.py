@@ -66,7 +66,7 @@ def related_page():
     url = data['url']
     print(keyword)
     print(url)
-    result = query.page_similarity_search(url, keyword)
+    result = query.query_similar(url, keyword)
     return jsonify({'status': 'ok', 'data': result})
 
 

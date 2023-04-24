@@ -457,3 +457,23 @@ class api_query_retrieval():
         time = '%d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec)
 
         return {"keyword": query, "result": search_result, "time": time}
+
+    def query_similar(self, url, keyword):
+        running_time = datetime.now()
+        search = api_query_retrieval()
+
+        print('/*********\tOnly_Vector_Space_Model_Algorithm_Apply\t*********/')
+        # query = 'MOvie "dinosaur" imDB hkust admission ug'
+        running_time = datetime.now()
+        revised_query, return_result, return_url_items = search.page_similarity_search(url, keyword)
+        print('Query:\t\t\t', keyword, '\n''Phrasal query:\t', '', '\n'
+                                                                            'Search Result:\t', return_result)
+
+        running_time = datetime.now() - running_time
+        running_min = running_time.total_seconds() // 60
+        running_sec = running_time.total_seconds() % 60
+        running_msec = running_time.microseconds / 1000
+        print('Running_time:\t %d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec))
+        time = '%d min %d sec %.2f ms' % (int(running_min), int(running_sec), running_msec)
+
+        return {"keyword": revised_query, "result": return_result, "time": time}
