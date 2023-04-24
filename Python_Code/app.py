@@ -16,7 +16,7 @@ CORS(app, origins="*")
 print("env: " + os.environ.get("MONGO_HOST", "localhost"))
 
 query = api_query_retrieval()
-# semantics = api_semantics_search()
+semantics = api_semantics_search()
 
 
 @app.route('/', methods=['GET'])
@@ -51,11 +51,11 @@ def retrieval_pagerank():
     return jsonify({'status': 'ok', 'data': result})
 
 
-# @app.route('/query_semantics', methods=['GET'])
-# def retrieval_semantics():
-#     keyword = request.args.get("keyword")
-#     result = semantics.query_semantics(keyword)
-#     return jsonify({'status': 'ok', 'data': result})
+@app.route('/query_semantics', methods=['GET'])
+def retrieval_semantics():
+    keyword = request.args.get("keyword")
+    result = semantics.query_semantics(keyword)
+    return jsonify({'status': 'ok', 'data': result})
 
 
 @app.route('/related', methods=['POST'])
@@ -64,8 +64,6 @@ def related_page():
     print(data)
     keyword = data['keyword']
     url = data['url']
-    print(keyword)
-    print(url)
     result = query.query_similar(url, keyword)
     return jsonify({'status': 'ok', 'data': result})
 
