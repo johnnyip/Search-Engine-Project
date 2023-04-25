@@ -129,17 +129,18 @@ const ResultItem = (props) => {
                             console.log(result)
                             let queryUrl = "related:" + result.url + " "
                             for (let item of keyword.split(" ")) {
-                                if (queryUrl.substring(0, 8) !== "related:")
+                                if (item.length <= 8 || item.substring(0, 8) !== "related:")
                                     queryUrl += item + " "
-                            }
 
+                            }
 
                             for (let item of result["Most Frequent Items"]) {
                                 // console.log(item.Item)
                                 queryUrl += item.Item + " "
                             }
 
-                            console.log(queryUrl)
+                            // console.log("queryUrl")
+                            // console.log(queryUrl)
                             setKeyword(queryUrl)
                             onSubmit(queryUrl)
                             queryUrl = ""

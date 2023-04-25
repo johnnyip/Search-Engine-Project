@@ -201,7 +201,7 @@ const SearchBar = (props) => {
                         data={suggestions}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
-                                onSubmit(keyword);
+                                onSubmit(e.target.value);
                             }
                         }}
                     />

@@ -102,7 +102,7 @@ const Indexes = (props) => {
                         value={keyword}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
-                                onSubmit(keyword);
+                                onSubmit(e.target.value);
                             }
                         }}
                         onChange={(event) => setKeyword(event.currentTarget.value)}
