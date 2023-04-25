@@ -68,7 +68,7 @@ class api_query_retrieval():
         return_query_match = dict()
         for id, item in enumerate(query_items):
             query_items[id] = self.stopword_removal(inword=item, stopword_list=self.stopword_list)
-        ps = PorterStemmer()
+        ps = PorterStemmer(mode='MARTIN_EXTENSIONS')
         query_items = list(map(ps.stem, query_items))
         for item in query_items:
             if self.word_forward_index.get(item) is None:
@@ -168,7 +168,7 @@ class api_query_retrieval():
         # Removing stopword and stemming the query
         for id, item in enumerate(query_items):
             query_items[id] = self.stopword_removal(inword=item, stopword_list=self.stopword_list)
-        ps = PorterStemmer()
+        ps = PorterStemmer(mode='MARTIN_EXTENSIONS')
         query_items = list(map(ps.stem, query_items))
         tokenize_query_items = list(map(lambda x: self.word_forward_index[x], query_items))
         for item in query_items:
