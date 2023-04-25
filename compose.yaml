@@ -1,13 +1,24 @@
+version: '3.8'
+
 services:
   frontend:
     image: johnnyip/search-frontend:latest
     ports:
       - "80:3000"
+    environment:
+      - REACT_APP_BACKEND1_URL=http://localhost:8080
+      - REACT_APP_BACKEND2_URL=http://localhost:5000
+    networks:
+      - default_network
 
   backend-java:
     image: johnnyip/search-backend-java:latest
     ports:
       - "8080:8080"
+    volumes:
+      - ./db:/app/db
+    networks:
+      - default_network
 
   backend-python:
     image: johnnyip/search-backend-python:latest
@@ -15,12 +26,19 @@ services:
       - "5000:5000"
     depends_on:
       - mongodb
+    environment:
+      - MONGO_HOST=mongodb
+      - ./db:/app/db
+    networks:
+      - default_network
 
   watchtower:
     image: containrrr/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --interval 30
+    networks:
+      - default_network
 
   mongodb:
     image: mongo:latest
@@ -28,3 +46,8 @@ services:
       - "27017:27017"
     volumes:
       - ./mongodb:/data/db
+    networks:
+      - default_network
+
+networks:
+  default_network:

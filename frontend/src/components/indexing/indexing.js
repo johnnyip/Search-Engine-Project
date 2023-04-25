@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { TextInput, Button, Group, Stepper } from '@mantine/core';
+import { TextInput, Button, Group, Stepper, Tooltip } from '@mantine/core';
 import { IconSend, IconTrash } from '@tabler/icons-react';
 
 import IndexingInfo from './indexingInfo';
@@ -128,21 +128,34 @@ const Indexing = (props) => {
                 </Button>
 
                 <Button
-                    loading={loading}
-                    disabled={loading2}
+                    disabled={indexStat.totalPageCrawled === undefined && indexStat.totalPageCrawled === 0 || loading || loading2}
                     onClick={async () => {
-                        setBusy(true)
-                        setActive(1)
-                        await crawl(false)
-                        setActive(2)
-                        await sync(false)
-                        setActive(3)
-                        setBusy(false)
+                        setLoading(true)
+                        let stat = await removeCrawlContent()
+                        setIndexStat(stat)
+                        setLoading(false)
                     }}
-                    leftIcon={<IconSend height={20} width={20} />}>
-                    Submit URL and {(indexStat.totalPageCrawled !== 0) ? "Update Index" : "Build Index"}
+                    leftIcon={<IconTrash height={20} width={20} />}>
+                    Restore Prebuilt Indexing (Java)
                 </Button>
 
+                <Tooltip label="If Java Backend is running in Docker, the performance will be super slow (around 30 minutes). Do not refresh during the index building process, otherwise system maybe broken.">
+                    <Button
+                        loading={loading}
+                        disabled={loading2}
+                        onClick={async () => {
+                            setBusy(true)
+                            setActive(1)
+                            await crawl(false)
+                            setActive(2)
+                            await sync(false)
+                            setActive(3)
+                            setBusy(false)
+                        }}
+                        leftIcon={<IconSend height={20} width={20} />}>
+                        Submit URL and {(indexStat.totalPageCrawled !== 0) ? "Update Index" : "Build Index"}
+                    </Button>
+                </Tooltip>
                 {/* <Button
                     loading={loading2}
                     disabled={loading}
