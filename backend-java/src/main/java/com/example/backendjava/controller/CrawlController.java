@@ -37,6 +37,14 @@ public class CrawlController {
         return crawlService.getStatistics();
     }
 
+    @GetMapping("/restore")
+    public Statistics restoreIndex() throws IOException {
+        System.out.println("Start restore built index");
+        crawlService.restore();
+
+        return crawlService.getStatistics();
+    }
+
     @GetMapping("/update")
     @Transactional(timeout = 1000)
     public Statistics startUpdate() throws IOException {
@@ -49,12 +57,12 @@ public class CrawlController {
     }
 
     @GetMapping("/stat")
-    public Statistics getStat(){
+    public Statistics getStat() {
         return crawlService.getStatistics();
     }
 
     @GetMapping("/index")
-    public Indexes getIndexes(){
+    public Indexes getIndexes() {
         return crawlService.getIndexesContent();
     }
 

@@ -8,6 +8,7 @@ import com.example.backendjava.service.utils.StopWatch;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -58,6 +59,32 @@ public class CrawlService {
         idxr.reBuildAllIndexes();
 
         buildTimer.stop();
+    }
+
+    @Transactional
+    public void restore() throws IOException {
+        //File remove, prevent .journal file exist in the folder
+
+        File folder = new File("db/");
+        if (folder.exists() && folder.isDirectory()) {
+            File[] files = folder.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        file.delete();
+                    }
+                }
+            }
+        }
+
+
+        Path sourceFile = Paths.get("db_init/", "csit5930_full");
+        Path destinationFile = Paths.get("db/", "csit5930");
+
+        // Copy the file from sourceFolder to destinationFolder, replacing it if it exists
+        Files.copy(sourceFile, destinationFile, StandardCopyOption.REPLACE_EXISTING);
+
+
     }
 
     @Transactional

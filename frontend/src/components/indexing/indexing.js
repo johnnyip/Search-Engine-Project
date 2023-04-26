@@ -4,7 +4,7 @@ import { IconSend, IconTrash } from '@tabler/icons-react';
 
 import IndexingInfo from './indexingInfo';
 
-import { checkIndexStat, startCrawl, updateIndex, removeCrawlContent } from '../../functions/crawl'
+import { checkIndexStat, startCrawl, updateIndex, removeCrawlContent, restoreCrawlContent } from '../../functions/crawl'
 import { dbUpdate } from '../../functions/query'
 
 const Indexing = (props) => {
@@ -131,7 +131,7 @@ const Indexing = (props) => {
                     disabled={indexStat.totalPageCrawled === undefined && indexStat.totalPageCrawled === 0 || loading || loading2}
                     onClick={async () => {
                         setLoading(true)
-                        let stat = await removeCrawlContent()
+                        let stat = await restoreCrawlContent()
                         setIndexStat(stat)
                         setLoading(false)
                     }}

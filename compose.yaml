@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  frontend:
+  frontend: 
     image: johnnyip/search-frontend:latest
     ports:
       - "80:3000"
@@ -35,7 +35,7 @@ services:
     networks:
       - default_network
 
-  watchtower:
+  watchtower: # auto update docker images to latest version
     image: containrrr/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
