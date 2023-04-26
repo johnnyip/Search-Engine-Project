@@ -130,10 +130,15 @@ const Indexing = (props) => {
                 <Button
                     disabled={indexStat.totalPageCrawled === undefined && indexStat.totalPageCrawled === 0 || loading || loading2}
                     onClick={async () => {
-                        setLoading(true)
+                        setBusy(true)
+                        setActive(1)
                         let stat = await restoreCrawlContent()
                         setIndexStat(stat)
-                        setLoading(false)
+                        setActive(2)
+                        await sync(false)
+                        setActive(3)
+                        setBusy(false)
+
                     }}
                     leftIcon={<IconTrash height={20} width={20} />}>
                     Restore Prebuilt Indexing (Java)
