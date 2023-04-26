@@ -17,6 +17,9 @@ services:
       - "8080:8080"
     volumes:
       - ./db:/app/db
+    environment:
+      - REDIS_URL=localhost
+      - REDIS_PASSWORD=password
     networks:
       - default_network
 
@@ -46,6 +49,16 @@ services:
       - "27017:27017"
     volumes:
       - ./mongodb:/data/db
+    networks:
+      - default_network
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass password
+    volumes:
+      - ./redis:/data
     networks:
       - default_network
 
