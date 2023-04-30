@@ -20,7 +20,7 @@ https://search-back2.johnnyip.com
 ## Result Replicate in Docker
 
 !!! Performance of Crawling is much slower (~30 minutes) under Docker environment. 
-    Performance in local is much faster (~2 minutes)
+    Performance in local is much faster (~2 minutes).
     
 In case any error occurs, you can remove all files and run docker compose again.
 
