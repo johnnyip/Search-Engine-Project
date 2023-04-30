@@ -5,17 +5,17 @@
 [@Alexlam0258](https://github.com/Alexlam0258)
 [@cpawongaa](https://github.com/cpawongaa)
 
-## URL
+# URL and Libraries Used
 
-``Frontend``
-https://search.johnnyip.com
-
-``Backend-java (API-Endpoint)``
-https://search-back1.johnnyip.com
-
-``Backend-python (API-Endpoint)``
-https://search-back2.johnnyip.com
-
+|           | **Frontend**                 | **Python Backend**                             | **Java Backend**                   |
+|-----------|------------------------------|------------------------------------------------|------------------------------------|
+| URL       | https://search.johnnyip.com/ | https://search-back1.johnnyip.com/             | https://search-back2.johnnyip.com/ |
+| Libraries | React.js                     | Flask                                          | Spring Boot                        |
+|           | Mantine (UI)                 | pymongo                                        | htmlparser                         |
+|           | Axios                        | sqlite3                                        | gson                               |
+|           |                              | [sentence_transformers](https://www.sbert.net) | spring-boot-starter-data-redis     |
+|           |                              | [NLTK](https://www.nltk.org)                   | jsoup                              |
+|           |                              | numpy                                          | sqlite-jdbc                        |
 
 ## Result Replicate in Docker
 
