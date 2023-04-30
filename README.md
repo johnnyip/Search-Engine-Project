@@ -17,10 +17,11 @@ https://search-back1.johnnyip.com
 https://search-back2.johnnyip.com
 
 
-## Run the whole stack in Docker
+## Result Replicate in Docker
 
 !!! Performance of Crawling is much slower (~30 minutes) under Docker environment. 
-
+    Performance in local is much faster (~2 minutes)
+    
 In case any error occurs, you can remove all files and run docker compose again.
 
 ### Prerequisites
