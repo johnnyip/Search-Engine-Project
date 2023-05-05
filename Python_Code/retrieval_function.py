@@ -47,7 +47,7 @@ class query_retrieval():
                                                               CollectionName='URL_Inverted_Index')
         self.url_chi_to_par = MDBU.retrieve_all_value_from_db(self.mongo_client, DBName='Search_Engine_Data',
                                                               CollectionName='URL_Forward_Index')
-
+    # perform stopword_removal
     def stopword_removal(self, inword, stopword_list):
 
         word = inword.replace(' ', '')
@@ -67,6 +67,7 @@ class query_retrieval():
         return_query_match = dict()
         for id, item in enumerate(query_items):
             query_items[id] = self.stopword_removal(inword=item, stopword_list=self.stopword_list)
+        # Perform Stemming
         ps = PorterStemmer(mode='MARTIN_EXTENSIONS')
         query_items = list(map(ps.stem, query_items))
         for item in query_items:
@@ -154,12 +155,14 @@ class query_retrieval():
             return_query_match[key] = list(set(value))
         return temp_test, return_query_match
 
+    # Function to change dict to list for further usage
     def dict_to_list(self, key, in_list):
         out_list = []
         for item in in_list:
             out_list.append([key, item])
         return out_list
 
+    # Function to change dict to list for further usage
     def phrase_searching(self, query, type1='Body'):
         query_items = query.split()
         document_collection = {}
@@ -250,6 +253,8 @@ class query_retrieval():
         temp_test = dict(sorted(document_collection.items(), key=lambda x: x[1], reverse=True))
         return temp_test
 
+    
+    # Return most frequent items
     def return_most_frequent_items(self, page_id):
         temp_dict = MDBU.retrieve_value_from_db(self.mongo_client, page_id, CollectionName='Body_Forward_Index')
         temp_dict = temp_dict[page_id]
@@ -264,6 +269,7 @@ class query_retrieval():
             temp_list1.extend([copy.deepcopy(temp_dict)])
         return temp_list1
 
+    # The overall VSM retreival function
     def overall_retreival_function(self, query, title_weight=10):
         phrase_query = query.replace('"', '<')
         filtered_query = re.sub('<.*?<', '', phrase_query)
@@ -374,29 +380,20 @@ class query_retrieval():
             temp_dict['Parent Link'] = copy.deepcopy(temp_list)
             return_result.extend([temp_dict])
         return return_result, return_url_items
-
+    
+    # Perform page similarity search
     def page_similarity_search(self, url, original_query):
         self.page_rank_selection = False
         page_id = self.url_forward_index[url]
         body_forward_index = MDBU.retrieve_value_from_db(self.mongo_client, page_id,
                                                          DBName='Search_Engine_Data',
                                                          CollectionName='Body_Forward_Index')
-        '''
-        header_forward_index = MDBU.retrieve_value_from_db(self.mongo_client, page_id,
-                                                           DBName='Search_Engine_Data',
-                                                           CollectionName='Header_Forward_Index')
-        '''
+        
         temp_list = list(body_forward_index.values())
         temp_list = temp_list[0]
         body_word_index = sorted(temp_list.items(), key=lambda  x:x[1], reverse=True)
         full_word_list = dict(body_word_index[:5]).keys()
-        '''
-        temp_list = list(header_forward_index.values())
-        temp_list = temp_list[0]
-        header_word_list = list(sorted(temp_list.items(), key=lambda  x:x[1], reverse=True))
-        header_word_list = dict(header_word_list[:5]).keys()
-        full_word_list = list(set(header_word_list) | set(body_word_index))
-        '''
+        
 
         revised_query = list(map(lambda  x:self.word_inverted_index[x], full_word_list))
         revised_query = ' '.join(revised_query)
@@ -422,7 +419,7 @@ class query_retrieval():
 
 if __name__ == '__main__':
     running_time = datetime.now()
-    os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
+   
     search = query_retrieval()
     running_time = datetime.now() - running_time
     running_min = running_time.total_seconds() // 60
