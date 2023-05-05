@@ -1,6 +1,5 @@
 from sentence_transformers import SentenceTransformer
 from pymongo import MongoClient
-# model = SentenceTransformer('all-MiniLM-L6-v2')
 import pickle
 import numpy as np
 from numpy import linalg as LA
@@ -39,11 +38,13 @@ class semantics_search():
         self.url_chi_to_par = MDBU.retrieve_all_value_from_db(self.mongo_client, DBName='Search_Engine_Data',
                                                               CollectionName='URL_Forward_Index')
 
+    # Calculate cosine similarity
     def cosine_similarity(self, x, y):
         numerator = np.dot(x, y)
         denominator = LA.norm(x) * LA.norm(y)
         return float(numerator / denominator)
 
+    # Return the top frequent item
     def return_most_frequent_items(self, page_id):
         temp_dict = MDBU.retrieve_value_from_db(self.mongo_client, page_id, CollectionName='Body_Forward_Index')
         temp_dict = temp_dict[page_id]
@@ -58,6 +59,7 @@ class semantics_search():
             temp_list1.extend([copy.deepcopy(temp_dict)])
         return temp_list1
 
+    # Perform the semantics search
     def query_semantics(self, query):
 
         query_embeddings = self.model.encode(query)
