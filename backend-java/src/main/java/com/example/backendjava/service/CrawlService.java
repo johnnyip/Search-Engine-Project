@@ -34,10 +34,10 @@ public class CrawlService {
 
     public Statistics getStatistics() {
 //        statistics.setDuration(timer.getElapsedTimeInSecond());
-        if (crawled) {
+//        if (crawled) {
             statistics.setBuildDuration(buildTimer.getElapsedTimeInSecond());
             statistics.setUpdateDuration(updateTimer.getElapsedTimeInSecond());
-        }
+//        }
         statistics.setTotalPageCrawled(SearchEngine.getFullUrlList(false).size());
         statistics.setTotalTerms(SearchEngine.getTerms());
         statistics.setTotalStems(SearchEngine.getStem());

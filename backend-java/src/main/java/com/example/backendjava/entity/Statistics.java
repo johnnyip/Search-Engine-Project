@@ -10,10 +10,10 @@ public class Statistics {
     private int totalStems;
 
     public Statistics(boolean fake) {
-        if (fake) {
-            this.buildDuration = 101.775F;
-            this.updateDuration = 13.728F;
-        }
+//        if (fake) {
+//            this.buildDuration = 101.775F;
+//            this.updateDuration = 13.728F;
+//        }
     }
 
     public float getBuildDuration() {
