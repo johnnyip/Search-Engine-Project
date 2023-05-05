@@ -9,7 +9,7 @@
 
 |           | **Frontend**                 | **Python Backend**                             | **Java Backend**                   |
 |-----------|------------------------------|------------------------------------------------|------------------------------------|
-| URL       | https://search.johnnyip.com/ | https://search-back1.johnnyip.com/             | https://search-back2.johnnyip.com/ |
+| URL       | https://search.johnnyip.com/ | -                                              |-                                   |
 | Libraries | React.js                     | Flask                                          | Spring Boot                        |
 |           | Mantine (UI)                 | pymongo                                        | htmlparser                         |
 |           | Axios                        | sqlite3                                        | gson                               |
