@@ -7,7 +7,7 @@ import MongoDB_utilites as MDBU
 import sqlite3
 import pickle
 
-# os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
+
 def upload_data_to_mongodb(sqlitedb='db/csit5930',mongo_host='localhost', mongo_port=27017):
 
     connection = sqlite3.connect(sqlitedb)
