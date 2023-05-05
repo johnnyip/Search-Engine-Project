@@ -4,7 +4,7 @@ import json
 import sys
 from datetime import datetime, timedelta
 
-
+# Update to MongoDB from json
 def Update_Database_json_update(client, DBName='Search_Engine_Data', CollectionName='Body_Inverted_Index',
                                 json_path='data/body_inverted_index.json'):
     db = client[DBName]
@@ -20,7 +20,7 @@ def Update_Database_json_update(client, DBName='Search_Engine_Data', CollectionN
     for key, value in temp_dict.items():
         collection.insert_one({key: value})
 
-
+# Update to MongoDB from dict variable
 def Update_Database_from_dict(client, input_dict, DBName='Search_Engine_Data', CollectionName='Body_Inverted_Index'):
     db = client[DBName]
     collection = db[CollectionName]
@@ -31,7 +31,7 @@ def Update_Database_from_dict(client, input_dict, DBName='Search_Engine_Data', C
             temp = {key: value}
             collection.insert_one(temp)
 
-
+# Retrieve all data from SQLite based on SQL statement
 def retrieve_from_SQLite(DB_Connection, SQL_stmt):
     cursor = DB_Connection.cursor()
 
@@ -69,7 +69,7 @@ def retrieve_all_value_from_db(client, DBName='Search_Engine_Data', CollectionNa
     db = client[DBName]
     collection = db[CollectionName]
     temp_dict = dict()
-    # documents = collection.find({key: {'$exists': True}}, projection)
+    
     documents = collection.find()
     temp_dict1 = dict()
     for document in documents:
@@ -81,7 +81,7 @@ def retrieve_all_value_from_db(client, DBName='Search_Engine_Data', CollectionNa
 
 
 if __name__ == ('__main__'):
-    # os.chdir('C:\\Users\\Lam\\OneDrive - HKUST Connect\\Desktop\\Lecture Note\\CSIT5930\\Project')
+    
     running_time = datetime.now()
     DBName = 'Search_Engine_Data'
     CollectionName = 'Body_Inverted_Index'
