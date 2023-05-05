@@ -9,7 +9,7 @@
 
 |           | **Frontend**                 | **Python Backend**                             | **Java Backend**                   |
 |-----------|------------------------------|------------------------------------------------|------------------------------------|
-| URL       | https://search.johnnyip.com/ | https://search-back1.johnnyip.com/             | https://search-back2.johnnyip.com/ |
+| URL       | https://search.johnnyip.com/ | -                                              |-                                   |
 | Libraries | React.js                     | Flask                                          | Spring Boot                        |
 |           | Mantine (UI)                 | pymongo                                        | htmlparser                         |
 |           | Axios                        | sqlite3                                        | gson                               |
@@ -28,10 +28,7 @@ In case any error occurs, please remove all files and run docker compose again.
 
 - Before you begin, make sure you have Docker client installed
 
-- Download Docker-compose file [here](https://drive.johnnyip.com/d/s/tG79JmBXF1KOeqJ0z19LYFkIN3rYxpf2/WQruMrHYAUkRIpZCbTFTbveZXPGsPTIz-b7HAfiijYQo)
-
-- After downloaded, create a folder and place the compose.yml inside
-
+- Make sure the `compose.yaml` file is inside the folder
 
 - Open Terminal (Mac/Linux), or cmd in Windows, and enter the following commands
 
